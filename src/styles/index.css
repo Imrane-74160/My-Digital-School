@@ -95,6 +95,34 @@
   --font-mono: var(--mds-police-mono);
 }
 
+/* Animations des feuilles et du viseur du scanner, aux durées du design system. */
+@keyframes monter {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes lecture {
+  0%,
+  100% {
+    transform: translateY(-88px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(88px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*='animation'] {
+    animation: none !important;
+  }
+}
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;

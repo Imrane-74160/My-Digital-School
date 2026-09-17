@@ -2,7 +2,17 @@ import { createBrowserRouter } from 'react-router'
 import { AccueilDemo } from './pages/AccueilDemo'
 import { EcranEnChantier } from './pages/EcranEnChantier'
 import { Introuvable } from './pages/Introuvable'
+import { Accueil } from './app-mobile/Accueil'
+import { Alertes } from './app-mobile/Alertes'
+import { Charte } from './app-mobile/Charte'
+import { Connexion } from './app-mobile/Connexion'
 import { DispositionApp } from './app-mobile/DispositionApp'
+import { FicheMateriel } from './app-mobile/FicheMateriel'
+import { Materiel } from './app-mobile/Materiel'
+import { Profil } from './app-mobile/Profil'
+import { Rendre } from './app-mobile/Rendre'
+import { Scanner } from './app-mobile/Scanner'
+import { Signaler } from './app-mobile/Signaler'
 import { CoqueBackOffice } from './back-office/CoqueBackOffice'
 import { GalerieDesignSystem } from './design-system/GalerieDesignSystem'
 
@@ -23,6 +33,20 @@ export const ECRANS_APP: Fiche[] = [
   { code: 'A10', chemin: 'profil', titre: 'Profil', noeud: '93:942' },
 ]
 
+/** Écran construit pour chaque fiche de l'app mobile. */
+const ECRAN_APP: Record<string, () => React.ReactElement> = {
+  A1: Connexion,
+  A2: Charte,
+  A3: Accueil,
+  A4: Materiel,
+  A5: FicheMateriel,
+  A6: Rendre,
+  A7: Scanner,
+  A8: Signaler,
+  A9: Alertes,
+  A10: Profil,
+}
+
 /** B2 → B12, page Figma « Back-office » (15:2). B1 vit hors de la coque. */
 export const ECRANS_BACK_OFFICE: Fiche[] = [
   { code: 'B2', chemin: '', titre: 'Tableau de bord', noeud: '8:950' },
@@ -38,10 +62,13 @@ export const ECRANS_BACK_OFFICE: Fiche[] = [
   { code: 'B12', chemin: 'reglages', titre: 'Réglages', noeud: '89:3051' },
 ]
 
-const versRoute = ({ code, chemin, titre, noeud }: Fiche) => ({
-  ...(chemin === '' ? { index: true as const } : { path: chemin }),
-  element: <EcranEnChantier code={code} titre={titre} noeud={noeud} />,
-})
+const versRoute = ({ code, chemin, titre, noeud }: Fiche) => {
+  const Ecran = ECRAN_APP[code]
+  return {
+    ...(chemin === '' ? { index: true as const } : { path: chemin }),
+    element: Ecran ? <Ecran /> : <EcranEnChantier code={code} titre={titre} noeud={noeud} />,
+  }
+}
 
 export const routeur = createBrowserRouter([
   { path: '/', element: <AccueilDemo /> },

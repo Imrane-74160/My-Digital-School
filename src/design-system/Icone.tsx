@@ -3,10 +3,10 @@ import { ICONES, TAILLES_ICONE, type NomIcone, type TailleIcone } from './icones
 type Props = {
   /** Nom Figma de l'icône, ex. « Casque audio ». */
   nom: NomIcone
-  taille?: TailleIcone
+  taille?: TailleIcone | undefined
   /** Taille exacte en pixels, quand le Figma en impose une hors de l'échelle (ex. Pictogramme). */
-  pixels?: number
-  className?: string
+  pixels?: number | undefined
+  className?: string | undefined
   /**
    * Étiquette accessible. Sans elle, l'icône est purement décorative et masquée
    * aux lecteurs d'écran — c'est le cas le plus fréquent (le libellé voisin suffit).

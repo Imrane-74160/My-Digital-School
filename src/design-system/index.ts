@@ -58,3 +58,47 @@ export { BarreDeNavigationMobile } from './BarreDeNavigationMobile'
 export { EnTeteDeCarte } from './EnTeteDeCarte'
 export { Infobulle } from './Infobulle'
 export { LienDeNavigation } from './LienDeNavigation'
+
+// Structure, cartes et tableaux
+export {
+  BarreDEtat,
+  Carte,
+  CarteSombre,
+  Encart,
+  EnTeteDePage,
+  EnTeteEcranMobile,
+  EtatVide,
+  TitreDeSection,
+  VisuelMateriel,
+  ZoneDAction,
+} from './structure'
+export type { TonEncart } from './structure'
+export {
+  ActionDuCompte,
+  BoutonPrincipalMobile,
+  CarteDePret,
+  Etape,
+  LigneDeCatalogue,
+  LigneDeComposant,
+  LigneDeMontant,
+  LigneDeNotification,
+  LigneDInformation,
+  MaterielDetecte,
+  Raccourci,
+} from './cartes-mobile'
+export {
+  ActionAFaire,
+  CarteDeStock,
+  CarteDeValidation,
+  CarteDIncident,
+  CartePhotoDeRetour,
+  Indicateur,
+  LigneDeForfait,
+  LigneDeReglage,
+  LigneDeStock,
+  PretDeClasse,
+  Regle,
+} from './cartes-bo'
+export type { TonIndicateur } from './cartes-bo'
+export { CelluleDouble, EnTeteDeTableau, LigneDeTableau, LigneDImport, Tableau } from './tableau'
+export type { Colonne } from './tableau'

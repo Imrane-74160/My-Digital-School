@@ -1,4 +1,7 @@
 import { Outlet, useLocation } from 'react-router'
+import { horloge } from '@/domain'
+import { BarreDeNavigationMobile, BarreDEtat } from '@/design-system'
+import { useEtat, usePersonaApp } from '@/store/hooks'
 import { CadreTelephone } from './CadreTelephone'
 
 /**
@@ -14,10 +17,15 @@ function afficheBarreDeNavigation(chemin: string): boolean {
 
 export function DispositionApp() {
   const { pathname } = useLocation()
+  const etat = useEtat()
+  const persona = usePersonaApp()
   const avecBarre = afficheBarreDeNavigation(pathname)
+
+  const nonLues = etat.notifications.filter((n) => n.pour.includes(persona.id) && !n.lue).length
 
   return (
     <CadreTelephone>
+      <BarreDEtat heure={horloge.heure(etat.horloge.maintenant)} />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
@@ -26,9 +34,7 @@ export function DispositionApp() {
           data-testid="zone-navigation"
           className="flex h-[102px] shrink-0 items-center justify-center px-lg"
         >
-          <p className="mds-texte-petit w-full rounded-carte-mobile bg-surface-bouton-doux py-lg text-center text-texte-tertiaire">
-            Barre de navigation · Phase 3
-          </p>
+          <BarreDeNavigationMobile avecPastille={nonLues > 0 ? ['Alertes'] : []} />
         </div>
       )}
     </CadreTelephone>

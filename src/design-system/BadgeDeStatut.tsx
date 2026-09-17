@@ -11,10 +11,10 @@ import { FAMILLE_DE_STATUT, LIBELLE_DE_STATUT, TONS_DE_BADGE } from './statuts'
 type Props = {
   statut: StatutBadge
   /** Remplace le libellé par défaut du statut, en gardant sa couleur. */
-  libelle?: string
+  libelle?: string | undefined
   /** Variante « Afficher la pastille » du Figma. */
-  pastille?: boolean
-  className?: string
+  pastille?: boolean | undefined
+  className?: string | undefined
 }
 
 export function BadgeDeStatut({ statut, libelle, pastille = true, className }: Props) {

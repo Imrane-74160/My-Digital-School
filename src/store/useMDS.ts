@@ -45,6 +45,8 @@ type Magasin = {
   choisirPersonaApp: (id: PersonneId) => void
   choisirUtilisateurBO: (id: PersonneId) => void
   effacerResultat: () => void
+  /** Ouvrir l'écran Alertes marque comme lues les notifications de la personne. */
+  marquerNotificationsLues: (id: PersonneId) => void
 }
 
 const depart = () => ({
@@ -102,6 +104,20 @@ export const useMDS = create<Magasin>()(
       choisirPersonaApp: (id) => set({ personaApp: id }),
       choisirUtilisateurBO: (id) => set({ utilisateurBO: id }),
       effacerResultat: () => set({ dernierResultat: null }),
+
+      marquerNotificationsLues: (id) => {
+        const { etat } = get()
+        if (!etat.notifications.some((n) => n.pour.includes(id) && !n.lue)) return
+        // Marquer comme lu n'est pas une action métier : pas d'entrée dans l'historique.
+        set({
+          etat: {
+            ...etat,
+            notifications: etat.notifications.map((notification) =>
+              notification.pour.includes(id) ? { ...notification, lue: true } : notification,
+            ),
+          },
+        })
+      },
     }),
     {
       name: CLE_PERSISTANCE,

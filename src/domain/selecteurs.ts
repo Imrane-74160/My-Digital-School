@@ -58,7 +58,13 @@ export const pretOuvertDe = (etat: EtatMDS, id: MaterielId): Pret | undefined =>
 export const pretsDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
   etat.prets.filter((p) => p.responsable === id)
 
-export const pretsEnCoursDe = (etat: EtatMDS, id: PersonneId): Pret[] => pretsDe(etat, id).filter(estOuvert)
+/** Prêts ouverts d'une personne : les actifs d'abord, comme sur l'accueil du Figma. */
+export const pretsEnCoursDe = (etat: EtatMDS, id: PersonneId): Pret[] => {
+  const rang = (pret: Pret) => (pret.statut === 'actif' ? 0 : pret.statut === 'retour_a_valider' ? 1 : 2)
+  return pretsDe(etat, id)
+    .filter(estOuvert)
+    .sort((a, b) => rang(a) - rang(b))
+}
 
 export const historiqueDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
   pretsDe(etat, id)
@@ -114,6 +120,15 @@ export const personnesBloquees = (etat: EtatMDS): Personne[] =>
 
 export const estDebloqueeAujourdhui = (etat: EtatMDS, id: PersonneId): boolean =>
   etat.exemptions[id] === h.jourDe(etat.horloge.maintenant)
+
+/**
+ * Élision devant un nom de lieu : « à l'armoire du studio », « au bureau de la pédagogie ».
+ * Heuristique suffisante pour les deux lieux du campus.
+ */
+export function auLieu(lieu: string): string {
+  const minuscule = lieu.charAt(0).toLowerCase() + lieu.slice(1)
+  return /^[aeiouéèêh]/i.test(lieu) ? `à l’${minuscule}` : `au ${minuscule}`
+}
 
 // ─── Catalogue et disponibilité (R02, R14) ───────────────────────────────────
 

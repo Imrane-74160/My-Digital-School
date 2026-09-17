@@ -22,9 +22,9 @@ const FONDS: Record<TeintePictogramme, string> = {
 
 type Props = {
   icone: NomIcone
-  forme?: FormePictogramme
-  teinte?: TeintePictogramme
-  taille?: TaillePictogramme
+  forme?: FormePictogramme | undefined
+  teinte?: TeintePictogramme | undefined
+  taille?: TaillePictogramme | undefined
   /** Nom accessible. Sans lui, le pictogramme est décoratif. */
   titre?: string
   className?: string

@@ -6,14 +6,14 @@ import type { TailleBouton, TypeBouton } from './variantes'
 
 type Props = {
   libelle: string
-  type?: TypeBouton
-  taille?: TailleBouton
+  type?: TypeBouton | undefined
+  taille?: TailleBouton | undefined
   /** Icône à gauche du libellé. Absente = variante « Afficher l'icône : non ». */
-  icone?: NomIcone
+  icone?: NomIcone | undefined
   /** Rendu personnalisé de l'icône, quand ce n'est pas une icône du design system. */
-  enfantIcone?: ReactNode
+  enfantIcone?: ReactNode | undefined
   /** Occupe toute la largeur disponible : c'est le cas des boutons d'action mobile. */
-  pleineLargeur?: boolean
+  pleineLargeur?: boolean | undefined
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'className' | 'children'>
 
 /** Géométrie relevée sur le Figma : M = 40 px, L = 52 px. */
