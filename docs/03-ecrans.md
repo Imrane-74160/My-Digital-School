@@ -80,7 +80,9 @@ Le **logo MyDigitalSchool est dans la barre d'en-tête**, à gauche du titre de 
 Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en Sandrine (direction) ou Cyrianne.
 
 ### B1 · Se connecter — `14:950` — `/admin/connexion`
-- Mise en page, image et bouton selon le Figma. Clic → Tableau de bord avec l'utilisateur choisi dans le panneau démo.
+- **Hors de la coque commune** (confirmé au Figma) : ni menu principal, ni en-tête de page, ni fil d'Ariane. Une seule carte blanche centrée sur le fond dégradé, avec le visuel d'étudiant à droite ; le logo est **dans la carte**, au-dessus du titre.
+- Textes du Figma : titre « Bon retour parmi nous », sous-titre « Connecte-toi avec ton compte MyDigitalSchool pour gérer les prêts », bouton « Se connecter avec mon admin », mention « Connexion sécurisée MyDigitalSchool ».
+- Aucun champ de saisie : la connexion est déléguée au compte. Clic → Tableau de bord avec l'utilisateur choisi dans le panneau démo.
 
 ### B2 · Tableau de bord — `8:950` — `/admin`
 - **À faire maintenant** (Action à faire) : remises à valider → Validations ; photos à contrôler → Contrôle photo ; emprunteur bloqué « Voir » → Emprunteurs (fiche ouverte) ; paiements « Réservé à Sandrine » → Incidents ; signalements « Traiter » → Incidents onglet Signalements. Une ligne n'apparaît que si son compteur > 0.
@@ -100,23 +102,32 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
   - Prêt de classe : « pour la {classe} · responsable du prêt pour sa classe ».
   - Kit : puces de composants toutes en état **Vérifié**, **non cliquables**. Sinon : « Tout le contenu est là, rien d'abîmé ».
   - **Pas de « manquant » à la remise** : un kit incomplet ne sort pas ; l'équipe le retire du prêt depuis Matériel (▶ RETIRER). ▶ VALIDER_REMISE est le seul bouton.
-- **Carte de validation · Retour** : puces composants « Manquant ? » (bascule) → « Conforme » ▶ VALIDER_RETOUR ou « Créer l'incident · {montant du composant} » ▶ VALIDER_RETOUR{manquant}.
+- **Carte de validation · Retour** : ligne d'identité « {Nom} · {classe} · a tout coché dans l'app · vérifiez avant la remise en stock », puis puces composants « Manquant ? » (bascule).
+  Les **deux boutons coexistent** dans le Figma, côte à côte, même quand une puce est déjà marquée manquante : « Conforme » ▶ VALIDER_RETOUR et « Créer l'incident · {montant du composant} » ▶ VALIDER_RETOUR{manquant}. L'équipe garde donc la main jusqu'au dernier clic.
+- Chaque carte porte un badge de type (« Remise » / « Retour ») à gauche du nom et un badge « N1 » à droite. Titre de la carte : « À valider sur place », sous-titre « Niveau 1 · l'équipe vérifie le matériel avec l'emprunteur », amorce des puces : « Contenu vérifié ».
+- Prêt de classe : « pour la {classe} » **remplace** « {classe} · attend au bureau » dans la ligne d'identité (une seule ligne, pas deux éléments).
 - Colonne « Niveau 1 » : 4 Règles (statique). ◐ Vide : « Tout est traité. Rien ne vous attend. »
 
 ### B4 · Contrôle photo — `22:2` — `/admin/controle-photo`
-- **Carte photo de retour** par photo en attente : badge « Réemprunté par {nom} » si reparti, agrandir (◐ visionneuse plein écran), déclaration (« Déclaré complet » / « Problème signalé : « … » »), puces « Manquant ? », « Photo conforme » ▶ CONTROLER_PHOTO / « Créer l'incident · {montant} ».
+- **Carte photo de retour** par photo en attente : ligne « Rendu par {nom} · {déclaration} », badges « N2 » et « Forfait {montant} » à côté du nom, badge « Réemprunté par {nom} » si reparti, agrandir (◐ visionneuse plein écran), « Photo conforme » ▶ CONTROLER_PHOTO / « Créer l'incident · {montant} ».
+- Puces « Manquant ? » : **une puce par composant** pour un kit, **une seule puce « Incomplet ou abîmé »** pour un matériel sans kit (ce second cas vaut le forfait complet, cf. R07).
+- La zone photo n'est pas une image : aplat hachuré teinté à la couleur de catégorie + icône du matériel, avec une puce « {fichier} · {date relative} » superposée.
 - **Contrôlées récemment** : Ligne de tableau · Contrôle (résultat Conforme / Incident · montant). ◐ Vide.
 
 ### B5 · Matériel — `24:3` — `/admin/materiel?id=`
 - Recherche (nom ou QR), filtres (Tout, Niveau 1, Niveau 2, Disponibles, Sortis, Retirés), catégorie, « Ajouter un matériel » (◐ panneau/formulaire : nom, catégorie, niveau, lieu, forfait ▶ AJOUTER_MATERIEL).
-- **Ligne de tableau · Inventaire** (survol, sélection) : `materiels[].note` s'affiche **sous le badge de statut** quand elle existe (ex. « Molette cassée »). → **Fiche matériel** : QR (généré depuis le code), statut actuel + la même note + action contextuelle (Valider la remise…), forfait par composant (Sandrine : champs éditables ▶ MODIFIER_FORFAIT ; Lydia : lecture + cadenas), total, « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER / ◐ « Remettre en service » ▶ REMETTRE.
+- Colonnes du tableau : **Matériel** (nom + code QR en mono dessous) · Catégorie · Niveau · Statut · Forfait (aligné à droite). Sous-titre de la carte : « {n} matériels · {n} sortis · {n} retirés du prêt ».
+- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (généré depuis le code), statut actuel + la même note + action contextuelle (Valider la remise…), forfait par composant (Sandrine : champs éditables ▶ MODIFIER_FORFAIT ; Lydia : lecture + cadenas), total, « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER / ◐ « Remettre en service » ▶ REMETTRE.
 
 ### B6 · Prêts — `26:2` — `/admin/prets`
-- Onglets En cours / ◐ Historique, recherche matériel ou emprunteur, **Ligne de tableau · Prêts** (retard en rose) → Matériel fiche.
+- Onglets En cours / ◐ Historique, recherche matériel ou **responsable**, **Ligne de tableau · Prêts** → Matériel fiche.
+- Colonnes : **Matériel** · **Responsable** (2ᵉ ligne « pour la {classe} » sur un prêt de classe) · **Sorti** · **Statut** · **Forfait**.
+- Quatre badges de statut distincts : « En cours » (bleu) · « À valider » (ambre, remise) · « Retour à valider » (ambre, retour) · « En retard » (rose). Le retard ne teinte **que** la date et le badge, pas la ligne entière.
 - Colonne : Retour du soir (nombre à rendre, rappel 16:30), Pour les classes (Prêt de classe).
 
 ### B7 · Emprunteurs — `83:2266` — `/admin/emprunteurs?id=`
-- Recherche, filtres Tous / Bloqués / À rembourser / Intervenants. **Ligne de tableau · Emprunteur** (survol, sélection).
+- Recherche (« Nom ou classe »), filtres Tous / Bloqués / À rembourser / Intervenants. Sous-titre de la carte : « {n} comptes · {n} bloqué · {n} forfaits à rembourser ».
+- Colonnes : **Nom** · **Profil** (« Élève · B3 », « Intervenant · B3, M1 » — le rôle concaténé aux classes rattachées) · **Prêts en cours** · **À rembourser** (montant en rose, ou « – ») · **Statut**. **Ligne de tableau · Emprunteur** (survol, sélection).
 - **Fiche emprunteur** : identité, statut (bloqué → raison, échéance perte, ▶ DEBLOQUER ; ◐ actif ; ◐ débloqué aujourd'hui), prêts en cours, historique, badge ◐ « Charte non acceptée ».
 
 ### B8 · Incidents & paiements — `27:2` — `/admin/incidents?onglet=`
@@ -125,19 +136,29 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 - Payés récemment (Ligne de tableau · Paiement). Forfaits par type (Ligne de forfait, bouton modifier ▶ MODIFIER_FORFAIT, Sandrine).
 
 ### B9 · Consommables — `84:2451` — `/admin/consommables`
-- **Carte de stock** Normal/Bas (bascule automatique selon seuil) avec champ « Comptage de ce lundi ». « Enregistrer le comptage » ▶ COMPTAGE (ajoute une ligne à l'historique).
+- Bandeau de règle sous le fil d'Ariane : « Comptage rapide chaque lundi · pas de suivi par personne · alerte dans le récap de 8h sous le seuil ».
+- **Carte de stock** par consommable, badge « **Sous le seuil** » (orange) ou « **OK** » (vert) — et non « Normal/Bas » — avec « Seuil d'alerte », une jauge, l'unité du produit (« stylos en stock ») et « Dernier comptage : {date} ».
+- **Un seul bouton global** « Enregistrer le comptage », en haut à droite au-dessus des cartes, et non un bouton par carte ▶ COMPTAGE.
+- **Historique des comptages** : sous-titre « 3 dernières semaines », colonnes Semaine / Stylos / Feutres / Couverts, avec l'auteur en gris (« par Lydia »).
 
 ### B10 · Salles — `87:2645` — `/admin/salles`
 - Filtres Toutes / À régler. **Ligne de tableau · Salle** : compteur − / + (local), « Valider » ▶ VERIFIER_SALLE ; statut Complet / n manquant(s) / n en trop.
-- Panneau « Vérification de {mois} » : salles vérifiées aujourd'hui / total, jauge, liste « À régler » (écarts + signalements de salle).
+- Colonnes : **Salle** · **Ventilateurs présents** (compteur − n + suivi de « / {n} attendus ») · **Vérifiée le** (date relative) · **Statut**. Sous le nom de la salle, une ligne secondaire à trois variantes : « Aucun signalement » · « Signalé par {nom} · {date} » · « Un ventilateur en trop ».
+- Note de pied : « Ajustez le nombre de ventilateurs trouvés, puis validez la salle. Un écart reste visible jusqu'à la prochaine vérification. »
+- Panneau « Vérification de {mois} » : sous-titre « Prochaine : {date} », jauge « Avancement » avec pourcentage, liste « À régler » à **trois** types de cartes — écart manquant, écart en trop, et une **carte de rapprochement** qui apparie les deux (« Salle 104 → salle 201 · Le ventilateur en trop vient sans doute de la 201 »).
 
 ### B11 · Imports Calc — `88:2861` — `/admin/imports`
-- Inventaire : ◐ zone de dépôt (fichier .ods/.csv — on peut parser un CSV réel, sinon « fichier exemple ») → aperçu **Ligne d'import** Valide/Erreur → « Importer les n lignes valides » ▶ IMPORT_INVENTAIRE / Annuler. ◐ Succès : « Import terminé » + lien Matériel.
+- Bandeau d'introduction : « Pas d'API : l'inventaire et les classes arrivent par fichiers Calc (.ods ou .csv). Chaque import est vérifié avant d'être appliqué. »
+- Inventaire : ◐ zone de dépôt (fichier .ods/.csv — on peut parser un CSV réel, sinon « fichier exemple »), état déposé « {fichier} · {n} lignes lues · déposé à {HH:MM} par {nom} » avec croix de retrait.
+- Aperçu **Ligne d'import** : colonnes Nom / Catégorie / Niveau / Forfait / **Contrôle**, où Contrôle porte « Valide » ou le **motif nommant la colonne fautive** (« Niveau manquant (colonne C) », valeur déjà présente dans `importExemple`), ligne surlignée en rose.
+- Pastilles de récap « {n} lignes valides » / « {n} erreur », puis « Importer les n lignes valides » ▶ IMPORT_INVENTAIRE / Annuler, et la règle « La ligne en erreur est ignorée : corrigez-la dans Calc puis réimportez. » ◐ Succès : « Import terminé » + lien Matériel.
 - Liste des classes : pastilles actuelles, zone de dépôt → ◐ aperçu → ▶ IMPORT_CLASSES.
 
 ### B12 · Réglages — `89:3051` — `/admin/reglages`
 - Charte : **liste numérotée, éditable article par article** (champ titre + zone de texte par article), un **seul bouton « Enregistrer la charte »** pour l'ensemble ▶ MODIFIER_CHARTE (Sandrine). Lydia : lecture seule + cadenas → refus R12.
-- Notifications : 2 **Lignes de réglage** avec Interrupteur ▶ REGLAGE. Rôles et accès (statique depuis `people`).
+- Notifications, sous-titre « Envois automatiques », 2 **Lignes de réglage** avec Interrupteur ▶ REGLAGE : « Rappel de 16h30 » / « Push et email aux emprunteurs qui ont un prêt en cours », et « Récap de 8h » / « Email à Cyrianne, Lydia et Sandrine ».
+- Sous-titre de la carte Charte : « Acceptée une fois à la première connexion · modifiée le {date} » (alimenté par `reglages.charteModifieeLe`).
+- Rôles et accès (statique depuis `personnes`) : une ligne par personne d'équipe avec sa description de droits et un badge « Équipe » ou « Direction ».
 
 ---
 ## C. Panneau de démo (hors Figma, discret)
