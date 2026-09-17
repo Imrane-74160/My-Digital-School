@@ -2,9 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { Icone } from './Icone'
 import type { NomIcone, TailleIcone } from './icones'
 
-/** Composant Figma « Bouton » (`43:101`) : Type × Taille × État, 24 variantes. */
-export type TypeBouton = 'Principal' | 'Secondaire' | 'Alerte'
-export type TailleBouton = 'M' | 'L'
+import type { TailleBouton, TypeBouton } from './variantes'
 
 type Props = {
   libelle: string

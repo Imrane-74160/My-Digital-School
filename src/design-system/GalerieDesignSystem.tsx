@@ -1,7 +1,24 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
-import { Bouton, type TailleBouton, type TypeBouton } from './Bouton'
+import { Avatar } from './Avatar'
+import { BadgeDeStatut } from './BadgeDeStatut'
+import { Bouton } from './Bouton'
+import { BoutonIcone } from './BoutonIcone'
 import { Icone } from './Icone'
 import { NOMS_ICONES } from './icones'
+import { Pastille } from './Pastille'
+import { Pictogramme } from './Pictogramme'
+import { PuceDeCategorie } from './PuceDeCategorie'
+import { PuceDeComposant } from './PuceDeComposant'
+import { STATUTS_BADGE } from './statuts'
+import {
+  STYLES_BOUTON_ICONE,
+  TAILLES_AVATAR,
+  TAILLES_BOUTON,
+  TEINTES_PICTOGRAMME,
+  TYPES_BOUTON,
+  type EtatPuce,
+} from './variantes'
 
 const FICHIER_FIGMA = 'lN2EFZzYHfTuAW9agcHstV'
 
@@ -47,8 +64,53 @@ function Section({
   )
 }
 
-const TYPES: TypeBouton[] = ['Principal', 'Secondaire', 'Alerte']
-const TAILLES: TailleBouton[] = ['M', 'L']
+/** Les puces de composant se basculent vraiment, pour voir la transition de 200 ms. */
+function DemoPucesDeComposant() {
+  const [etats, setEtats] = useState<Record<string, EtatPuce>>({
+    'Émetteur + micro cravate': 'Neutre',
+    Récepteur: 'Manquant',
+  })
+
+  return (
+    <div className="flex flex-col gap-md">
+      <div className="flex flex-wrap items-center gap-sm">
+        <span className="mds-texte-petit w-[92px] text-texte-tertiaire">Lecture seule</span>
+        <PuceDeComposant nom="Boîtier Canon R10" etat="Vérifié" />
+        <PuceDeComposant nom="Objectif RF 18-150mm" etat="Vérifié" />
+      </div>
+      <div className="flex flex-wrap items-center gap-sm">
+        <span className="mds-texte-petit w-[92px] text-texte-tertiaire">Bascule</span>
+        {Object.entries(etats).map(([nom, etat]) => (
+          <PuceDeComposant
+            key={nom}
+            nom={nom}
+            etat={etat}
+            onBascule={() =>
+              setEtats((precedent) => ({
+                ...precedent,
+                [nom]: precedent[nom] === 'Manquant' ? 'Neutre' : 'Manquant',
+              }))
+            }
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/** Les puces de catégorie de l'écran Matériel, avec une sélection réelle. */
+function DemoPucesDeCategorie() {
+  const [active, setActive] = useState('Tout')
+  const categories = ['Tout', 'Studio', 'Informatique', 'Cours', 'Jeux', 'Boîtes']
+
+  return (
+    <div className="flex flex-wrap gap-sm">
+      {categories.map((nom) => (
+        <PuceDeCategorie key={nom} libelle={nom} active={active === nom} onClick={() => setActive(nom)} />
+      ))}
+    </div>
+  )
+}
 
 /**
  * Galerie de tous les composants et de toutes leurs variantes, à comparer section
@@ -74,10 +136,10 @@ export function GalerieDesignSystem() {
         description="Type Principal / Secondaire / Alerte · Taille M (40 px) / L (52 px) · États Défaut, Survol, Pressé, Désactivé. Le libellé reste sombre sur le turquoise et l’orange, comme dans le Figma."
       >
         <div className="flex flex-col gap-lg">
-          {TYPES.map((type) => (
+          {TYPES_BOUTON.map((type) => (
             <div key={type} className="flex flex-col gap-sm">
               <p className="mds-texte-petit-fort text-texte-tertiaire">{type}</p>
-              {TAILLES.map((taille) => (
+              {TAILLES_BOUTON.map((taille) => (
                 <div key={taille} className="flex flex-wrap items-center gap-md">
                   <span className="mds-mono-micro w-[28px] text-texte-tertiaire">{taille}</span>
                   <Bouton libelle="Valider" type={type} taille={taille} icone="Coche" />
@@ -88,6 +150,138 @@ export function GalerieDesignSystem() {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section
+        titre="Bouton icône"
+        noeud="44:89"
+        description="Bouton rond à icône seule. Styles Doux, Contour, Surface, Plein · 36 à 56 px. L’icône reste sombre dans les quatre styles, turquoise compris."
+      >
+        <div className="flex flex-col gap-md">
+          {STYLES_BOUTON_ICONE.map((style) => (
+            <div key={style} className="flex flex-wrap items-center gap-md">
+              <span className="mds-texte-petit w-[92px] text-texte-tertiaire">{style}</span>
+              {([36, 40, 48, 56] as const).map((taille) => (
+                <BoutonIcone
+                  key={taille}
+                  icone="Plus d'options"
+                  titre={`Plus d’options · ${style} ${taille}`}
+                  style={style}
+                  taille={taille}
+                />
+              ))}
+              <BoutonIcone icone="Plus d'options" titre="Désactivé" style={style} disabled />
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        titre="Badge de statut"
+        noeud="45:89"
+        description="Les huit statuts du prototype, en cinq familles de couleur. Le libellé est libre : un badge garde sa couleur avec « 3 disponibles » ou « Réemprunté par Tom »."
+      >
+        <div className="flex flex-col gap-md">
+          <div className="flex flex-wrap gap-sm">
+            {STATUTS_BADGE.map((statut) => (
+              <BadgeDeStatut key={statut} statut={statut} />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-sm">
+            {STATUTS_BADGE.map((statut) => (
+              <BadgeDeStatut key={statut} statut={statut} pastille={false} />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-sm">
+            <BadgeDeStatut statut="Disponible" libelle="3 disponibles" />
+            <BadgeDeStatut statut="En cours" libelle="Réemprunté par Tom" />
+            <BadgeDeStatut statut="À valider" libelle="Ta demande" />
+            <BadgeDeStatut statut="Incident" libelle="Incident · 45 €" />
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        titre="Pastille"
+        noeud="45:96"
+        description="Information courte en chasse fixe : Niveau, Classe (prêt pour la classe), Montant."
+      >
+        <div className="flex flex-wrap items-center gap-sm">
+          <Pastille type="Niveau" libelle="N1" />
+          <Pastille type="Niveau" libelle="N2" />
+          <Pastille type="Classe" libelle="B3" />
+          <Pastille type="Classe" libelle="M1" />
+          <Pastille type="Montant" libelle="Forfait 25 €" />
+          <Pastille type="Montant" libelle="Forfait 1 130 €" />
+        </div>
+      </Section>
+
+      <Section
+        titre="Avatar"
+        noeud="45:110"
+        description="Initiale sur la couleur de la personne. Les tailles 22 à 48 écrivent en Inter Medium ; la taille 84 de l’écran Profil passe en Bricolage Grotesque 28/32."
+      >
+        <div className="flex flex-wrap items-end gap-lg">
+          {TAILLES_AVATAR.map((taille) => (
+            <div key={taille} className="flex flex-col items-center gap-xs">
+              <Avatar initiale="I" taille={taille} couleur="#0E76B6" titre="Inès Martin" />
+              <span className="mds-mono-micro text-texte-tertiaire">{taille}</span>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center gap-sm">
+          {[
+            ['I', '#0E76B6'],
+            ['T', '#662483'],
+            ['L', '#B35C1E'],
+            ['Y', '#2B6F77'],
+            ['S', '#8A3B6B'],
+            ['C', '#C8558A'],
+            ['L', '#D06A32'],
+            ['S', '#3C3C3B'],
+          ].map(([initiale, couleur], index) => (
+            <Avatar key={index} initiale={initiale!} taille={32} couleur={couleur!} />
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        titre="Pictogramme"
+        noeud="59:150"
+        description="Vignette (carré, rayon 14) ou pictogramme (rond), 32 à 56 px. Seul le fond est teinté : l’icône reste sombre sur les sept teintes."
+      >
+        <div className="flex flex-col gap-md">
+          {(['Carré', 'Rond'] as const).map((forme) => (
+            <div key={forme} className="flex flex-wrap items-center gap-md">
+              <span className="mds-texte-petit w-[92px] text-texte-tertiaire">{forme}</span>
+              {TEINTES_PICTOGRAMME.map((teinte) => (
+                <Pictogramme key={teinte} icone="Coche" forme={forme} teinte={teinte} />
+              ))}
+            </div>
+          ))}
+          <div className="flex flex-wrap items-center gap-md">
+            <span className="mds-texte-petit w-[92px] text-texte-tertiaire">Tailles</span>
+            {([32, 40, 44, 48, 56] as const).map((taille) => (
+              <Pictogramme key={taille} icone="Appareil photo" teinte="Turquoise" taille={taille} />
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        titre="Puce de composant"
+        noeud="45:130"
+        description="Vérifié, Neutre, Manquant. « Survol » est le survol de Neutre. Les puces de bascule sont cliquables ; celles de la carte de validation d’une remise ne le sont pas."
+      >
+        <DemoPucesDeComposant />
+      </Section>
+
+      <Section
+        titre="Puce de catégorie"
+        noeud="61:132"
+        description="Filtre de l’écran Matériel. Active en anthracite plein ; « Pressée » est l’appui d’Inactive."
+      >
+        <DemoPucesDeCategorie />
       </Section>
 
       <Section

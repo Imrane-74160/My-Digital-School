@@ -26,10 +26,10 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 |---|---|---|
 | Icônes | 63 icônes `Icône/…` | Nom (voir liste plus bas) |
 | Bouton | Bouton (`43:101`) | Libellé · Afficher l'icône · Icône · Type Principal/Secondaire/Alerte · Taille M(40)/L(52) · État Défaut/Survol/Pressé/Désactivé |
-| Bouton icône | Bouton icône (`44:89`) | Icône · Style Doux/Contour/Surface/Plein · État Défaut/Survol/Pressé · 36–56 px |
-| Badges | Badge de statut (`45:89`) | Afficher la pastille · Statut Disponible/En cours/À valider/En retard/Bloqué/Retiré/Payé/Incident (libellé libre) |
+| Bouton icône | Bouton icône (`44:89`) | Icône · Style Doux/Contour/Surface/Plein · État Défaut/Survol/Pressé · 36–56 px. **Relevé** : l'icône reste sombre dans les quatre styles, turquoise compris ; les styles qui gagnent un trait au survol en portent un transparent au repos pour que la boîte ne bouge pas. |
+| Badges | Badge de statut (`45:89`) | Afficher la pastille · Statut Disponible/En cours/À valider/En retard/Bloqué/Retiré/Payé/Incident (libellé libre). **Cinq familles de couleur** pour huit statuts : turquoise (Disponible, Payé) · bleu (En cours) · orange (À valider, Bloqué) · rose (En retard, Incident) · neutre (Retiré). La pastille prend la couleur forte de sa famille. |
 | Badges | Pastille (`45:96`) | Type Niveau (N1/N2)/Classe (B3)/Montant (Forfait 25 €) |
-| Avatar | Avatar (`45:110`) | Initiale · Taille 22/28/32/44/48 **/84** (84 = écran Profil `93:942`, frame propre dans le Figma) · couleur de la personne |
+| Avatar | Avatar (`45:110`) | Initiale · Taille 22/28/32/44/48 **/84** · couleur de la personne. **Relevé** : les tailles 22 à 48 écrivent l'initiale en **Inter Medium** (9/12, 12/15, 13/18, 18/24, 20/26) ; la taille 84 de l'écran Profil (`93:1013`) passe en **Bricolage Grotesque 28/32**, soit le style `Chiffre/L`. |
 | Puce de composant | Puce de composant (`45:130`) | Nom · État Vérifié/Neutre/Survol/Manquant |
 | Onglets | Onglet (`46:76`) | Libellé · Compteur · Afficher le compteur · État Actif/Inactif/Survol (piste `surface/bouton-doux`) |
 | Onglets | Liste déroulante (`46:100`) | Valeur · État Défaut/Survol/Ouverte (menu d'options) |
@@ -39,7 +39,7 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 | Navigation | Infobulle (`49:81`) · Lien de navigation (`49:107`) | Icône · Libellé · État Inactif/Survol/Actif |
 | Navigation | Onglet de navigation mobile (`49:124`) | Icône · État Inactif/Pressé/Actif/Scanner |
 | Carte | En-tête de carte (`49:129`) | Titre · Sous-titre · Afficher le sous-titre · Icône · Afficher les options |
-| Pictogramme | Pictogramme (`59:150`) | Icône · Forme Carré/Rond · Teinte Neutre/Turquoise/Bleu/Orange/Rose/Blanc/Contour · 32–56 px |
+| Pictogramme | Pictogramme (`59:150`) | Icône · Forme Carré (rayon 14) / Rond · Teinte Neutre/Turquoise/Bleu/Orange/Rose/Blanc/Contour · 32–56 px, l'icône occupant la moitié de la boîte. **Relevé** : seul le fond est teinté, l'icône reste en `texte/principal` sur les sept teintes. |
 | Puce de catégorie | Puce de catégorie (`61:132`) | Libellé · État Active/Inactive/Pressée |
 | Structure | Barre d'état (`61:147`) · Barre de navigation mobile (`61:155`) · Menu principal (`61:206`) · En-tête de page (`61:274`) | En-tête : Titre · Retour · Fil d'Ariane |
 | Tableaux | Cellule d'en-tête (`61:300`) | Libellé · Alignement Gauche/Droite |

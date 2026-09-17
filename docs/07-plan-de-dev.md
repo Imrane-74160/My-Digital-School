@@ -23,7 +23,7 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 ## Phase 2 · Design system — en cours
 - [x] **Icônes** : table nom Figma → `lucide-react` générée depuis `docs/04` (63 icônes). « Trépied » repris du Figma en SVG. Test Vitest : toutes les icônes du seed et du moteur résolvent.
 - [x] **Bouton** (`43:101`) : 24 variantes (Type × Taille × État), géométrie vérifiée au pixel contre le Figma — M 102,5 × 40 (Figma 103 × 40), L 117,1 × 52 (Figma 117 × 52), rayons 20/24, paddings 16/16 et 16/20, gap 8, libellé Inter 500 14/18 et 16/18, halos de survol turquoise et orange.
-- [ ] Bouton icône · Badge de statut · Pastille · Avatar · Pictogramme · Puce de catégorie · Puce de composant
+- [x] **Bouton icône** (`44:89`) · **Badge de statut** (`45:89`) · **Pastille** (`45:96`) · **Avatar** (`45:110` + taille 84) · **Pictogramme** (`59:150`) · **Puce de catégorie** (`61:132`) · **Puce de composant** (`45:130`) — géométrie, paddings, rayons, typo et couleurs vérifiés valeur par valeur
 - [ ] Champ · Case à cocher · Interrupteur · Onglet · Liste déroulante · Infobulle · Lien de navigation · Onglet de navigation mobile
 - [ ] Structure : Barre d'état · Barre de navigation mobile · Menu principal · En-tête de page · En-tête de carte · Cellule d'en-tête · Titre de section
 - [ ] Tableaux : les 8 lignes de tableau + Ligne d'import
@@ -31,7 +31,8 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - [ ] Cartes mobile : Carte de prêt · Raccourci · Ligne de catalogue · Ligne d'information · Étape · Matériel détecté · Ligne de montant · Case avec libellé · Notification · Action du compte
 - [x] Page `/design-system` = galerie, chaque section portant le lien de son nœud Figma
 - **Fini quand** : chaque section a été comparée en capture avec Figma et les écarts corrigés.
-- **Méthode retenue** : pour chaque composant, `get_design_context` sur son nœud, puis **mesure chiffrée** du rendu (boîte, rayon, padding, gap, police, couleurs calculées) contre les valeurs du Figma — pas une comparaison à l'œil.
+- **Méthode retenue** : pour chaque composant, `get_design_context` sur son nœud, puis **mesure chiffrée** du rendu (boîte, rayon, padding, gap, police, couleurs calculées) contre les valeurs du Figma — pas une comparaison à l'œil. Ces relevés sont figés dans `e2e/design-system.desktop.ts` : toute dérive casse `npm run e2e`.
+- Seule tolérance : la **largeur** d'un élément dimensionné par son texte (± 2 px), car elle dépend des métriques de la police. Hauteurs, rayons, paddings, gaps, graisses et couleurs sont exacts.
 
 ## Phase 3 · App mobile
 - [ ] A1 Connexion · A2 Charte · A3 Accueil (+ états bloqué / soir / vide / à rembourser)
