@@ -1,0 +1,110 @@
+/* Tokens exportés du Figma « Prêts MDS » (collections MDS · Charte + MDS · Dimensions).
+   Nommage identique au Figma : marque/turquoise -> --mds-marque-turquoise. Ne pas ajouter de valeur en dur ailleurs. */
+:root {
+  /* Marque */
+  --mds-marque-anthracite: #3C3C3B;
+  --mds-marque-turquoise: #2DB8C5;
+  --mds-marque-turquoise-clair: #E2F5F7;
+  --mds-marque-turquoise-fonce: #11707A;
+  --mds-marque-jaune: #FAC102;
+  --mds-marque-orange: #EF8900;
+  --mds-marque-orange-clair: #FDEFD9;
+  --mds-marque-orange-fonce: #A65F00;
+  --mds-marque-bleu-ciel: #5FC4E4;
+  --mds-marque-bleu: #5C98D0;
+  --mds-marque-bleu-clair: #E3EEF8;
+  --mds-marque-bleu-fonce: #2B5E8C;
+  --mds-marque-bleu-action: #0E76B6;
+  --mds-marque-rose: #EC4391;
+  --mds-marque-rose-clair: #FCE4EF;
+  --mds-marque-rose-fonce: #B0266B;
+
+  /* Texte */
+  --mds-texte-principal: #1D1D1B;
+  --mds-texte-secondaire: #5A606B;
+  --mds-texte-tertiaire: #8C929C;
+  --mds-texte-inverse: #FFFFFF;
+  --mds-texte-desactive: #AEB4BC;
+
+  /* Surfaces */
+  --mds-surface-carte: #FFFFFF;
+  --mds-surface-champ: #F1F3F6;
+  --mds-surface-pastille: #E9EDF1;
+  --mds-surface-bouton-doux: #8C99A624; /* rgba(140,153,166,.14) */
+  --mds-surface-desactive: #E4E7EB;
+
+  /* Traits */
+  --mds-trait-bordure: #00000014; /* noir 8 % */
+  --mds-trait-grille: #DDE2E8;
+  --mds-trait-rayure: #C3CAD2;
+  --mds-trait-fort: #9AA3AD;
+
+  /* États interactifs */
+  --mds-etat-turquoise-survol: #25A7B3;
+  --mds-etat-turquoise-presse: #1D8E99;
+  --mds-etat-orange-survol: #D97B00;
+  --mds-etat-orange-presse: #BF6C00;
+  --mds-etat-doux-survol: #8C99A63D;
+  --mds-etat-doux-presse: #8C99A657;
+  --mds-etat-nav-survol: #FFFFFF1F;
+  --mds-etat-focus: #2DB8C547;
+
+  /* Espacements */
+  --mds-espacement-xs: 4px;
+  --mds-espacement-sm: 8px;
+  --mds-espacement-md: 12px;
+  --mds-espacement-lg: 16px;
+  --mds-espacement-xl: 20px;
+  --mds-espacement-2xl: 24px;
+  --mds-espacement-3xl: 32px;
+
+  /* Rayons */
+  --mds-rayon-pastille: 8px;
+  --mds-rayon-vignette: 14px;
+  --mds-rayon-bouton: 20px;
+  --mds-rayon-champ: 24px;
+  --mds-rayon-carte-mobile: 28px;
+  --mds-rayon-carte: 36px;
+  --mds-rayon-rond: 999px;
+
+  /* Durées */
+  --mds-duree-appui: 80ms;
+  --mds-duree-rapide: 120ms;
+  --mds-duree-base: 200ms;
+  --mds-duree-lent: 320ms;
+  --mds-easing-sortie: cubic-bezier(.2,.8,.2,1);
+  --mds-easing-feuille: cubic-bezier(.32,.72,0,1);
+
+  /* Effets */
+  --mds-ombre-douce: 0 1px 3px 0 #10182814;
+  --mds-ombre-survol-bouton: 0 6px 16px -4px #2DB8C559;
+  --mds-ombre-elevation: 0 12px 32px -8px #10182824;
+  --mds-focus-anneau: 0 0 0 4px #2DB8C559;
+
+  /* Polices */
+  --mds-police-titre: "Bricolage Grotesque", system-ui, sans-serif;
+  --mds-police-texte: "Inter", system-ui, sans-serif;
+  --mds-police-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Fond d'écran (dégradé des frames Figma) */
+  --mds-fond-ecran: linear-gradient(160deg, #EAF6F8 0%, #F6F6F3 50%, #EEF3FA 100%);
+}
+
+/* Styles de texte Figma (taille / interligne / approche) */
+.mds-titre-page        { font: 400 30px/38px var(--mds-police-titre); letter-spacing: -1px; }
+.mds-titre-ecran-mobile{ font: 400 26px/30px var(--mds-police-titre); letter-spacing: -1px; }
+.mds-chiffre-xl        { font: 400 48px/52px var(--mds-police-titre); letter-spacing: -2px; font-variant-numeric: tabular-nums; }
+.mds-chiffre-l         { font: 400 28px/32px var(--mds-police-titre); letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.mds-chiffre-m         { font: 400 20px/24px var(--mds-police-titre); letter-spacing: -1px; }
+.mds-titre-carte       { font: 400 18px/24px var(--mds-police-texte); }
+.mds-texte-corps       { font: 400 14px/20px var(--mds-police-texte); }
+.mds-texte-corps-fort  { font: 500 14px/19px var(--mds-police-texte); }
+.mds-texte-petit       { font: 400 12px/16px var(--mds-police-texte); }
+.mds-texte-petit-fort  { font: 500 12px/16px var(--mds-police-texte); }
+.mds-bouton-libelle    { font: 500 14px/18px var(--mds-police-texte); }
+.mds-mono-code         { font: 400 12px/18px var(--mds-police-mono); }
+.mds-mono-micro        { font: 400 11px/16px var(--mds-police-mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --mds-duree-appui: 0ms; --mds-duree-rapide: 0ms; --mds-duree-base: 0ms; --mds-duree-lent: 0ms; }
+}

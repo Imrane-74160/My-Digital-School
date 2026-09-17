@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Prototype Prêts MDS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --primary:#0E76B6; --primary-hover:#0B679F; --primary-press:#005898; --primary-soft:#E6F1F9; --on-primary:#FFFFFF;
+  --teal:#2DB8C5; --yellow:#FAC422; --yellow-soft:#FEF4D4;
+  --bg:#F4F6FA; --surface:#FFFFFF; --sunken:#EEF1F6; --border:#E3E7EE; --border-strong:#CDD3DC;
+  --text:#1D1D1B; --text-2:#5A606B; --text-3:#8C929C;
+  --success:#16794A; --success-soft:#E3F3EA; --warning:#9A6200; --warning-soft:#FDF1D3; --danger:#C0362C; --danger-soft:#FCEAE8;
+  --device:#111418; --demo:#1D1D1B; --demo-2:#2A2B2E; --demo-text:#F3F5FA; --demo-muted:#A7ADB6;
+  --sh-xs:0 1px 2px rgba(16,24,40,.06); --sh-sm:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);
+  --sh-md:0 12px 32px -8px rgba(16,24,40,.16); --sh-lg:0 32px 64px -16px rgba(16,24,40,.30);
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif; --f-ui:"Inter","Segoe UI",system-ui,-apple-system,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1); --ease-sheet:cubic-bezier(.32,.72,0,1);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --primary:#58AEE2; --primary-hover:#79BFEA; --primary-press:#9BD0F0; --primary-soft:#133148; --on-primary:#06121B;
+    --teal:#4CCBD6; --yellow:#F5C84A; --yellow-soft:#372C0E;
+    --bg:#0C1117; --surface:#141B23; --sunken:#0F151C; --border:#243040; --border-strong:#334155;
+    --text:#E8EDF3; --text-2:#A3ADB9; --text-3:#707A87;
+    --success:#6BD19B; --success-soft:#10301F; --warning:#EFC45E; --warning-soft:#382B0C; --danger:#F28B80; --danger-soft:#3A1714;
+    --device:#05070A; --demo:#05080C; --demo-2:#161C24;
+    --sh-xs:0 1px 2px rgba(0,0,0,.4); --sh-sm:0 1px 3px rgba(0,0,0,.4); --sh-md:0 12px 32px -8px rgba(0,0,0,.55); --sh-lg:0 32px 64px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --primary:#58AEE2; --primary-hover:#79BFEA; --primary-press:#9BD0F0; --primary-soft:#133148; --on-primary:#06121B;
+  --teal:#4CCBD6; --yellow:#F5C84A; --yellow-soft:#372C0E;
+  --bg:#0C1117; --surface:#141B23; --sunken:#0F151C; --border:#243040; --border-strong:#334155;
+  --text:#E8EDF3; --text-2:#A3ADB9; --text-3:#707A87;
+  --success:#6BD19B; --success-soft:#10301F; --warning:#EFC45E; --warning-soft:#382B0C; --danger:#F28B80; --danger-soft:#3A1714;
+  --device:#05070A; --demo:#05080C; --demo-2:#161C24;
+  --sh-xs:0 1px 2px rgba(0,0,0,.4); --sh-sm:0 1px 3px rgba(0,0,0,.4); --sh-md:0 12px 32px -8px rgba(0,0,0,.55); --sh-lg:0 32px 64px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--f-ui);font-size:14px;line-height:20px;margin:0;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;font-family:var(--f-display);letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+:focus-visible{outline:3px solid var(--primary);outline-offset:2px;border-radius:8px}
+.i{flex:none;display:inline-block;vertical-align:middle}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.micro{font-size:11px;line-height:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.t2{color:var(--text-2)} .t3{color:var(--text-3)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- shared components ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:600;white-space:nowrap;border:1px solid var(--border);background:var(--surface);color:var(--text);box-shadow:var(--sh-xs);transition:background .12s var(--ease),border-color .12s var(--ease)}
+.btn:hover{border-color:var(--border-strong);background:var(--sunken)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.primary:hover{background:var(--primary-hover);border-color:var(--primary-hover)}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--text-2)}
+.btn.ghost:hover{background:var(--sunken);color:var(--text)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.sm{height:30px;padding:0 10px;font-size:12px;border-radius:8px}
+.btn.lg{height:48px;padding:0 18px;font-size:15px;border-radius:12px}
+.btn.block{width:100%}
+.btn.icon{width:36px;padding:0}.btn.icon.sm{width:30px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.kbd{font-family:var(--f-mono);font-size:11px;line-height:16px;padding:0 5px;border-radius:4px;border:1px solid color-mix(in srgb,currentColor 35%,transparent)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;line-height:16px;white-space:nowrap}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.b-ok{color:var(--success)} .b-warn{color:var(--warning)} .b-bad{color:var(--danger)} .b-off{color:var(--text-3)} .b-pri{color:var(--primary)}
+.pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill.n1{background:var(--danger-soft);color:var(--danger)} .pill.n2{background:var(--warning-soft);color:var(--warning)} .pill.n3{background:var(--success-soft);color:var(--success)}
+.pill.c{background:var(--sunken);color:var(--text-2);border:1px solid var(--border)}
+.pill.hot{background:var(--danger);color:#fff;border-color:transparent} .pill.warm{background:var(--yellow);color:#1D1D1B;border-color:transparent}
+.avatar{border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none;font-size:12px;width:32px;height:32px}
+.avatar.xs{width:22px;height:22px;font-size:10px}.avatar.lg{width:44px;height:44px;font-size:16px}.avatar.xl{width:64px;height:64px;font-size:24px}
+.thumb{width:40px;height:40px;border-radius:12px;background:var(--sunken);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-2);flex:none}
+.field{display:grid;gap:6px}
+.field label,.flabel{font-size:12px;font-weight:600;color:var(--text-2)}
+.input{height:40px;border-radius:10px;border:1px solid var(--border);background:var(--surface);padding:0 12px;width:100%;font-size:14px}
+textarea.input{height:auto;min-height:84px;padding:10px 12px;resize:vertical;line-height:20px}
+.input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 22%,transparent)}
+select.input{appearance:auto}
+.switch{position:relative;width:38px;height:22px;border-radius:999px;background:var(--border-strong);transition:background .2s var(--ease);flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:var(--sh-xs);transition:transform .2s var(--ease)}
+.switch[aria-checked="true"]{background:var(--primary)}
+.switch[aria-checked="true"]::after{transform:translateX(16px)}
+.seg{display:inline-flex;gap:2px;padding:3px;background:var(--sunken);border:1px solid var(--border);border-radius:10px}
+.seg button{height:28px;padding:0 12px;border-radius:7px;font-size:13px;font-weight:600;color:var(--text-2);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.seg button[aria-pressed="true"],.seg button[aria-selected="true"]{background:var(--surface);color:var(--text);box-shadow:var(--sh-xs)}
+.chg{animation:ring 1.2s var(--ease)}
+@keyframes ring{0%,60%{box-shadow:0 0 0 3px var(--yellow)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.chg{animation:none}*{animation-duration:.01ms!important;transition:none!important}}
+
+/* ---------- demo bar ---------- */
+.demobar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--demo);color:var(--demo-text)}
+.demobar-in{max-width:1560px;margin:0 auto;padding-inline:clamp(12px,2vw,24px);padding-block:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.dm-brand{display:flex;align-items:center;gap:10px;margin-right:auto}
+.dm-brand .mark{width:20px;height:20px;border-radius:6px;background:#2DB8C5;position:relative}
+.dm-brand .mark::after{content:"";position:absolute;width:9px;height:9px;border-radius:3px;background:#FAC422;right:-3px;bottom:-3px;box-shadow:0 0 0 2px var(--demo)}
+.dm-brand b{font-family:var(--f-display);font-size:15px}
+.dm-brand .tag{height:20px;padding:0 8px;border-radius:999px;background:#FAC422;color:#1D1D1B;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:inline-flex;align-items:center}
+.dm-seg{display:inline-flex;gap:2px;padding:3px;background:var(--demo-2);border-radius:10px}
+.dm-seg button{height:28px;padding:0 10px;border-radius:7px;font-size:12px;font-weight:600;color:var(--demo-muted);display:inline-flex;align-items:center;gap:6px}
+.dm-seg button[aria-pressed="true"]{background:#F3F5FA;color:#1D1D1B}
+.dm-clock{display:inline-flex;align-items:center;gap:8px;height:34px;padding:0 12px;border-radius:10px;background:var(--demo-2);font-family:var(--f-mono);font-size:12px;font-weight:600}
+.dm-btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:10px;border:1px solid #3A3D42;color:var(--demo-text);font-size:12px;font-weight:600}
+.dm-btn:hover{border-color:#F3F5FA}
+.dm-btn:disabled{opacity:.4;cursor:not-allowed}
+.dm-sep{width:1px;height:22px;background:#3A3D42}
+@media (max-width:900px){.dm-lbl{display:none}}
+
+.wrap{max-width:1560px;margin:0 auto;padding-inline:clamp(12px,2vw,24px);padding-block:18px 60px}
+.stage{display:grid;grid-template-columns:400px minmax(0,1fr);gap:20px;align-items:start}
+.stage.v-app{grid-template-columns:minmax(0,1fr)}.stage.v-app .col-bo{display:none}
+.stage.v-bo{grid-template-columns:minmax(0,1fr)}.stage.v-bo .col-app{display:none}
+.colhead{display:flex;align-items:center;justify-content:space-between;gap:10px;height:44px;margin-bottom:10px}
+.persona-pick{display:flex;gap:4px;padding:3px;background:var(--sunken);border:1px solid var(--border);border-radius:12px}
+.persona-pick button{display:flex;align-items:center;gap:6px;padding:3px 8px 3px 3px;border-radius:9px;font-size:12px;font-weight:600;color:var(--text-2);white-space:nowrap}
+.persona-pick button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:var(--sh-xs)}
+
+/* demo toast */
+.dtoast{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;width:min(380px,calc(100vw - 32px));background:var(--demo);color:var(--demo-text);border-radius:16px;box-shadow:var(--sh-lg);padding:12px 14px;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:start;animation:rise .28s var(--ease)}
+.dtoast[hidden]{display:none}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.dtoast .c{width:30px;height:30px;border-radius:50%;display:grid;place-items:center}
+.dtoast .c.ok{background:#16794A}.dtoast .c.no{background:#C0362C}
+.dtoast .m{font-size:13px;line-height:18px}
+.dtoast .r{font-family:var(--f-mono);font-size:11px;color:var(--demo-muted);margin-top:4px}
+.dtoast button{color:var(--demo-muted)}
+
+/* ---------- PHONE ---------- */
+.device{background:var(--device);border-radius:50px;padding:10px;box-shadow:var(--sh-lg);width:100%;max-width:400px;margin-inline:auto}
+.screen{position:relative;height:800px;border-radius:40px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+@media (max-width:480px){.device{border-radius:38px;padding:6px}.screen{border-radius:32px;height:760px}}
+.sbar{height:50px;flex:none;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 28px;font-family:var(--f-mono);font-size:13px;font-weight:600}
+.sbar .island{width:100px;height:28px;border-radius:16px;background:var(--device)}
+.sbar .r{text-align:right;font-size:11px;color:var(--text-2)}
+.pscroll{flex:1;overflow-y:auto;padding:4px 16px 110px;display:grid;grid-auto-rows:max-content;gap:16px;align-content:start;scrollbar-width:none}
+.pscroll::-webkit-scrollbar{display:none}
+.pscroll.nobar{padding-bottom:24px}
+.ptitle{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:4px}
+.ptitle h3{font-size:28px;line-height:32px;font-weight:800}
+.ptitle .sub{font-size:13px;color:var(--text-2);margin-top:2px}
+.pnav{display:flex;align-items:center;gap:6px;margin:0 -6px}
+.pnav button{display:inline-flex;align-items:center;gap:2px;color:var(--primary);font-weight:600;font-size:15px;padding:6px}
+.pcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:grid;gap:10px}
+.status{display:grid;grid-template-columns:36px minmax(0,1fr);gap:12px;align-items:center;border-radius:16px;padding:12px 14px}
+.status .ico{width:36px;height:36px;border-radius:10px;display:grid;place-items:center}
+.status.ok{background:var(--success-soft)}.status.ok .ico{background:var(--success);color:#fff}
+.status.bad{background:var(--danger-soft)}.status.bad .ico{background:var(--danger);color:#fff}
+.status.night{background:var(--primary-soft)}.status.night .ico{background:var(--primary);color:var(--on-primary)}
+.status.warn{background:var(--yellow-soft)}.status.warn .ico{background:var(--yellow);color:#1D1D1B}
+.status b{display:block;font-size:14px}.status span{font-size:12px;line-height:16px;color:var(--text-2)}
+.psect{display:grid;gap:8px}
+.psect-h{display:flex;justify-content:space-between;align-items:baseline}
+.psect-h h4{font-family:var(--f-ui);font-size:15px;font-weight:700;letter-spacing:0}
+.prow{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:10px 12px;width:100%;text-align:left}
+button.prow:hover{border-color:var(--border-strong)}
+.prow .n{font-weight:600;line-height:18px}
+.prow .m{font-size:12px;line-height:16px;color:var(--text-2);display:flex;flex-wrap:wrap;gap:2px 8px;align-items:center;margin-top:1px}
+.pempty{font-size:13px;color:var(--text-2);padding:16px;border:1px dashed var(--border-strong);border-radius:16px;text-align:center}
+.chipsrow{display:flex;gap:6px;overflow-x:auto;margin:0 -16px;padding:0 16px 2px;scrollbar-width:none}
+.chipsrow::-webkit-scrollbar{display:none}
+.chipsrow button{flex:none;height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;color:var(--text-2)}
+.chipsrow button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:var(--bg)}
+.searchbox{height:42px;border-radius:12px;background:var(--sunken);border:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 12px;color:var(--text-3)}
+.searchbox input{flex:1;border:0;background:transparent;height:100%;font-size:15px;color:var(--text);outline:none;min-width:0}
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:86px;padding:8px 8px 24px;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--border);z-index:3}
+.tabbar button{display:grid;justify-items:center;gap:3px;font-size:10px;font-weight:600;color:var(--text-3);position:relative}
+.tabbar button[aria-selected="true"]{color:var(--primary)}
+.tabbar .scan{width:54px;height:54px;border-radius:50%;background:var(--primary);color:var(--on-primary);display:grid;place-items:center;box-shadow:0 8px 20px -6px color-mix(in srgb,var(--primary) 70%,transparent);margin-top:-24px}
+.tabbar .dotn{position:absolute;top:-4px;left:calc(50% + 5px);min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:var(--danger);color:#fff;font-size:10px;line-height:16px;font-weight:700;text-align:center}
+.toast{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--surface) 95%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:18px;box-shadow:var(--sh-md);padding:10px 12px;display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:start}
+.toast.in{animation:drop .32s var(--ease-sheet)}
+@keyframes drop{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.toast .app{width:32px;height:32px;border-radius:9px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center}
+.toast .tt{font-size:12px;font-weight:700;display:flex;gap:6px}.toast .tt span{font-weight:500;color:var(--text-3)}
+.toast .tb{font-size:13px;line-height:18px}
+.scrim{position:absolute;inset:0;background:rgba(8,12,20,.42);z-index:6;display:flex;align-items:flex-end}
+.scrim.in{animation:fade .2s var(--ease)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{width:100%;max-height:92%;overflow:auto;background:var(--surface);border-radius:26px 26px 0 0;padding:8px 18px 24px;display:grid;gap:14px}
+.scrim.in .sheet{animation:up .32s var(--ease-sheet)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+.grab{width:36px;height:5px;border-radius:3px;background:var(--border-strong);margin:0 auto 2px}
+.sheet-h{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center}
+.sheet-h .thumb{width:48px;height:48px;border-radius:14px}
+.sheet-h h4{font-size:18px;line-height:22px;font-weight:700}
+.sheet-h .m{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:6px;margin-top:2px}
+.forfait{border-radius:14px;background:var(--yellow-soft);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.forfait .amt{font-family:var(--f-display);font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.forfait small{display:block;font-size:12px;color:var(--text-2)}
+.check{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;align-items:start;padding:11px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font-size:13px;line-height:18px;cursor:pointer}
+.check:has(input:checked){border-color:color-mix(in srgb,var(--primary) 40%,var(--border));background:var(--primary-soft)}
+.check input{width:18px;height:18px;margin:0;accent-color:var(--primary)}
+.stepn{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.stepn i{width:20px;height:20px;border-radius:50%;background:var(--text);color:var(--bg);font-style:normal;font-size:11px;display:grid;place-items:center;font-family:var(--f-mono)}
+.photo{height:130px;width:100%;border-radius:14px;border:1.5px dashed var(--border-strong);background:var(--sunken);display:grid;place-items:center;color:var(--text-2);font-size:13px;font-weight:600}
+.photo>span{display:grid;justify-items:center;gap:6px}
+.photo.taken{border-style:solid;border-color:var(--success);color:var(--success);background:linear-gradient(135deg,var(--success-soft),var(--sunken))}
+.segfull{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:3px;background:var(--sunken);border-radius:12px;border:1px solid var(--border)}
+.segfull button{height:34px;border-radius:9px;font-size:13px;font-weight:600;color:var(--text-2);text-align:center}
+.segfull button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:var(--sh-xs)}
+.classes{display:flex;flex-wrap:wrap;gap:6px}
+.classes button{flex:1 0 56px;height:34px;border-radius:10px;border:1px solid var(--border);font-weight:600;font-size:13px;background:var(--surface);text-align:center}
+.classes button[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.hint{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:16px;color:var(--text-2)}
+.hint .i{margin-top:1px;color:var(--text-3)}
+.viewfinder{height:210px;border-radius:18px;background:#0B0E12;position:relative;display:grid;place-items:end center;color:#C8CED6;font-size:13px;overflow:hidden;padding-bottom:12px}
+.viewfinder::before{content:"";position:absolute;inset:30px 90px 50px;border-radius:14px;box-shadow:0 0 0 999px rgba(0,0,0,.35);border:2px solid rgba(255,255,255,.85)}
+.viewfinder::after{content:"";position:absolute;left:98px;right:98px;height:2px;background:#FAC422;top:45%;animation:scanline 1.8s ease-in-out infinite alternate}
+@keyframes scanline{from{transform:translateY(-50px)}to{transform:translateY(50px)}}
+.viewfinder span{position:relative;z-index:1}
+.hero{border-radius:22px;background:linear-gradient(160deg,var(--surface),var(--primary-soft));border:1px solid var(--border);height:170px;display:grid;place-items:center;color:var(--primary);position:relative}
+.hero .lvl{position:absolute;top:12px;left:12px}
+.hero .av{position:absolute;top:12px;right:12px}
+.kv{display:grid;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.kv div{display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.kv div:last-child{border-bottom:0}
+.kv span:first-child{color:var(--text-2)}
+.kv span:last-child{font-weight:600;text-align:right}
+.stickycta{position:sticky;bottom:0;padding-top:8px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.login{flex:1;display:grid;align-content:space-between;padding:40px 24px 36px;background:radial-gradient(120% 60% at 50% 0%,var(--primary-soft),var(--bg))}
+.login .logo{width:64px;height:64px;border-radius:18px;background:#2DB8C5;position:relative;margin-bottom:22px}
+.login .logo::after{content:"";position:absolute;width:26px;height:26px;border-radius:8px;background:#FAC422;right:-8px;bottom:-8px;box-shadow:0 0 0 4px var(--bg)}
+.login h3{font-size:34px;line-height:36px;font-weight:800}
+.login p{color:var(--text-2);font-size:15px;line-height:22px;margin-top:10px}
+.charte{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;font-size:13px;line-height:20px;color:var(--text-2);white-space:pre-line;max-height:360px;overflow:auto}
+.typechips{display:flex;flex-wrap:wrap;gap:6px}
+.typechips button{height:34px;padding:0 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;color:var(--text-2)}
+.typechips button[aria-pressed="true"]{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+
+
+/* ---------- scenario bar ---------- */
+.story{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--sh-sm);padding:14px 16px;display:grid;grid-template-columns:290px minmax(0,1fr) auto;gap:14px 24px;align-items:center;position:relative;margin-bottom:18px}
+.story[hidden]{display:none}
+@media (max-width:1100px){.story{grid-template-columns:minmax(0,1fr)}}
+.picker{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:14px;background:var(--sunken);text-align:left}
+.picker:hover{border-color:var(--border-strong)}
+.picker .num{width:32px;height:32px;border-radius:9px;background:var(--text);color:var(--bg);display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:13px;flex:none}
+.picker .pt{font-weight:600;font-size:14px;line-height:18px;display:block}
+.picker .ps{font-size:12px;color:var(--text-2);display:block}
+.picker>.i{margin-left:auto;color:var(--text-3)}
+.popover{position:absolute;top:calc(100% + 8px);left:16px;z-index:40;width:min(460px,calc(100% - 32px));max-height:70vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--sh-lg);padding:6px;display:grid;gap:2px;animation:rise .2s var(--ease)}
+.popover.right{left:auto;right:16px}
+.popitem{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px;border-radius:10px;text-align:left;width:100%}
+.popitem:hover,.popitem[aria-current="true"]{background:var(--sunken)}
+.popitem .num{width:32px;height:32px;border-radius:9px;border:1px solid var(--border);display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:600;color:var(--text-2)}
+.popitem[aria-current="true"] .num{background:var(--text);color:var(--bg);border-color:var(--text)}
+.popitem.done .num{background:var(--success-soft);color:var(--success);border-color:transparent}
+.popitem .pt{font-weight:600;display:block}.popitem .ps{font-size:12px;color:var(--text-2);display:block}
+.narr{min-width:0;display:grid;gap:6px}
+.narr-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.segs{display:flex;gap:4px;flex-wrap:wrap}
+.segs i{width:22px;height:5px;border-radius:3px;background:var(--sunken);border:1px solid var(--border)}
+.segs i.done{background:var(--primary);border-color:var(--primary)}
+.segs i.now{background:var(--yellow);border-color:var(--yellow)}
+.narr h2{font-size:21px;line-height:27px;font-weight:700;animation:rise .24s var(--ease)}
+.narr .who{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text-2)}
+.watch{display:flex;gap:6px;align-items:flex-start;font-size:13px;color:var(--text-2);max-width:84ch}
+.watch .i{margin-top:2px;color:var(--text-3)}
+.story-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;position:relative}
+.donebadge{width:30px;height:30px;border-radius:50%;background:var(--success-soft);color:var(--success);display:grid;place-items:center;flex:none}
+.covchip{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text-2)}
+.covchip b{font-family:var(--f-mono);color:var(--text)}
+.rulelist li{list-style:none;display:grid;grid-template-columns:20px 34px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 8px;border-radius:8px;font-size:12px;line-height:16px}
+.rulelist .ck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-strong);display:grid;place-items:center}
+.rulelist li.seen .ck{background:var(--success);border-color:var(--success);color:#fff}
+.rulelist .code{font-family:var(--f-mono);font-weight:600;color:var(--text-3)}
+.rulelist li.seen .code{color:var(--text)}
+
+/* ---------- BACK-OFFICE ---------- */
+.window{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--sh-md);overflow:hidden;position:relative}
+.wbar{height:40px;display:flex;align-items:center;gap:12px;padding:0 14px;border-bottom:1px solid var(--border);background:var(--sunken)}
+.lights{display:flex;gap:6px}.lights i{width:10px;height:10px;border-radius:50%;background:var(--border-strong)}
+.url{flex:1;min-width:0;max-width:380px;margin-inline:auto;height:24px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--f-mono);font-size:11px;color:var(--text-3);white-space:nowrap;overflow:hidden;padding:0 8px}
+.bo{display:grid;grid-template-columns:216px minmax(0,1fr);min-height:800px}
+@media (max-width:1180px){.bo{grid-template-columns:64px minmax(0,1fr)}.side .lbl,.side .sidefoot .who,.side .sgroup{display:none}.side a,.side button.nav{justify-content:center}.side .navc{position:absolute;top:2px;right:4px}}
+.side{border-right:1px solid var(--border);background:var(--sunken);padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.side .sgroup{padding:12px 10px 4px}
+.side button.nav{position:relative;display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:9px;font-size:13px;font-weight:600;color:var(--text-2);width:100%}
+.side button.nav:hover{background:var(--surface);color:var(--text)}
+.side button.nav[aria-current="page"]{background:var(--surface);color:var(--text);box-shadow:var(--sh-xs)}
+.side button.nav[aria-current="page"] .i{color:var(--primary)}
+.side .navc{margin-left:auto}
+.sidefoot{margin-top:auto;padding-top:10px;border-top:1px solid var(--border);display:grid;gap:6px}
+.sidefoot .me{display:flex;align-items:center;gap:8px;padding:6px;border-radius:10px}
+.sidefoot .who{font-size:12px;line-height:15px}
+.sidefoot .who b{display:block}
+.bomain{min-width:0;display:flex;flex-direction:column}
+.bohead{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 16px;padding:22px 24px 14px}
+.bohead h2{font-size:24px;line-height:30px;font-weight:800;margin-right:auto}
+.bohead .sub{display:block;font-family:var(--f-ui);font-size:13px;color:var(--text-2);font-weight:500;letter-spacing:0;margin-top:2px}
+.bobody{padding:0 24px 28px;display:grid;gap:16px;align-content:start}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+@media (max-width:1320px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.kpi{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--surface);text-align:left;display:grid;gap:2px}
+button.kpi:hover{border-color:var(--border-strong)}
+.kpi .micro{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kpi .v{font-family:var(--f-display);font-size:28px;line-height:32px;font-weight:800;font-variant-numeric:tabular-nums}
+.kpi.warm .v{color:var(--warning)}.kpi.hot .v{color:var(--danger)}.kpi.good .v{color:var(--success)}
+.panel{border:1px solid var(--border);border-radius:16px;background:var(--surface);overflow:hidden}
+.panel-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.panel-h h3{font-family:var(--f-ui);font-size:14px;font-weight:700;letter-spacing:0;display:flex;align-items:center;gap:8px}
+.panel-b{padding:12px 16px;display:grid;gap:10px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:1100px){.grid2{grid-template-columns:minmax(0,1fr)}}
+.task{position:relative;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 14px 12px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.task::before{content:"";position:absolute;left:-1px;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--prio,var(--border))}
+.task.p-site{--prio:var(--yellow)}.task.p-photo{--prio:var(--primary)}.task.p-money{--prio:var(--danger)}.task.p-report{--prio:var(--warning)}
+.task .ti{font-weight:600;line-height:18px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.task .tm{font-size:12px;line-height:16px;color:var(--text-2);margin-top:2px}
+.task .acts{display:grid;gap:4px;justify-items:end}
+.task .extra{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.typeico{width:40px;height:40px;border-radius:12px;display:grid;place-items:center}
+.typeico.site{background:var(--yellow-soft);color:var(--warning)}.typeico.photo{background:var(--primary-soft);color:var(--primary)}.typeico.money{background:var(--danger-soft);color:var(--danger)}.typeico.report{background:var(--warning-soft);color:var(--warning)}
+.shot{width:120px;height:84px;border-radius:10px;background:linear-gradient(150deg,var(--sunken) 0%,var(--primary-soft) 100%);border:1px solid var(--border);display:grid;place-items:center;color:var(--text-2);position:relative;flex:none}
+.shot small{position:absolute;bottom:3px;right:6px;font-family:var(--f-mono);font-size:9px;color:var(--text-3)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text-2);display:inline-flex;align-items:center;gap:4px}
+.chip:hover{border-color:var(--border-strong)}
+.chip[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:var(--bg)}
+.chip.miss[aria-pressed="true"]{background:var(--danger-soft);border-color:transparent;color:var(--danger)}
+.lockline{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.toolbar .searchbox{height:36px;width:260px;background:var(--surface)}
+.toolbar .searchbox input{font-size:13px}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px}
+table.tbl{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
+.tbl th{position:sticky;top:0;background:var(--sunken);text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);font-weight:600;padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:var(--sunken)}
+.tbl .nm{display:flex;align-items:center;gap:10px}
+.tbl .nm .thumb{width:32px;height:32px;border-radius:9px}
+.tbl .nm b{font-weight:600;display:block;line-height:17px}
+.tbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tabs{display:flex;gap:18px;border-bottom:1px solid var(--border)}
+.tabs button{height:40px;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text-2);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-selected="true"]{color:var(--text);border-color:var(--primary)}
+.emptystate{display:grid;justify-items:center;gap:8px;text-align:center;padding:36px 12px;color:var(--text-2);font-size:13px}
+.emptystate .c{width:44px;height:44px;border-radius:50%;background:var(--success-soft);color:var(--success);display:grid;place-items:center}
+.emptystate b{color:var(--text);font-size:14px}
+.row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.row:last-child{border-bottom:0}
+.row .thumb{width:32px;height:32px;border-radius:9px}
+.row .n{font-weight:600;line-height:18px}.row .m{font-size:12px;color:var(--text-2);line-height:16px}
+.overlay{position:absolute;inset:40px 0 0 0;background:rgba(8,12,20,.32);z-index:10;display:flex;justify-content:flex-end;animation:fade .2s var(--ease)}
+.drawer{width:min(460px,100%);height:100%;background:var(--surface);border-left:1px solid var(--border);box-shadow:var(--sh-lg);overflow:auto;display:flex;flex-direction:column;animation:slide .3s var(--ease-sheet)}
+@keyframes slide{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
+.drawer-h{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:1}
+.drawer-h .thumb{width:48px;height:48px;border-radius:14px}
+.drawer-h h3{font-size:18px;line-height:22px;font-weight:700}
+.drawer-b{padding:18px 20px;display:grid;gap:18px}
+.dsect{display:grid;gap:8px}
+.qr{width:120px;height:120px;border-radius:12px;background:#fff;padding:8px;border:1px solid var(--border)}
+.modalwrap{position:absolute;inset:40px 0 0 0;background:rgba(8,12,20,.38);z-index:11;display:grid;place-items:center;padding:20px;animation:fade .2s var(--ease)}
+.modal{width:min(520px,100%);background:var(--surface);border-radius:18px;box-shadow:var(--sh-lg);padding:20px;display:grid;gap:14px;animation:rise .24s var(--ease)}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.formgrid .full{grid-column:1/-1}
+.stockcard{border:1px solid var(--border);border-radius:14px;padding:14px;display:grid;gap:10px;background:var(--surface)}
+.bar{height:8px;border-radius:4px;background:var(--sunken);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:var(--success)}
+.bar i.low{background:var(--danger)}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.stepper button{width:30px;height:30px;display:grid;place-items:center;color:var(--text-2)}
+.stepper button:hover{background:var(--sunken)}
+.stepper span{min-width:30px;text-align:center;font-family:var(--f-mono);font-weight:600}
+.dropzone{border:1.5px dashed var(--border-strong);border-radius:14px;padding:18px;display:grid;justify-items:center;gap:8px;text-align:center;color:var(--text-2);background:var(--sunken)}
+.tbl tr.err td{background:var(--danger-soft)}
+.setrow{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--border)}
+.setrow:last-child{border-bottom:0}
+.recap{font-family:var(--f-mono);font-size:12px;line-height:20px;background:var(--sunken);border-radius:12px;padding:12px 14px;color:var(--text-2);white-space:pre-line}
+
+@media (max-width:1279px){
+  .stage{grid-template-columns:minmax(0,1fr)}
+  .stage.v-split .col-bo{display:none}
+  .stage.v-split.show-bo .col-bo{display:block}.stage.v-split.show-bo .col-app{display:none}
+}
+</style>
+
+<header class="demobar">
+  <div class="demobar-in">
+    <div class="dm-brand"><span class="mark" aria-hidden="true"></span><b>Prêts MDS</b><span class="tag">Prototype</span></div>
+    <div class="dm-seg" role="group" aria-label="Mode" id="modeseg"></div>
+    <div class="dm-seg" role="group" aria-label="Affichage" id="viewseg"></div>
+    <span class="dm-clock" id="clock"></span>
+    <button class="dm-btn" type="button" id="endday"></button>
+    <button class="dm-btn" type="button" id="nextday"></button>
+    <span class="dm-sep" aria-hidden="true"></span>
+    <button class="dm-btn" type="button" id="undo"></button>
+    <button class="dm-btn" type="button" id="reset"></button>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="story" id="story" aria-label="Scénario guidé"></section>
+  <main class="stage v-split" id="stage">
+    <section class="col-app" aria-label="Application mobile">
+      <div class="colhead"><span class="micro">App mobile</span><div class="persona-pick" id="personas" role="group" aria-label="Voir l'app de"></div></div>
+      <div class="device"><div class="screen" id="screen"></div></div>
+    </section>
+    <section class="col-bo" aria-label="Back-office">
+      <div class="colhead"><span class="micro">Back-office équipe</span><span class="micro t3">Données fictives</span></div>
+      <div class="window" id="bowin"></div>
+    </section>
+  </main>
+</div>
+<div class="dtoast" id="dtoast" hidden role="status" aria-live="polite"></div>
+
+<script>
+/* =====================================================================
+   MOTEUR PUR : données + règles validées (aucun accès au DOM)
+   ===================================================================== */
+const Engine = (() => {
+  const CATS = {
+    studio: { name: "Studio photo & vidéo", short: "Studio" },
+    info: { name: "Informatique", short: "Informatique" },
+    cours: { name: "Matériel de cours", short: "Cours" },
+    jeux: { name: "Jeux de société", short: "Jeux" },
+    boite: { name: "Boîtes intervenant", short: "Boîtes" }
+  };
+  const PLACES = { studio: "Armoire du studio", bureau: "Bureau de la pédagogie" };
+  const RULES = [
+    ["bureau", "R01", "On emprunte seulement quand le bureau est ouvert"],
+    ["dispo", "R02", "Pas de réservation : premier arrivé, premier servi"],
+    ["forfait", "R03", "Forfait affiché et accepté avant chaque emprunt"],
+    ["n1", "R04", "Niveau 1 : remise et retour validés sur place par l'équipe"],
+    ["n2", "R05", "Niveau 2 : photo au retour, contrôle plus tard"],
+    ["reemprunt", "R06", "Niveau 2 : peut repartir avant contrôle, la photo fait foi"],
+    ["composant", "R07", "Composant manquant : forfait du composant, pas du kit"],
+    ["retour", "R08", "Seul le responsable du prêt fait le retour"],
+    ["classe", "R09", "« Pour ma classe » : réservé aux intervenants, responsables"],
+    ["blocage", "R10", "Non rendu le soir même : emprunts bloqués"],
+    ["perte", "R11", "Toujours absent à J+2 : déclaré perdu, forfait dû"],
+    ["argent", "R12", "Forfaits et paiements : réservés à Sandrine"],
+    ["equipe", "R13", "Valider, contrôler, gérer : réservé à l'équipe"],
+    ["prevenez", "R14", "« Prévenez-moi » : tous prévenus, le premier qui scanne gagne"],
+    ["temps", "R15", "Rappel à 16h30, récap équipe à 8h"],
+    ["deblocage", "R16", "Déblocage manuel possible, pour la journée"]
+  ];
+  const CHARTE = `Charte d'utilisation du matériel MyDigitalSchool
+
+1. Le matériel est prêté pour un usage pédagogique sur le campus.
+2. Tout matériel emprunté est rendu le jour même, avant de quitter l'école, avec une photo prise dans l'app.
+3. Le matériel de niveau 1 (studio, PC) est remis et contrôlé par un membre de l'équipe pédagogique.
+4. En cas de perte ou de casse, le forfait affiché au moment de l'emprunt est dû. Si un composant manque, seul son forfait est dû.
+5. Un matériel non rendu le soir bloque tes emprunts. Au bout de 2 jours, il est déclaré perdu.
+6. Les intervenants qui empruntent « pour leur classe » restent responsables du matériel et font eux-mêmes le retour.
+7. Les photos sont conservées 30 jours après contrôle, l'historique une année scolaire.`;
+
+  const eur = n => Math.round(n).toLocaleString("fr-FR") + " €";
+  const clone = o => JSON.parse(JSON.stringify(o));
+
+  function seed() {
+    const catalog = {};
+    const add = (id, type, name, cat, icon, niveau, place, forfait, composants, onlyRole) =>
+      (catalog[id] = { id, type, name, cat, icon, niveau, place: PLACES[place], forfait: forfait || 0, composants: composants || null, onlyRole: onlyRole || null, qr: "MDS-" + id.toUpperCase() });
+    add("kit-r10-01", "kit-r10", "Kit Canon R10 #01", "studio", "camera", 1, "studio", 0, [
+      { id: "boitier", name: "Boîtier Canon R10", forfait: 600 }, { id: "objectif", name: "Objectif RF 18-150mm", forfait: 350 },
+      { id: "bague", name: "Bague d'adaptation", forfait: 60 }, { id: "batterie1", name: "Batterie LP-E17 (1/2)", forfait: 45 },
+      { id: "batterie2", name: "Batterie LP-E17 (2/2)", forfait: 45 }, { id: "sd", name: "Carte SD 256 Go", forfait: 30 }]);
+    add("ronin-01", "ronin", "Stabilisateur DJI Ronin RSC2", "studio", "video", 1, "studio", 0, [
+      { id: "stab", name: "Stabilisateur", forfait: 380 }, { id: "poignee", name: "Poignée trépied", forfait: 30 }, { id: "cables", name: "Câbles de contrôle", forfait: 20 }]);
+    add("trepied-01", "trepied", "Trépied + tête fluide LeoFoto", "studio", "tripod", 1, "studio", 180);
+    add("micro-hf-01", "micro-hf", "Micro HF Godox", "studio", "mic", 1, "studio", 0, [
+      { id: "emetteur", name: "Émetteur + micro cravate", forfait: 80 }, { id: "recepteur", name: "Récepteur", forfait: 70 }]);
+    add("zoom-h5-01", "zoom-h5", "Enregistreur Zoom H5", "studio", "radio", 1, "studio", 280);
+    add("tascam-01", "tascam", "Enregistreur Tascam DR-70D", "studio", "radio", 1, "studio", 220);
+    add("casque-senn-01", "casque-senn", "Casque Sennheiser", "studio", "headphones", 1, "studio", 120);
+    add("hoya-01", "hoya", "Filtre variable Hoya", "studio", "aperture", 1, "studio", 90);
+    add("eclairage-01", "eclairage", "Kit éclairage Newer", "studio", "lightbulb", 1, "studio", 160);
+    add("led-01", "led", "Pack LED Newer + batteries", "studio", "lightbulb", 1, "studio", 110);
+    add("ministudio-01", "ministudio", "Mini studio photo", "studio", "box", 1, "studio", 70);
+    add("streaming-01", "streaming", "Kit streaming Audio-Technica", "studio", "cast", 1, "studio", 190);
+    add("sd32-01", "sd32", "Carte SD 32 Go", "studio", "sd", 1, "studio", 15);
+    add("sac-01", "sac", "Sac à dos de transport", "studio", "backpack", 1, "studio", 60);
+    for (let i = 1; i <= 3; i++) add(`pc-0${i}`, "pc", `PC de prêt #0${i}`, "info", "laptop", 1, "bureau", 0, [
+      { id: "pc", name: "Ordinateur portable", forfait: 420 }, { id: "chargeur", name: "Chargeur", forfait: 30 }]);
+    for (let i = 1; i <= 6; i++) add(`casque-0${i}`, "casque", `Casque d'anglais #0${i}`, "cours", "headphones", 2, "bureau", 25);
+    for (let i = 1; i <= 3; i++) add(`souris-0${i}`, "souris", `Souris filaire #0${i}`, "cours", "mouse", 2, "bureau", 12);
+    for (let i = 1; i <= 2; i++) add(`souris-apple-0${i}`, "souris-apple", `Souris Apple #0${i}`, "cours", "mouse", 2, "bureau", 79);
+    for (let i = 1; i <= 2; i++) add(`multi-a-0${i}`, "multi-a", `Multiprise modèle A #0${i}`, "cours", "plug", 2, "bureau", 15);
+    add("multi-b-01", "multi-b", "Multiprise modèle B #01", "cours", "plug", 2, "bureau", 20);
+    add("dixit-01", "dixit", "Jeu Dixit", "jeux", "cards", 2, "bureau", 35);
+    add("codenames-01", "codenames", "Jeu Codenames", "jeux", "cards", 2, "bureau", 25);
+    add("timesup-01", "timesup", "Jeu Time's Up", "jeux", "cards", 2, "bureau", 30);
+    for (let i = 1; i <= 4; i++) add(`boite-0${i}`, "boite", `Boîte intervenant #0${i}`, "boite", "package", 2, "bureau", 0, [
+      { id: "telecommande", name: "Télécommande vidéoprojecteur", forfait: 20 }, { id: "feutres", name: "Feutres", forfait: 8 }], "intervenant");
+
+    const people = {
+      ines: { name: "Inès Martin", short: "Inès", role: "eleve", classe: "B3", color: "#0E76B6", charte: true },
+      tom: { name: "Tom Leroy", short: "Tom", role: "eleve", classe: "B1", color: "#662483", charte: false },
+      lea: { name: "Léa Dubois", short: "Léa", role: "eleve", classe: "M1", color: "#B35C1E", charte: true },
+      yanis: { name: "Yanis Benali", short: "Yanis", role: "eleve", classe: "B3", color: "#2B6F77", charte: true },
+      sarah: { name: "Sarah Nguyen", short: "Sarah", role: "eleve", classe: "B1", color: "#8A3B6B", charte: true },
+      diallo: { name: "M. Diallo", short: "M. Diallo", role: "intervenant", color: "#16794A", charte: true },
+      roche: { name: "Mme Roche", short: "Mme Roche", role: "intervenant", color: "#5B5FC7", charte: true },
+      cyrianne: { name: "Cyrianne", short: "Cyrianne", role: "equipe", color: "#C8558A" },
+      lydia: { name: "Lydia", short: "Lydia", role: "equipe", color: "#D06A32" },
+      sandrine: { name: "Sandrine", short: "Sandrine", role: "direction", color: "#3C3C3B" }
+    };
+    const items = {};
+    for (const id in catalog) items[id] = { status: "disponible", loanId: null, pending: null, watchers: [] };
+    const s = {
+      clock: { day: 1, phase: "journee" }, catalog, items, people, loans: [], incidents: [], reports: [], log: [], exempt: {}, seq: 100,
+      stock: {
+        feutres: { name: "Feutres", unit: "boîtes", qty: 18, min: 10, lastCount: 1, icon: "pen" },
+        stylos: { name: "Stylos", unit: "stylos", qty: 14, min: 20, lastCount: 1, icon: "pen" },
+        couverts: { name: "Couverts", unit: "lots", qty: 32, min: 15, lastCount: 1, icon: "utensils" }
+      },
+      rooms: { "101": { fans: 2, present: 2, lastCheck: 1 }, "102": { fans: 1, present: 1, lastCheck: 1 }, "103": { fans: 2, present: 1, lastCheck: 1 }, "104": { fans: 1, present: 1, lastCheck: 1 }, "201": { fans: 2, present: 2, lastCheck: 1 } },
+      classes: ["B1", "B2", "B3", "M1"],
+      settings: { charte: CHARTE, rappel: true, recap: true }
+    };
+    // Situation de départ réaliste
+    const mkLoan = (itemId, pid, status, forClass) => {
+      const l = { id: "P" + s.seq++, itemId, borrowerId: pid, responsibleId: pid, forClass: forClass || null, dayOut: 1, forfait: forfait(s, itemId), status };
+      s.loans.push(l); s.items[itemId].loanId = l.id; s.items[itemId].status = "emprunte"; return l;
+    };
+    mkLoan("casque-02", "lea", "actif");
+    mkLoan("pc-02", "yanis", "actif");
+    mkLoan("boite-02", "roche", "actif");
+    const past = { id: "P" + s.seq++, itemId: "codenames-01", borrowerId: "sarah", responsibleId: "sarah", forClass: null, dayOut: 1, forfait: 25, status: "rendu" };
+    s.loans.push(past); s.items["codenames-01"].pending = { loanId: past.id, responsibleId: "sarah", declared: null, day: 1 };
+    const past2 = { id: "P" + s.seq++, itemId: "souris-apple-02", borrowerId: "sarah", responsibleId: "sarah", forClass: null, dayOut: 1, forfait: 79, status: "rendu" };
+    s.loans.push(past2); s.items["souris-apple-02"].status = "anomalie";
+    s.incidents.push({ id: "I" + s.seq++, itemId: "souris-apple-02", responsibleId: "sarah", motif: "molette cassée (photo de retour)", montant: 79, type: "casse", statut: "a_rembourser", day: 1 });
+    s.reports.push({ id: "S" + s.seq++, by: "lea", target: { kind: "room", id: "103" }, type: "Manquant", text: "Il n'y a plus qu'un ventilateur dans la salle.", day: 1, status: "ouvert", photo: false });
+    return s;
+  }
+
+  function forfait(s, id) { const c = s.catalog[id]; return c.composants ? c.composants.reduce((a, x) => a + x.forfait, 0) : c.forfait; }
+  const role = (s, pid) => s.people[pid].role;
+  const isStaff = (s, pid) => ["equipe", "direction"].includes(role(s, pid));
+  const nm = (s, pid) => pid === "equipe" ? "Équipe" : s.people[pid].short;
+  const overdue = (s, l) => l.status === "actif" && (l.dayOut < s.clock.day || (l.dayOut === s.clock.day && s.clock.phase === "soir"));
+  function missingInfo(s, itemId, missing) {
+    if (!missing) return null;
+    const c = s.catalog[itemId], comp = c.composants && c.composants.find(x => x.id === missing);
+    return comp ? { label: comp.name + " manquant(e)", montant: comp.forfait } : { label: "contenu incomplet ou abîmé", montant: forfait(s, itemId) };
+  }
+  function blockReason(s, pid) {
+    if (!s.people[pid] || isStaff(s, pid) || s.exempt[pid] === s.clock.day) return null;
+    const od = s.loans.filter(l => l.responsibleId === pid && overdue(s, l));
+    if (od.length) return od.map(l => s.catalog[l.itemId].name).join(", ") + " non rendu";
+    const lost = s.incidents.filter(i => i.responsibleId === pid && i.type === "perte" && i.statut === "a_rembourser");
+    if (lost.length) return "perte non remboursée (" + lost.map(i => s.catalog[i.itemId].name).join(", ") + ")";
+    return null;
+  }
+  const log = (s, kind, text, to, rule) => s.log.push({ id: s.seq++, day: s.clock.day, phase: s.clock.phase, kind, text, to: to || null, rule: rule || null });
+  const no = (msg, rule) => ({ ok: false, msg, rule }), yes = (msg, rule) => ({ ok: true, msg, rule });
+  function notifyWatchers(s, itemId) {
+    const it = s.items[itemId]; if (!it.watchers.length) return;
+    log(s, "notif", `${s.catalog[itemId].name} est de retour. Le premier qui le scanne le prend.`, it.watchers.slice(), "prevenez"); it.watchers = [];
+  }
+  function openIncident(s, itemId, pid, motif, montant, type) {
+    s.incidents.push({ id: "I" + s.seq++, itemId, responsibleId: pid, motif, montant, type, statut: "a_rembourser", day: s.clock.day });
+    log(s, "notif", `${s.catalog[itemId].name} : ${motif}. Forfait de ${eur(montant)} à rembourser.`, [pid], type === "perte" ? "perte" : "composant");
+  }
+  const staffOnly = (s, a) => isStaff(s, a.by) ? null : no(`${nm(s, a.by)} n'a pas accès à cette action : réservée à l'équipe.`, "equipe");
+  const dirOnly = (s, a) => role(s, a.by) === "direction" ? null : no(`${nm(s, a.by)} ne peut pas faire ça : réservé à Sandrine (direction).`, "argent");
+
+  function apply(s, a) {
+    const p = a.by ? nm(s, a.by) : "", c = a.item ? s.catalog[a.item] : null, it = a.item ? s.items[a.item] : null;
+    const loan = it && it.loanId ? s.loans.find(l => l.id === it.loanId) : null;
+    let g;
+    switch (a.type) {
+      case "ACCEPTER_CHARTE": s.people[a.by].charte = true; return yes(`${p} accepte la charte d'utilisation.`, "forfait");
+      case "EMPRUNTER": {
+        if (s.clock.phase === "soir") return no(`Le bureau est fermé. ${p} pourra emprunter demain à 8h.`, "bureau");
+        const br = blockReason(s, a.by); if (br) return no(`${p} ne peut pas emprunter : ${br}.`, "blocage");
+        if (a.forClass && role(s, a.by) !== "intervenant") return no(`${p} ne peut pas emprunter « pour ma classe » : réservé aux intervenants.`, "classe");
+        if (c.onlyRole && role(s, a.by) !== c.onlyRole) return no(`${c.name} est réservé aux intervenants.`, "classe");
+        if (it.status !== "disponible") return no(`${c.name} est indisponible. ${p} peut demander à être prévenu(e).`, "dispo");
+        const l = { id: "P" + s.seq++, itemId: a.item, borrowerId: a.by, responsibleId: a.by, forClass: a.forClass || null, dayOut: s.clock.day, forfait: forfait(s, a.item), status: c.niveau === 1 ? "remise_a_valider" : "actif" };
+        s.loans.push(l); it.loanId = l.id; it.watchers = it.watchers.filter(w => w !== a.by);
+        const pour = l.forClass ? ` pour la ${l.forClass}` : "";
+        if (c.niveau === 1) { it.status = "remise_a_valider"; log(s, "notif", `Demande de remise : ${c.name} pour ${p}.`, ["equipe"], "n1"); return yes(`${p} demande ${c.name}${pour} et accepte le forfait de ${eur(l.forfait)}. L'équipe valide sur place.`, "n1"); }
+        it.status = "emprunte";
+        if (it.pending) return yes(`${p} emprunte ${c.name}${pour}. La photo du retour précédent n'est pas encore contrôlée, ce n'est pas bloquant.`, "reemprunt");
+        return yes(`${p} emprunte ${c.name}${pour} et accepte le forfait de ${eur(l.forfait)}.`, "forfait");
+      }
+      case "VALIDER_REMISE": {
+        if ((g = staffOnly(s, a))) return g;
+        if (it.status !== "remise_a_valider") return no(`Aucune remise à valider pour ${c.name}.`, "n1");
+        loan.status = "actif"; it.status = "emprunte"; loan.validatedBy = a.by;
+        log(s, "notif", `Remise validée : ${c.name} est à rendre ce soir.`, [loan.responsibleId], "n1");
+        return yes(`${p} vérifie ${c.name} et valide la remise à ${nm(s, loan.borrowerId)}.`, "n1");
+      }
+      case "RENDRE": {
+        if (!loan || !["actif", "remise_a_valider", "retour_a_valider"].includes(loan.status)) return no(`${c.name} n'a pas de prêt en cours.`, "retour");
+        if (a.by !== loan.responsibleId) return no(loan.forClass ? `Prêt pour la ${loan.forClass} : seul ${nm(s, loan.responsibleId)} peut rendre ${c.name}.` : `Seul(e) ${nm(s, loan.responsibleId)} peut rendre ${c.name}.`, "retour");
+        if (loan.status === "remise_a_valider") return no(`La remise de ${c.name} n'est pas encore validée.`, "n1");
+        if (loan.status === "retour_a_valider") return no(`Le retour de ${c.name} attend déjà l'équipe.`, "n1");
+        const mi = missingInfo(s, a.item, a.missing), decl = mi ? `signale « ${mi.label} »` : "coche tout";
+        if (c.niveau === 1) { loan.status = "retour_a_valider"; it.status = "retour_a_valider"; loan.declared = a.missing || null; log(s, "notif", `Retour à contrôler sur place : ${c.name} (${p}).`, ["equipe"], "n1"); return yes(`${p} rapporte ${c.name}, ${decl} et prend la photo. L'équipe contrôle sur place.`, "n1"); }
+        loan.status = "rendu"; loan.dayBack = s.clock.day; it.status = "disponible"; it.loanId = null;
+        it.pending = { loanId: loan.id, responsibleId: loan.responsibleId, declared: a.missing || null, day: s.clock.day };
+        notifyWatchers(s, a.item);
+        return yes(`${p} rend ${c.name}, ${decl} et prend la photo. Disponible tout de suite.`, "n2");
+      }
+      case "VALIDER_RETOUR": {
+        if ((g = staffOnly(s, a))) return g;
+        if (it.status !== "retour_a_valider") return no(`Aucun retour à valider pour ${c.name}.`, "n1");
+        const resp = loan.responsibleId, mi = missingInfo(s, a.item, a.missing);
+        loan.status = "rendu"; loan.dayBack = s.clock.day; it.loanId = null;
+        if (!mi) { it.status = "disponible"; notifyWatchers(s, a.item); return yes(`${p} contrôle ${c.name} sur place : conforme, remis en stock.`, "n1"); }
+        it.status = "anomalie"; openIncident(s, a.item, resp, mi.label, mi.montant, "casse");
+        return yes(`${p} constate : ${mi.label}. ${nm(s, resp)} doit ${eur(mi.montant)}, pas le prix du kit.`, "composant");
+      }
+      case "CONTROLER_PHOTO": {
+        if ((g = staffOnly(s, a))) return g;
+        if (c.niveau === 1) return no(`${c.name} est de niveau 1 : contrôle sur place, jamais sur photo.`, "n1");
+        if (!it.pending) return no(`Aucune photo à contrôler pour ${c.name}.`, "n2");
+        const pend = it.pending, resp = nm(s, pend.responsibleId), mi = missingInfo(s, a.item, a.missing);
+        it.pending = null;
+        if (!mi) return yes(`${p} contrôle la photo de ${resp} : ${c.name} conforme.`, "n2");
+        openIncident(s, a.item, pend.responsibleId, mi.label, mi.montant, "casse");
+        if (it.status === "disponible") { it.status = "anomalie"; return yes(`${p} voit sur la photo : ${mi.label}. ${resp} doit ${eur(mi.montant)}, le matériel est retiré du prêt.`, "n2"); }
+        const cur = s.loans.find(l => l.id === it.loanId);
+        return yes(`${p} voit sur la photo : ${mi.label}. C'est ${resp} qui doit ${eur(mi.montant)}. ${nm(s, cur.responsibleId)} n'est pas mis(e) en cause.`, "reemprunt");
+      }
+      case "PREVENEZ_MOI": {
+        if (it.status === "disponible") return no(`${c.name} est déjà disponible.`, "prevenez");
+        if (["perdu", "anomalie", "hors_service"].includes(it.status)) return no(`${c.name} est retiré du prêt.`, "prevenez");
+        if (loan && loan.responsibleId === a.by) return no(`${p} a déjà ${c.name}.`, "prevenez");
+        if (it.watchers.includes(a.by)) return no(`${p} est déjà inscrit(e).`, "prevenez");
+        it.watchers.push(a.by); return yes(`${p} sera prévenu(e) dès que ${c.name} revient.`, "prevenez");
+      }
+      case "SIGNALER": {
+        const r = { id: "S" + s.seq++, by: a.by, target: a.target, type: a.kind, text: a.text || "", day: s.clock.day, status: "ouvert", photo: !!a.photo };
+        s.reports.push(r);
+        const what = a.target.kind === "room" ? `salle ${a.target.id}` : s.catalog[a.target.id].name;
+        log(s, "notif", `Signalement de ${p} : ${a.kind.toLowerCase()} · ${what}.`, ["equipe"], null);
+        return yes(`${p} signale « ${a.kind} » sur ${what}. L'équipe est prévenue.`, null);
+      }
+      case "TRAITER_SIGNALEMENT": {
+        if ((g = staffOnly(s, a))) return g;
+        const r = s.reports.find(x => x.id === a.report); r.status = "traite"; r.doneBy = a.by;
+        log(s, "notif", `Ton signalement a été pris en charge par ${p}.`, [r.by], null);
+        return yes(`${p} marque le signalement comme traité.`, null);
+      }
+      case "RETIRER": {
+        if ((g = staffOnly(s, a))) return g;
+        if (it.status !== "disponible") return no(`${c.name} n'est pas en stock : impossible de le retirer maintenant.`, "equipe");
+        it.status = "hors_service"; return yes(`${p} retire ${c.name} du prêt.`, "equipe");
+      }
+      case "REMETTRE": {
+        if ((g = staffOnly(s, a))) return g;
+        if (!["anomalie", "hors_service", "perdu"].includes(it.status)) return no(`${c.name} est déjà en service.`, "equipe");
+        it.status = "disponible"; it.loanId = null; notifyWatchers(s, a.item); return yes(`${p} remet ${c.name} en service.`, "equipe");
+      }
+      case "AJOUTER_MATERIEL": {
+        if ((g = staffOnly(s, a))) return g;
+        const d = a.data, base = d.name.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        let id = base || "materiel", k = 2; while (s.catalog[id]) id = base + "-" + k++;
+        s.catalog[id] = { id, type: d.type || id, name: d.name, cat: d.cat, icon: { studio: "camera", info: "laptop", cours: "headphones", jeux: "cards", boite: "package" }[d.cat], niveau: +d.niveau, place: d.place, forfait: +d.forfait || 0, composants: null, onlyRole: d.cat === "boite" ? "intervenant" : null, qr: "MDS-" + id.toUpperCase() };
+        s.items[id] = { status: "disponible", loanId: null, pending: null, watchers: [] };
+        return yes(`${p} ajoute ${d.name} à l'inventaire (QR ${s.catalog[id].qr}).`, "equipe");
+      }
+      case "MODIFIER_FORFAIT": {
+        if ((g = dirOnly(s, a))) return g;
+        const v = Math.max(0, +a.value || 0), type = c.type; let n = 0;
+        for (const id in s.catalog) if (s.catalog[id].type === type) {
+          const cc = s.catalog[id]; n++;
+          if (a.comp) { const x = cc.composants.find(z => z.id === a.comp); if (x) x.forfait = v; } else cc.forfait = v;
+        }
+        return yes(`${p} fixe le forfait à ${eur(v)} pour ${n} matériel${n > 1 ? "s" : ""} du même type.`, "argent");
+      }
+      case "AJUSTER_MONTANT": {
+        if ((g = dirOnly(s, a))) return g;
+        const inc = s.incidents.find(i => i.id === a.incident), v = Math.max(0, +a.value || 0);
+        if (v > inc.montant) return no("On peut seulement baisser un montant, jamais l'augmenter.", "argent");
+        inc.montant = v; return yes(`${p} ajuste le montant dû par ${nm(s, inc.responsibleId)} à ${eur(v)}.`, "argent");
+      }
+      case "REMBOURSEMENT": {
+        const inc = s.incidents.find(i => i.id === a.incident);
+        if ((g = dirOnly(s, a))) return g;
+        if (inc.statut === "rembourse") return no("Déjà enregistré.", "argent");
+        inc.statut = "rembourse"; inc.paidDay = s.clock.day;
+        log(s, "notif", `Paiement de ${eur(inc.montant)} enregistré. Merci !`, [inc.responsibleId], "argent");
+        return yes(`${p} enregistre le paiement de ${eur(inc.montant)} par ${nm(s, inc.responsibleId)}.`, "argent");
+      }
+      case "DEBLOQUER": {
+        if ((g = staffOnly(s, a))) return g;
+        if (!blockReason(s, a.person)) return no(`${nm(s, a.person)} n'est pas bloqué(e).`, "deblocage");
+        s.exempt[a.person] = s.clock.day; return yes(`${p} débloque ${nm(s, a.person)} pour aujourd'hui.`, "deblocage");
+      }
+      case "COMPTAGE": {
+        if ((g = staffOnly(s, a))) return g;
+        const low = [];
+        for (const k in a.counts) { const st = s.stock[k]; st.qty = Math.max(0, +a.counts[k] || 0); st.lastCount = s.clock.day; if (st.qty < st.min) low.push(st.name); }
+        if (low.length) log(s, "notif", `Stock bas : ${low.join(", ")}. Pensez au réassort.`, ["equipe"], null);
+        return yes(`${p} enregistre le comptage de la semaine.${low.length ? " Sous le seuil : " + low.join(", ") + "." : " Tout est au-dessus du seuil."}`, null);
+      }
+      case "VERIFIER_SALLE": {
+        if ((g = staffOnly(s, a))) return g;
+        const r = s.rooms[a.room]; r.present = Math.max(0, +a.present); r.lastCheck = s.clock.day;
+        return yes(`${p} vérifie la salle ${a.room} : ${r.present}/${r.fans} ventilateur${r.fans > 1 ? "s" : ""}.`, null);
+      }
+      case "IMPORT_CLASSES": { if ((g = staffOnly(s, a))) return g; s.classes = a.classes.slice(); return yes(`${p} importe ${a.classes.length} classes depuis Calc.`, null); }
+      case "IMPORT_INVENTAIRE": {
+        if ((g = staffOnly(s, a))) return g;
+        for (const d of a.rows) apply(s, { type: "AJOUTER_MATERIEL", by: a.by, data: d });
+        return yes(`${p} importe ${a.rows.length} matériels depuis Calc.`, "equipe");
+      }
+      case "MODIFIER_CHARTE": { if ((g = dirOnly(s, a))) return g; s.settings.charte = a.text; return yes(`${p} met à jour la charte d'utilisation.`, null); }
+      case "REGLAGE": { if ((g = staffOnly(s, a))) return g; s.settings[a.key] = a.value; return yes(`${p} ${a.value ? "active" : "désactive"} ${a.key === "rappel" ? "le rappel de 16h30" : "le récap de 8h"}.`, "temps"); }
+      case "FIN_DE_JOURNEE": {
+        if (s.clock.phase === "soir") return no("La journée est déjà terminée.", "temps");
+        const byResp = {};
+        for (const l of s.loans.filter(l => l.status === "actif")) (byResp[l.responsibleId] = byResp[l.responsibleId] || []).push(s.catalog[l.itemId].name);
+        if (s.settings.rappel) for (const [pid, names] of Object.entries(byResp)) log(s, "notif", `16h30 · Pense à rendre ${names.join(", ")} avant de partir.`, [pid], "temps");
+        for (const l of s.loans.filter(l => l.status === "remise_a_valider")) { l.status = "annule"; s.items[l.itemId].status = "disponible"; s.items[l.itemId].loanId = null; }
+        s.clock.phase = "soir";
+        const n = Object.keys(byResp).length, m = `Fin du jour ${s.clock.day}. ${n ? n + " emprunteur(s) n'ont pas tout rendu : blocage appliqué." : "Tout a été rendu."}`;
+        log(s, "systeme", m, null, n ? "blocage" : "temps");
+        return { ok: true, msg: m, rule: n ? "blocage" : "temps", logged: true };
+      }
+      case "LENDEMAIN": {
+        if (s.clock.phase === "journee") apply(s, { type: "FIN_DE_JOURNEE" });
+        s.clock.day += 1; s.clock.phase = "journee";
+        for (const k in s.exempt) if (s.exempt[k] < s.clock.day) delete s.exempt[k];
+        const m = `Jour ${s.clock.day}, 8h. Le bureau ouvre.`; log(s, "systeme", m, null, "temps");
+        let lost = 0;
+        for (const l of s.loans.filter(l => l.status === "actif" && s.clock.day - l.dayOut >= 2)) { l.status = "perdu"; s.items[l.itemId].status = "perdu"; lost++; openIncident(s, l.itemId, l.responsibleId, "déclaré perdu à J+2", l.forfait, "perte"); }
+        if (s.settings.recap) log(s, "recap", recapText(s), ["equipe"], "temps");
+        return { ok: true, msg: lost ? `${m} ${lost} matériel(s) passe(nt) en perdu.` : m, rule: lost ? "perte" : "temps", logged: true };
+      }
+    }
+    return no("Action inconnue.");
+  }
+  function recapText(s) {
+    const nr = s.loans.filter(l => overdue(s, l)).length, bl = Object.keys(s.people).filter(pid => blockReason(s, pid)).length;
+    const ph = Object.values(s.items).filter(i => i.pending).length, inc = s.incidents.filter(i => i.statut === "a_rembourser").length;
+    const low = Object.values(s.stock).filter(x => x.qty < x.min).map(x => x.name), rep = s.reports.filter(r => r.status === "ouvert").length;
+    return `Récap 8h · jour ${s.clock.day}\n${nr} prêt(s) en retard · ${bl} emprunteur(s) bloqué(s)\n${ph} photo(s) à contrôler · ${inc} paiement(s) en attente\n${rep} signalement(s) ouvert(s)${low.length ? " · stock bas : " + low.join(", ") : ""}`;
+  }
+  function dispatch(state, action) {
+    const before = {}; for (const pid in state.people) before[pid] = blockReason(state, pid);
+    const s = clone(state), start = s.log.length, r = apply(s, action);
+    if (!r.ok) { const s2 = clone(state); log(s2, "refus", r.msg, null, r.rule); return { state: s2, ok: false, msg: r.msg, rule: r.rule, events: [] }; }
+    if (!r.logged) { const extra = s.log.splice(start); log(s, "ok", r.msg, null, r.rule); for (const e of extra) { e.id = s.seq++; s.log.push(e); } }
+    for (const pid in s.people) {
+      const after = blockReason(s, pid);
+      if (!before[pid] && after) { log(s, "bloc", `${nm(s, pid)} est bloqué(e) : ${after}.`, null, "blocage"); log(s, "notif", `Tes emprunts sont bloqués : ${after}. Rapporte-le au bureau.`, [pid], "blocage"); }
+      if (before[pid] && !after && action.type !== "DEBLOQUER") { log(s, "debloc", `${nm(s, pid)} peut de nouveau emprunter.`, null, "blocage"); log(s, "notif", "Tu peux de nouveau emprunter.", [pid], "blocage"); }
+    }
+    const all = s.log.slice(start), main = all.find(e => e.kind === "ok" || e.kind === "systeme");
+    return { state: s, ok: true, msg: r.msg, rule: r.rule, events: all.filter(e => e !== main) };
+  }
+  return { CATS, RULES, seed, dispatch, blockReason, forfait, overdue, eur, recapText, nm };
+})();
+
+/* =====================================================================
+   ICÔNES (Lucide, ISC) + HELPERS + ÉTAT UI
+   ===================================================================== */
+const ICONS = {
+  laptop: '<path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/>',
+  camera: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  video: '<path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+  mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>',
+  headphones: '<path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/>',
+  mouse: '<rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/>',
+  plug: '<path d="M12 22v-5M9 8V2M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+  cards: '<rect width="12" height="16" x="8" y="4" rx="2"/><path d="M4 8v10a2 2 0 0 0 2 2h8"/>',
+  package: '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+  lightbulb: '<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5M9 18h6M10 22h4"/>',
+  aperture: '<circle cx="12" cy="12" r="10"/><path d="m14.31 8 5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16 3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"/>',
+  radio: '<path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5M19.1 4.9C23 8.8 23 15.1 19.1 19"/>',
+  backpack: '<path d="M4 10a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 10h8M8 18h8"/><path d="M8 22v-6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v6M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>',
+  cast: '<path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6M2 12a9 9 0 0 1 8 8M2 16a5 5 0 0 1 4 4M2 20h.01"/>',
+  box: '<path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5M12 22V12"/>',
+  sd: '<path d="M22 12H2M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11zM6 16h.01M10 16h.01"/>',
+  tripod: '<path d="M12 3v7M12 10 6 21M12 10l6 11M12 10v11"/><rect x="8" y="2" width="8" height="4" rx="1"/>',
+  fan: '<path d="M10.8 16.4a6.1 6.1 0 0 1-8.6-7l5.4 1.45a6.1 6.1 0 0 1 7-8.62l-1.45 5.41a6.1 6.1 0 0 1 8.62 7l-5.41-1.45a6.1 6.1 0 0 1-7 8.62l1.45-5.41Z"/><path d="M12 12v.01"/>',
+  pen: '<path d="M21.17 6.81a1 1 0 0 0-3.98-3.98L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z"/>',
+  utensils: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/>',
+  door: '<path d="M13 4h3a2 2 0 0 1 2 2v14M2 20h3M13 20h9M10 12v.01"/><path d="M13 4.56v16.16a1 1 0 0 1-1.24.97L5 20V5.56a2 2 0 0 1 1.52-1.94l4-1A2 2 0 0 1 13 4.56Z"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5M12 3v12"/>',
+  sliders: '<path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"/>',
+  dashboard: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  swap: '<path d="M8 3 4 7l4 4M4 7h16M16 21l4-4-4-4M20 17H4"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  plus: '<path d="M5 12h14M12 5v14"/>', printer: '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
+  sheet: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M8 13h2M14 13h2M8 17h2M14 17h2"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  ban: '<circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/>',
+  bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>', x: '<path d="M18 6 6 18M6 6l12 12"/>',
+  lock: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  undo: '<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+  reset: '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>',
+  arrowr: '<path d="M5 12h14M12 5l7 7-7 7"/>', chevr: '<path d="m9 18 6-6-6-6"/>', chevl: '<path d="m15 18-6-6 6-6"/>', chevd: '<path d="m6 9 6 6 6-6"/>',
+  home: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+  grid: '<rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/>',
+  scan: '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/>',
+  alert: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>',
+  receipt: '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 17.5v-11"/>',
+  image: '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
+  usercheck: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/>',
+  ret: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  clock: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>', flag: '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  columns: '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/>', phone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
+  monitor: '<rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8M12 17v4"/>', school: '<path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0zM22 10v6M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+  file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>', edit: '<path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.85.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.85z"/>',
+  info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>', minus: '<path d="M5 12h14"/>'
+};
+const ic = (n, s = 16) => `<svg class="i" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n] || ICONS.box}</svg>`;
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+const $ = id => document.getElementById(id);
+const { eur } = Engine;
+const RULE = Object.fromEntries(Engine.RULES.map(([k, code, t]) => [k, { code, t }]));
+
+const ui = {
+  state: Engine.seed(), history: [], last: null, flash: new Set(), view: "split", narrowTab: "app",
+  persona: "ines", sessions: { ines: true, tom: false, diallo: true },
+  app: { tab: "home", push: null, sheet: null, sheetNew: false, search: "", cat: "all", alerts: "notifs", toast: null, toastNew: false, report: null },
+  bo: { user: "lydia", screen: "dashboard", drawer: null, modal: null, missing: {}, matSearch: "", matFilter: "all", matCat: "all", loanTab: "open", loanSearch: "", incTab: "due", adjust: null, rooms: {}, imp: { inv: null, cls: null }, peopleSearch: "" }
+};
+const S = () => ui.state;
+const P = pid => S().people[pid];
+const short = pid => pid === "equipe" ? "Équipe" : P(pid).short;
+const av = (pid, cls = "") => `<span class="avatar ${cls}" style="background:${P(pid).color}">${esc(P(pid).short.replace(/^(M\.|Mme) /, "").charAt(0))}</span>`;
+const lvl = id => { const n = S().catalog[id].niveau; return `<span class="pill n${n}">N${n}</span>`; };
+const chg = key => ui.flash.has(key) ? " chg" : "";
+const roleLabel = pid => { const p = P(pid); return p.role === "eleve" ? `Élève · ${p.classe}` : p.role === "intervenant" ? "Intervenant" : p.role === "equipe" ? "Équipe pédagogique" : "Direction"; };
+const timeStr = () => S().clock.phase === "soir" ? "18:30" : S().clock.day > 1 ? "08:00" : "10:15";
+const openLoans = pid => S().loans.filter(l => l.responsibleId === pid && ["remise_a_valider", "actif", "retour_a_valider"].includes(l.status));
+const visibleFor = (pid, id) => { const c = S().catalog[id]; return !c.onlyRole || P(pid).role === c.onlyRole; };
+const STATUS_BO = { disponible: ["Disponible", "b-ok"], remise_a_valider: ["Remise à valider", "b-warn"], emprunte: ["Sorti", "b-pri"], retour_a_valider: ["Retour à valider", "b-warn"], anomalie: ["En réparation", "b-bad"], perdu: ["Perdu", "b-bad"], hors_service: ["Retiré du prêt", "b-off"] };
+
+/* =====================================================================
+   APP MOBILE
+   ===================================================================== */
+function renderPersonas() {
+  $("personas").innerHTML = ["ines", "tom", "diallo"].map(pid => `<button type="button" data-persona="${pid}" aria-pressed="${ui.persona === pid}">${av(pid, "xs")}${esc(P(pid).short)}</button>`).join("");
+}
+function renderApp() {
+  const st = S(), pid = ui.persona, A = ui.app;
+  const sbar = `<div class="sbar"><span>${timeStr()}</span><span class="island" aria-hidden="true"></span><span class="r">Jour ${st.clock.day}</span></div>`;
+  if (!ui.sessions[pid]) { $("screen").innerHTML = sbar + loginScreen(); return; }
+  if (!P(pid).charte) { $("screen").innerHTML = sbar + charteScreen(true); return; }
+  let body, withBar = true;
+  if (A.push) { withBar = false; body = pushScreen(A.push); }
+  else body = { home: homeScreen, catalog: catalogScreen, alerts: alertsScreen, profile: profileScreen }[A.tab]();
+  const notifs = st.log.filter(e => e.to && e.to.includes(pid));
+  const toast = A.toast && notifs.find(n => n.id === A.toast);
+  const toastHtml = toast ? `<div class="toast${A.toastNew ? " in" : ""}" role="status"><span class="app">${ic("bell", 16)}</span><div><div class="tt">Prêts MDS <span>maintenant</span></div><div class="tb">${esc(toast.text)}</div></div><button class="btn ghost sm icon" type="button" data-a="closetoast" aria-label="Fermer">${ic("x", 14)}</button></div>` : "";
+  const bar = withBar ? `<nav class="tabbar" role="tablist" aria-label="Navigation">
+      ${[["home", "home", "Accueil"], ["catalog", "grid", "Matériel"]].map(([k, i, l]) => `<button type="button" role="tab" data-tab="${k}" aria-selected="${A.tab === k}">${ic(i, 22)}${l}</button>`).join("")}
+      <button type="button" data-a="scan" aria-label="Scanner un QR code"><span class="scan">${ic("scan", 24)}</span></button>
+      <button type="button" role="tab" data-tab="alerts" aria-selected="${A.tab === "alerts"}">${ic("bell", 22)}Alertes${notifs.length ? `<span class="dotn">${notifs.length}</span>` : ""}</button>
+      <button type="button" role="tab" data-tab="profile" aria-selected="${A.tab === "profile"}">${ic("user", 22)}Profil</button></nav>` : "";
+  $("screen").innerHTML = sbar + `<div class="pscroll${withBar ? "" : " nobar"}" id="pscroll">${toastHtml}${body}</div>` + bar + appSheet();
+  A.toastNew = false;
+}
+function loginScreen() {
+  return `<div class="login"><div><div class="logo" aria-hidden="true"></div><h3>Emprunte le matériel de l'école en 30 secondes.</h3><p>Studio, PC, casques, jeux… Scanne, emprunte, rends le soir avec une photo.</p></div>
+    <div style="display:grid;gap:10px"><button class="btn primary lg block" type="button" data-a="login">${ic("school", 18)}Se connecter avec mon compte école</button><p class="hint" style="justify-content:center">${ic("lock", 12)}Connexion sécurisée MyDigitalSchool</p></div></div>`;
+}
+function charteScreen(first) {
+  return `<div class="pscroll nobar">${first ? "" : `<div class="pnav"><button type="button" data-a="back">${ic("chevl", 20)}Profil</button></div>`}
+    <div class="ptitle"><div><h3>La charte</h3><div class="sub">${first ? "À accepter une seule fois" : "Acceptée"}</div></div></div>
+    <div class="charte">${esc(S().settings.charte)}</div>
+    ${first ? `<label class="check" for="charte-ok"><input type="checkbox" id="charte-ok"><span>J'ai lu la charte et j'accepte ses règles, notamment les forfaits en cas de perte ou de casse.</span></label>
+    <button class="btn primary lg block" type="button" data-a="acceptcharte" id="charte-go" disabled>Continuer</button>` : ""}</div>`;
+}
+function statusCard(pid) {
+  const st = S(), br = Engine.blockReason(st, pid);
+  if (br) return `<div class="status bad${chg("person:" + pid)}"><span class="ico">${ic("lock", 18)}</span><div><b>Emprunts bloqués</b><span>${esc(br.charAt(0).toUpperCase() + br.slice(1))}. Rapporte-le au bureau de la pédagogie.</span></div></div>`;
+  if (st.clock.phase === "soir") return `<div class="status night"><span class="ico">${ic("moon", 18)}</span><div><b>Bureau fermé</b><span>Réouverture demain à 8h.</span></div></div>`;
+  if (openLoans(pid).some(l => l.status === "actif")) return `<div class="status warn"><span class="ico">${ic("clock", 18)}</span><div><b>Pense à tout rendre ce soir</b><span>Avec une photo, avant de quitter l'école.</span></div></div>`;
+  return `<div class="status ok${chg("person:" + pid)}"><span class="ico">${ic("check", 18)}</span><div><b>Tu peux emprunter</b><span>Scanne un QR code ou parcours le matériel.</span></div></div>`;
+}
+function loanRow(l) {
+  const st = S(), c = st.catalog[l.itemId];
+  const s = l.status === "remise_a_valider" ? `<span class="badge b-warn">À récupérer auprès de l'équipe</span>` : l.status === "retour_a_valider" ? `<span class="badge b-warn">Vérification sur place</span>` : Engine.overdue(st, l) ? `<span class="badge b-bad">En retard · jour ${l.dayOut}</span>` : `<span class="badge b-pri">À rendre ce soir</span>`;
+  return `<div class="prow${chg("item:" + l.itemId)}"><span class="thumb">${ic(c.icon, 20)}</span><div><div class="n">${esc(c.name)}</div><div class="m">${l.forClass ? `<span>Pour la ${l.forClass}</span>` : ""}${s}</div></div>${l.status === "actif" ? `<button class="btn primary sm" type="button" data-return="${l.itemId}">Rendre</button>` : `<button class="btn ghost sm icon" type="button" data-item="${l.itemId}" aria-label="Voir">${ic("chevr")}</button>`}</div>`;
+}
+function homeScreen() {
+  const st = S(), pid = ui.persona, p = P(pid), mine = openLoans(pid), debts = st.incidents.filter(i => i.responsibleId === pid && i.statut === "a_rembourser");
+  let boite = "";
+  if (p.role === "intervenant") {
+    const has = mine.find(l => st.catalog[l.itemId].cat === "boite");
+    const free = Object.keys(st.catalog).find(id => st.catalog[id].cat === "boite" && st.items[id].status === "disponible");
+    boite = has ? "" : `<div class="pcard"><div style="display:flex;gap:12px;align-items:center"><span class="thumb" style="color:var(--primary)">${ic("package", 20)}</span><div style="flex:1"><div style="font-weight:700">Ta boîte du jour</div><div class="t2" style="font-size:12px">Télécommande + feutres, au bureau de la pédagogie</div></div></div>
+      ${free ? `<button class="btn primary block" type="button" data-item="${free}">Prendre une boîte</button>` : `<p class="hint">${ic("info", 14)}Toutes les boîtes sont sorties pour l'instant.</p>`}</div>`;
+  }
+  return `<div class="ptitle"><div><h3>Bonjour ${esc(p.short.replace(/^(M\.|Mme) /, ""))}</h3><div class="sub">${esc(roleLabel(pid))} · Jour ${st.clock.day}</div></div>${av(pid, "lg")}</div>
+    ${statusCard(pid)}${boite}
+    <div class="psect"><div class="psect-h"><h4>Mes prêts</h4><span class="micro">${mine.length}</span></div>${mine.length ? mine.map(loanRow).join("") : `<div class="pempty">Aucun prêt en cours.<br>Scanne un QR code pour emprunter.</div>`}</div>
+    ${debts.length ? `<div class="psect"><div class="psect-h"><h4>À rembourser</h4></div>${debts.map(i => `<div class="prow${chg("incidents")}"><span class="thumb" style="color:var(--danger)">${ic("receipt", 20)}</span><div><div class="n">${eur(i.montant)}</div><div class="m">${esc(st.catalog[i.itemId].name)} · ${esc(i.motif)}</div></div><span></span></div>`).join("")}<p class="hint">${ic("info", 14)}Le paiement se fait au bureau de la pédagogie.</p></div>` : ""}
+    <div class="psect"><div class="psect-h"><h4>Raccourcis</h4></div>
+      <button class="prow" type="button" data-tab="catalog"><span class="thumb">${ic("grid", 20)}</span><div><div class="n">Voir le matériel disponible</div><div class="m">En temps réel</div></div>${ic("chevr")}</button>
+      <button class="prow" type="button" data-a="report"><span class="thumb">${ic("flag", 20)}</span><div><div class="n">Signaler un problème</div><div class="m">Panne, casse, ventilateur absent…</div></div>${ic("chevr")}</button></div>`;
+}
+function typesFor(pid) {
+  const st = S(), groups = {};
+  for (const id in st.catalog) { if (!visibleFor(pid, id)) continue; const c = st.catalog[id]; (groups[c.type] = groups[c.type] || []).push(id); }
+  return groups;
+}
+const typeName = ids => { const n = S().catalog[ids[0]].name; return ids.length > 1 ? n.replace(/ #\d+$/, "") : n; };
+function catalogScreen() {
+  const pid = ui.persona, A = ui.app;
+  const cats = Object.entries(Engine.CATS).filter(([k]) => k !== "boite" || P(pid).role === "intervenant");
+  return `<div class="ptitle"><div><h3>Matériel</h3><div class="sub">Disponibilités en temps réel</div></div></div>
+    <label class="searchbox" for="app-search">${ic("search")}<input id="app-search" type="search" placeholder="Rechercher (casque, PC, micro…)" value="${esc(A.search)}" autocomplete="off"></label>
+    <div class="chipsrow" role="group" aria-label="Catégories"><button type="button" data-cat="all" aria-pressed="${A.cat === "all"}">Tout</button>${cats.map(([k, c]) => `<button type="button" data-cat="${k}" aria-pressed="${A.cat === k}">${c.short}</button>`).join("")}</div>
+    ${S().clock.phase === "soir" ? `<div class="status night"><span class="ico">${ic("moon", 18)}</span><div><b>Bureau fermé</b><span>Les emprunts reprennent demain à 8h.</span></div></div>` : ""}
+    <div id="catlist" style="display:grid;gap:16px">${catalogList()}</div>`;
+}
+function catalogList() {
+  const st = S(), pid = ui.persona, A = ui.app, q = A.search.trim().toLowerCase();
+  const groups = typesFor(pid), byCat = {};
+  for (const [type, ids] of Object.entries(groups)) {
+    const c = st.catalog[ids[0]];
+    if (A.cat !== "all" && c.cat !== A.cat) continue;
+    if (q && !typeName(ids).toLowerCase().includes(q) && !Engine.CATS[c.cat].name.toLowerCase().includes(q)) continue;
+    (byCat[c.cat] = byCat[c.cat] || []).push([type, ids]);
+  }
+  const html = Object.keys(Engine.CATS).filter(k => byCat[k]).map(k => `<div class="psect"><div class="psect-h"><h4>${Engine.CATS[k].name}</h4></div>${byCat[k].map(([type, ids]) => {
+    const c = st.catalog[ids[0]], free = ids.filter(id => st.items[id].status === "disponible").length, mine = ids.some(id => { const l = st.items[id].loanId && st.loans.find(x => x.id === st.items[id].loanId); return l && l.responsibleId === pid; });
+    const dispo = ids.length > 1 ? (free ? `<span class="badge b-ok">${free} disponible${free > 1 ? "s" : ""}</span>` : `<span class="badge b-off">Indisponible</span>`) : (free ? `<span class="badge b-ok">Disponible</span>` : `<span class="badge b-off">Indisponible</span>`);
+    return `<button class="prow${ids.some(id => ui.flash.has("item:" + id)) ? " chg" : ""}" type="button" data-${ids.length > 1 ? "type" : "item"}="${ids.length > 1 ? type : ids[0]}"><span class="thumb">${ic(c.icon, 20)}</span><div><div class="n">${esc(typeName(ids))}</div><div class="m">${dispo}${mine ? `<span class="badge b-pri">Chez toi</span>` : ""}<span>${c.niveau === 1 ? "Remise par l'équipe" : "Libre-service"}</span></div></div>${ic("chevr")}</button>`;
+  }).join("")}</div>`).join("");
+  return html || `<div class="pempty">Aucun matériel ne correspond à « ${esc(A.search)} ».</div>`;
+}
+function pushScreen(push) {
+  const st = S(), pid = ui.persona;
+  if (push.kind === "type") {
+    const ids = typesFor(pid)[push.type] || [], c = st.catalog[ids[0]];
+    return `<div class="pnav"><button type="button" data-a="back">${ic("chevl", 20)}Matériel</button></div>
+      <div class="ptitle"><div><h3>${esc(typeName(ids))}</h3><div class="sub">${lvl(ids[0])} ${esc(c.place)}</div></div></div>
+      <div class="psect">${ids.map(id => { const it = st.items[id], free = it.status === "disponible", l = it.loanId && st.loans.find(x => x.id === it.loanId), mine = l && l.responsibleId === pid;
+        return `<button class="prow${chg("item:" + id)}" type="button" data-item="${id}"><span class="thumb">${ic(c.icon, 20)}</span><div><div class="n">${esc(st.catalog[id].name)}</div><div class="m">${mine ? `<span class="badge b-pri">Chez toi</span>` : free ? `<span class="badge b-ok">Disponible</span>` : `<span class="badge b-off">Indisponible</span>`}${it.watchers.includes(pid) ? `<span class="badge b-pri">Tu seras prévenu(e)</span>` : ""}</div></div>${ic("chevr")}</button>`; }).join("")}</div>
+      <p class="hint">${ic("scan", 14)}Au bureau, scanne directement le QR code collé sur le matériel.</p>`;
+  }
+  if (push.kind === "item") {
+    const id = push.id, c = st.catalog[id], it = st.items[id], l = it.loanId && st.loans.find(x => x.id === it.loanId), mine = l && l.responsibleId === pid;
+    const free = it.status === "disponible", soir = st.clock.phase === "soir";
+    let cta;
+    if (mine && l.status === "actif") cta = `<button class="btn primary lg block" type="button" data-return="${id}">${ic("ret", 18)}Rendre ce matériel</button>`;
+    else if (mine && l.status === "remise_a_valider") cta = `<div class="status warn"><span class="ico">${ic("usercheck", 18)}</span><div><b>Demande envoyée</b><span>Présente-toi au ${esc(c.place.toLowerCase())} : l'équipe te le remet.</span></div></div>`;
+    else if (mine) cta = `<div class="status warn"><span class="ico">${ic("usercheck", 18)}</span><div><b>Vérification en cours</b><span>Un membre de l'équipe contrôle avec toi.</span></div></div>`;
+    else if (free) cta = `<button class="btn primary lg block" type="button" data-borrow="${id}" ${soir ? "disabled" : ""}>${soir ? "Bureau fermé" : c.niveau === 1 ? "Demander ce matériel" : "Emprunter"}</button>`;
+    else if (["anomalie", "hors_service", "perdu"].includes(it.status)) cta = `<div class="status night"><span class="ico">${ic("wrench", 18)}</span><div><b>Indisponible</b><span>Ce matériel est momentanément retiré du prêt.</span></div></div>`;
+    else cta = it.watchers.includes(pid) ? `<button class="btn lg block" type="button" disabled>${ic("check", 16)}Tu seras prévenu(e) à son retour</button>` : `<button class="btn primary lg block" type="button" data-watch="${id}">${ic("bell", 18)}Me prévenir à son retour</button>`;
+    return `<div class="pnav"><button type="button" data-a="back">${ic("chevl", 20)}Retour</button></div>
+      <div class="hero${chg("item:" + id)}">${ic(c.icon, 64)}<span class="lvl">${lvl(id)}</span></div>
+      <div><h3 style="font-size:24px;line-height:28px;font-weight:800">${esc(c.name)}</h3><div style="margin-top:6px">${mine ? `<span class="badge b-pri">Chez toi</span>` : free ? `<span class="badge b-ok">Disponible</span>` : `<span class="badge b-off">Indisponible</span>`}</div></div>
+      <div class="kv"><div><span>Où le trouver</span><span>${esc(c.place)}</span></div><div><span>Remise</span><span>${c.niveau === 1 ? "Par l'équipe, sur place" : "Libre-service"}</span></div><div><span>Retour</span><span>Ce soir, avec photo</span></div><div><span>Forfait perte / casse</span><span class="mono">${eur(Engine.forfait(st, id))}</span></div></div>
+      ${c.composants ? `<div class="psect"><div class="psect-h"><h4>Contenu du kit</h4><span class="micro">${c.composants.length}</span></div><div class="kv">${c.composants.map(x => `<div><span>${esc(x.name)}</span><span class="mono">${eur(x.forfait)}</span></div>`).join("")}</div></div>` : ""}
+      <div class="stickycta">${cta}</div>`;
+  }
+  if (push.kind === "report") return reportScreen();
+  if (push.kind === "charte") return charteScreen(false).replace('<div class="pscroll nobar">', "").replace(/<\/div>$/, "");
+  if (push.kind === "history") return historyScreen();
+  return "";
+}
+function reportScreen() {
+  const st = S(), pid = ui.persona, R = ui.app.report;
+  const mine = openLoans(pid).map(l => l.itemId);
+  const opts = [...mine.map(id => [`item:${id}`, st.catalog[id].name + " (mon prêt)"]), ...Object.keys(st.rooms).map(r => [`room:${r}`, `Salle ${r} · ventilateurs`]), ...Object.keys(st.catalog).filter(id => visibleFor(pid, id) && !mine.includes(id)).map(id => [`item:${id}`, st.catalog[id].name])];
+  return `<div class="pnav"><button type="button" data-a="back">${ic("chevl", 20)}Retour</button></div>
+    <div class="ptitle"><div><h3>Signaler</h3><div class="sub">L'équipe est prévenue tout de suite</div></div></div>
+    <div class="field"><label for="rep-target">Sur quoi ?</label><select class="input" id="rep-target">${opts.map(([v, l]) => `<option value="${v}" ${R.target === v ? "selected" : ""}>${esc(l)}</option>`).join("")}</select></div>
+    <div class="field"><span class="flabel">Quel problème ?</span><div class="typechips" role="group">${["Panne", "Casse", "Manquant", "Déplacé", "Autre"].map(k => `<button type="button" data-repkind="${k}" aria-pressed="${R.kind === k}">${k}</button>`).join("")}</div></div>
+    <div class="field"><label for="rep-text">Détails (facultatif)</label><textarea class="input" id="rep-text" placeholder="Ex. : la batterie ne tient pas la charge">${esc(R.text)}</textarea></div>
+    <button class="photo ${R.photo ? "taken" : ""}" type="button" data-a="repphoto" style="height:90px"><span>${ic(R.photo ? "check" : "camera", 22)}${R.photo ? "Photo ajoutée" : "Ajouter une photo (facultatif)"}</span></button>
+    <button class="btn primary lg block" type="button" data-a="sendreport" ${R.kind ? "" : "disabled"}>Envoyer le signalement</button>`;
+}
+function alertsScreen() {
+  const st = S(), pid = ui.persona, A = ui.app;
+  const notifs = st.log.filter(e => e.to && e.to.includes(pid)).reverse();
+  const hist = st.loans.filter(l => l.responsibleId === pid).slice().reverse();
+  const LS = { remise_a_valider: ["Demande envoyée", "b-warn"], actif: ["En cours", "b-pri"], retour_a_valider: ["Vérification", "b-warn"], rendu: ["Rendu", "b-ok"], perdu: ["Perdu", "b-bad"], annule: ["Annulé", "b-off"] };
+  return `<div class="ptitle"><div><h3>Alertes</h3><div class="sub">Notifications et historique</div></div></div>
+    <div class="segfull" role="tablist"><button type="button" role="tab" data-alerts="notifs" aria-pressed="${A.alerts === "notifs"}">Notifications</button><button type="button" role="tab" data-alerts="hist" aria-pressed="${A.alerts === "hist"}">Historique</button></div>
+    ${A.alerts === "notifs"
+      ? `<div class="psect">${notifs.length ? notifs.map(n => `<div class="prow"><span class="thumb" style="color:var(--primary)">${ic(n.rule === "blocage" ? "lock" : n.rule === "temps" ? "clock" : "bell", 18)}</span><div><div style="font-size:13px;line-height:18px">${esc(n.text)}</div><div class="m mono">Jour ${n.day} · ${n.phase === "soir" ? "soir" : "journée"}</div></div><span></span></div>`).join("") : `<div class="pempty">Aucune notification pour l'instant.</div>`}</div>`
+      : `<div class="psect">${hist.length ? hist.map(l => `<button class="prow" type="button" data-item="${l.itemId}"><span class="thumb">${ic(st.catalog[l.itemId].icon, 18)}</span><div><div class="n">${esc(st.catalog[l.itemId].name)}</div><div class="m"><span class="badge ${LS[l.status][1]}">${LS[l.status][0]}</span><span class="mono">jour ${l.dayOut}</span>${l.forClass ? `<span>pour la ${l.forClass}</span>` : ""}</div></div>${ic("chevr")}</button>`).join("") : `<div class="pempty">Aucun emprunt pour l'instant.</div>`}</div>`}`;
+}
+function profileScreen() {
+  const pid = ui.persona, p = P(pid), st = S();
+  const n = st.loans.filter(l => l.responsibleId === pid).length;
+  return `<div style="display:grid;justify-items:center;gap:8px;padding:10px 0 4px">${av(pid, "xl")}<h3 style="font-size:22px">${esc(p.name)}</h3><span class="t2">${esc(roleLabel(pid))}</span></div>
+    <div class="kv"><div><span>Compte</span><span>${esc(p.short.toLowerCase().replace(/[^a-z]/g, ""))}@my-digital-school.org</span></div><div><span>Emprunts</span><span>${n}</span></div><div><span>Charte</span><span>Acceptée</span></div></div>
+    <div class="psect">
+      <button class="prow" type="button" data-a="readcharte"><span class="thumb">${ic("file", 20)}</span><div><div class="n">Relire la charte</div><div class="m">Règles, forfaits, conservation des photos</div></div>${ic("chevr")}</button>
+      <button class="prow" type="button" data-a="report"><span class="thumb">${ic("flag", 20)}</span><div><div class="n">Signaler un problème</div><div class="m">Matériel ou salle</div></div>${ic("chevr")}</button>
+      <button class="prow" type="button" data-a="logout"><span class="thumb" style="color:var(--danger)">${ic("logout", 20)}</span><div><div class="n">Se déconnecter</div><div class="m">Démo : revient à l'écran de connexion</div></div><span></span></button>
+    </div>`;
+}
+function appSheet() {
+  const A = ui.app, sh = A.sheet; if (!sh) return "";
+  const st = S(), pid = ui.persona, p = P(pid), open = A.sheetNew ? " in" : ""; A.sheetNew = false;
+  if (sh.kind === "scan") {
+    const ids = [...openLoans(pid).map(l => l.itemId), ...Object.keys(st.catalog).filter(id => visibleFor(pid, id) && st.catalog[id].place === "Bureau de la pédagogie" && st.items[id].status === "disponible").slice(0, 3), "kit-r10-01"].filter((v, i, a) => a.indexOf(v) === i).slice(0, 5);
+    return `<div class="scrim${open}" data-close="1"><div class="sheet" role="dialog" aria-label="Scanner"><div class="grab"></div>
+      <div class="viewfinder"><span>Pointe le QR code du matériel</span></div><div class="micro">QR détectés à proximité (simulation)</div>
+      ${ids.map(id => `<button class="prow" type="button" data-scanpick="${id}"><span class="thumb">${ic(st.catalog[id].icon, 20)}</span><div><div class="n">${esc(st.catalog[id].name)}</div><div class="m mono">${st.catalog[id].qr}</div></div>${ic("chevr")}</button>`).join("")}
+      <button class="btn ghost block" type="button" data-close="1">Annuler</button></div></div>`;
+  }
+  const c = st.catalog[sh.id];
+  const head = `<div class="grab"></div><div class="sheet-h"><span class="thumb">${ic(c.icon, 24)}</span><div><h4>${sh.kind === "return" ? "Rendre " : ""}${esc(c.name)}</h4><div class="m">${lvl(sh.id)}${ic("pin", 12)}${esc(c.place)}</div></div><button class="btn ghost sm icon" type="button" data-close="1" aria-label="Fermer">${ic("x", 16)}</button></div>`;
+  if (sh.kind === "borrow") {
+    const cls = p.role === "intervenant" && c.cat !== "boite" ? `<div class="segfull" role="group" aria-label="Pour qui"><button type="button" data-for="" aria-pressed="${!sh.forClass}">Pour moi</button><button type="button" data-for="${sh.lastClass || st.classes[0]}" aria-pressed="${!!sh.forClass}">Pour ma classe</button></div>
+      ${sh.forClass ? `<div class="classes" role="group" aria-label="Classe">${st.classes.map(k => `<button type="button" data-for="${k}" aria-pressed="${sh.forClass === k}">${k}</button>`).join("")}</div><p class="hint">${ic("users", 14)}Tu seras responsable du matériel et seul à pouvoir le rendre.</p>` : ""}` : "";
+    return `<div class="scrim${open}" data-close="1"><div class="sheet" role="dialog" aria-label="Emprunter">${head}${cls}
+      <div class="forfait"><div><small>En cas de perte ou de casse</small>${c.composants ? "<small>ou le forfait du composant manquant</small>" : ""}</div><span class="amt">${eur(Engine.forfait(st, sh.id))}</span></div>
+      <label class="check" for="accept"><input type="checkbox" id="accept" ${sh.accepted ? "checked" : ""}><span>J'accepte ce forfait et je rends le matériel ce soir avec une photo.</span></label>
+      <p class="hint">${ic(c.niveau === 1 ? "usercheck" : "pin", 14)}${c.niveau === 1 ? "Un membre de l'équipe te le remet et valide sur place." : "Libre-service au bureau de la pédagogie, en présence de l'équipe."}</p>
+      <button class="btn primary lg block" type="button" id="confirmborrow" data-a="confirmborrow" ${sh.accepted ? "" : "disabled"}>${c.niveau === 1 ? "Demander la remise" : "Emprunter"}</button></div></div>`;
+  }
+  const parts = c.composants || [{ id: "incomplet", name: "Tout le contenu est là, rien d'abîmé" }];
+  return `<div class="scrim${open}" data-close="1"><div class="sheet" role="dialog" aria-label="Rendre">${head}
+    <div class="stepn"><i>1</i>Checklist</div>
+    <div style="display:grid;gap:6px">${parts.map(x => `<label class="check" for="part-${x.id}"><input type="checkbox" id="part-${x.id}" data-part="${x.id}" ${sh.checks[x.id] !== false ? "checked" : ""}><span>${esc(x.name)}</span></label>`).join("")}</div>
+    <div class="stepn"><i>2</i>Photo du matériel</div>
+    <button class="photo ${sh.photo ? "taken" : ""}" type="button" data-a="takephoto"><span>${ic(sh.photo ? "check" : "camera", 26)}${sh.photo ? "Photo prise · toucher pour reprendre" : "Prendre la photo (obligatoire)"}</span></button>
+    <p class="hint">${ic(c.niveau === 1 ? "usercheck" : "image", 14)}${c.niveau === 1 ? "Un membre de l'équipe vérifie avec toi sur place." : "L'équipe regardera la photo plus tard. Tu es libre dès maintenant."}</p>
+    <button class="btn primary lg block" type="button" data-a="confirmreturn" ${sh.photo ? "" : "disabled"}>Valider le retour</button></div></div>`;
+}
+
+/* =====================================================================
+   BACK-OFFICE
+   ===================================================================== */
+function qrSvg(text) {
+  let h = 2166136261; for (const ch of text) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  const n = 21, cells = []; let x = h >>> 0;
+  const finder = (r, c) => [[0, 0], [0, n - 7], [n - 7, 0]].some(([fr, fc]) => r >= fr && r < fr + 7 && c >= fc && c < fc + 7);
+  const fOn = (r, c) => { for (const [fr, fc] of [[0, 0], [0, n - 7], [n - 7, 0]]) { const rr = r - fr, cc = c - fc; if (rr >= 0 && rr < 7 && cc >= 0 && cc < 7) return rr === 0 || rr === 6 || cc === 0 || cc === 6 || (rr >= 2 && rr <= 4 && cc >= 2 && cc <= 4); } return false; };
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    let on; if (finder(r, c)) on = fOn(r, c); else { x ^= x << 13; x ^= x >>> 17; x ^= x << 5; on = (x >>> 0) % 100 < 46; }
+    if (on) cells.push(`<rect x="${c}" y="${r}" width="1" height="1"/>`);
+  }
+  return `<svg class="qr" viewBox="-1 -1 ${n + 2} ${n + 2}" role="img" aria-label="QR code ${esc(text)}"><g fill="#111">${cells.join("")}</g></svg>`;
+}
+const isDir = () => P(ui.bo.user).role === "direction";
+function boCounts() {
+  const st = S();
+  return {
+    valid: st.loans.filter(l => ["remise_a_valider", "retour_a_valider"].includes(l.status)).length,
+    photos: Object.values(st.items).filter(i => i.pending).length,
+    due: st.incidents.filter(i => i.statut === "a_rembourser").length,
+    reports: st.reports.filter(r => r.status === "ouvert").length,
+    late: st.loans.filter(l => Engine.overdue(st, l)).length,
+    out: st.loans.filter(l => l.status === "actif").length,
+    blocked: Object.keys(st.people).filter(pid => Engine.blockReason(st, pid)).length,
+    low: Object.values(st.stock).filter(x => x.qty < x.min).length,
+    rooms: Object.values(st.rooms).filter(r => r.present < r.fans).length
+  };
+}
+const NAV = [
+  ["dashboard", "dashboard", "Tableau de bord"], ["valid", "usercheck", "Validations", "valid", "warm"], ["photos", "image", "Contrôle photo", "photos", "warm"],
+  ["g1", null, "Gestion"], ["materiel", "box", "Matériel"], ["prets", "swap", "Prêts", "late", "hot"], ["people", "users", "Emprunteurs", "blocked", "hot"], ["incidents", "receipt", "Incidents", "dueRep", "hot"],
+  ["g2", null, "Campus"], ["stock", "pen", "Consommables", "low", "hot"], ["salles", "door", "Salles", "rooms", "hot"],
+  ["g3", null, "Administration"], ["imports", "upload", "Imports Calc"], ["settings", "sliders", "Réglages"]
+];
+function renderBo() {
+  const st = S(), B = ui.bo, k = boCounts(); k.dueRep = k.due + k.reports;
+  const side = `<nav class="side" aria-label="Back-office">${NAV.map(([id, icon, label, cnt, tone]) => icon === null ? `<div class="sgroup micro">${label}</div>`
+    : `<button class="nav" type="button" data-go="${id}" ${B.screen === id ? 'aria-current="page"' : ""} title="${label}">${ic(icon, 18)}<span class="lbl">${label}</span>${cnt && k[cnt] ? `<span class="pill ${tone} navc">${k[cnt]}</span>` : ""}</button>`).join("")}
+    <div class="sidefoot"><div class="micro sgroup" style="padding:0 6px">Connecté(e)</div>${["cyrianne", "lydia", "sandrine"].map(pid => `<button class="nav" type="button" data-bouser="${pid}" ${B.user === pid ? 'aria-current="page"' : ""} title="${P(pid).name}">${av(pid, "xs")}<span class="lbl">${esc(P(pid).short)}<span class="t3" style="font-weight:500"> · ${P(pid).role === "direction" ? "direction" : "équipe"}</span></span></button>`).join("")}</div></nav>`;
+  const screens = { dashboard: boDashboard, valid: boValid, photos: boPhotos, materiel: boMateriel, prets: boPrets, people: boPeople, incidents: boIncidents, stock: boStock, salles: boSalles, imports: boImports, settings: boSettings };
+  const [title, sub, actions, body] = screens[B.screen](k);
+  $("bowin").innerHTML = `<div class="wbar"><span class="lights" aria-hidden="true"><i></i><i></i><i></i></span><span class="url">${ic("lock", 11)}backoffice.prets-mds/${B.screen}</span><span style="width:42px"></span></div>
+    <div class="bo">${side}<div class="bomain"><div class="bohead"><h2>${title}<span class="sub">${sub}</span></h2>${actions || ""}</div><div class="bobody">${body}</div></div></div>
+    ${B.drawer ? boDrawer() : ""}${B.modal ? boModal() : ""}`;
+}
+const dayLabel = () => `Jour ${S().clock.day} · ${S().clock.phase === "soir" ? "fin de journée" : "bureau ouvert"}`;
+const task = (cls, icon, title, meta, acts, extra = "", key = "") => `<div class="task p-${cls}${chg(key)}"><span class="typeico ${cls}">${ic(icon, 18)}</span><div><div class="ti">${title}</div><div class="tm">${meta}</div></div><div class="acts">${acts}</div>${extra ? `<div class="extra">${extra}</div>` : ""}</div>`;
+const empty = (t, s) => `<div class="emptystate"><span class="c">${ic("check", 20)}</span><b>${t}</b><span>${s}</span></div>`;
+const lockBtn = (label, data) => `<button class="btn sm" type="button" ${data}>${ic("lock", 14)}${label}</button><span class="lockline">${ic("lock", 11)}Réservé à Sandrine</span>`;
+function missChips(key, itemId) {
+  const c = S().catalog[itemId], sel = ui.bo.missing[key] || "";
+  const opts = c.composants ? c.composants.map(x => [x.id, x.name]) : [["incomplet", "Incomplet ou abîmé"]];
+  return `<div class="chips"><span class="micro">Manquant ?</span>${opts.map(([id, n]) => `<button class="chip miss" type="button" data-miss="${key}|${id}" aria-pressed="${sel === id}">${sel === id ? ic("x", 12) : ""}${esc(n)}</button>`).join("")}</div>`;
+}
+function validTasks() {
+  const st = S();
+  return st.loans.filter(l => l.status === "remise_a_valider").map(l => task("site", "usercheck", `${lvl(l.itemId)}Remise · ${esc(st.catalog[l.itemId].name)}`, `${esc(short(l.responsibleId))}${l.forClass ? ` pour la ${l.forClass}` : ""} attend au bureau · forfait de ${eur(l.forfait)} accepté`, `<button class="btn primary sm" type="button" data-bo-act="VALIDER_REMISE|${l.itemId}">${ic("check", 14)}Valider la remise</button>`, "", "item:" + l.itemId)).join("")
+    + st.loans.filter(l => l.status === "retour_a_valider").map(l => { const kk = "r:" + l.id, sel = ui.bo.missing[kk];
+      return task("site", "ret", `${lvl(l.itemId)}Retour · ${esc(st.catalog[l.itemId].name)}`, `${esc(short(l.responsibleId))} ${l.declared ? "a signalé un problème" : "a tout coché"} · vérifiez avant la remise en stock`, `<button class="btn ${sel ? "danger" : "primary"} sm" type="button" data-bo-act="VALIDER_RETOUR|${l.itemId}|${kk}">${ic(sel ? "alert" : "check", 14)}${sel ? "Créer l'incident" : "Conforme"}</button>`, missChips(kk, l.itemId), "item:" + l.itemId); }).join("");
+}
+function photoTasks() {
+  const st = S();
+  return Object.keys(st.items).filter(id => st.items[id].pending).map(id => { const pd = st.items[id].pending, kk = "p:" + id, sel = ui.bo.missing[kk], again = st.items[id].status === "emprunte";
+    return task("photo", "image", `${lvl(id)}${esc(st.catalog[id].name)}${again ? `<span class="badge b-pri">Déjà réemprunté</span>` : ""}`, `Photo de ${esc(short(pd.responsibleId))} · jour ${pd.day} · ${pd.declared ? "problème signalé" : "déclaré complet"}`,
+      `<button class="btn ${sel ? "danger" : "primary"} sm" type="button" data-bo-act="CONTROLER_PHOTO|${id}|${kk}">${ic(sel ? "alert" : "check", 14)}${sel ? "Créer l'incident" : "Photo conforme"}</button>`,
+      `<span class="shot">${ic(st.catalog[id].icon, 28)}<small>IMG_${String(pd.loanId).replace(/\D/g, "").padStart(4, "0")}.jpg</small></span>${missChips(kk, id)}`, "item:" + id); }).join("");
+}
+function boDashboard(k) {
+  const st = S(), me = P(ui.bo.user);
+  const kpi = (v, l, cls, go) => `<button class="kpi ${v ? cls : ""}" type="button" data-go="${go}"><span class="v">${v}</span><span class="micro">${l}</span></button>`;
+  const todo = [
+    [k.valid, "usercheck", "valid", `${k.valid} validation(s) sur place`, "Remises et retours de niveau 1"],
+    [k.photos, "image", "photos", `${k.photos} photo(s) de retour à contrôler`, "Niveau 2, non bloquant"],
+    [k.due, "receipt", "incidents", `${k.due} paiement(s) à enregistrer`, isDir() ? "À valider par vous" : "Réservé à Sandrine"],
+    [k.reports, "flag", "incidents", `${k.reports} signalement(s) ouvert(s)`, "Envoyés depuis l'app"],
+    [k.low, "pen", "stock", `${k.low} consommable(s) sous le seuil`, "Pensez au réassort"],
+    [k.rooms, "fan", "salles", `${k.rooms} salle(s) avec ventilateur manquant`, "Inventaire des salles"]
+  ].filter(x => x[0]);
+  const lastRecap = [...st.log].reverse().find(e => e.kind === "recap");
+  const late = st.loans.filter(l => Engine.overdue(st, l));
+  return [`Bonjour ${esc(me.short)}`, dayLabel(), `<button class="btn" type="button" data-go="materiel">${ic("box", 16)}Inventaire</button>`,
+    `<div class="kpis">${kpi(k.out, "Sortis", "", "prets")}${kpi(k.late, "En retard", "hot", "prets")}${kpi(k.valid, "À valider", "warm", "valid")}${kpi(k.photos, "Photos", "warm", "photos")}${kpi(k.due, "À rembourser", "hot", "incidents")}${kpi(k.low, "Stock bas", "hot", "stock")}</div>
+    <div class="grid2">
+      <div class="panel"><div class="panel-h"><h3>À faire maintenant <span class="pill c">${todo.length}</span></h3></div><div class="panel-b">${todo.length ? todo.map(([, icon, go, t, s]) => `<button class="row" type="button" data-go="${go}" style="width:100%;text-align:left"><span class="thumb">${ic(icon, 16)}</span><div><div class="n">${t}</div><div class="m">${s}</div></div>${ic("chevr")}</button>`).join("") : empty("Tout est traité", "Rien ne vous attend pour l'instant.")}</div></div>
+      <div class="panel"><div class="panel-h"><h3>${ic("clock", 16)}Récap de 8h</h3><span class="micro">${lastRecap ? "Envoyé jour " + lastRecap.day : "Aperçu en direct"}</span></div><div class="panel-b"><div class="recap">${esc(lastRecap ? lastRecap.text : Engine.recapText(st))}</div></div></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><div class="panel-h"><h3>Prêts en retard <span class="pill ${late.length ? "hot" : "c"}">${late.length}</span></h3></div><div class="panel-b">${late.length ? late.map(l => `<div class="row${chg("item:" + l.itemId)}"><span class="thumb">${ic(st.catalog[l.itemId].icon, 16)}</span><div><div class="n">${esc(st.catalog[l.itemId].name)}</div><div class="m">${esc(short(l.responsibleId))} · sorti le jour ${l.dayOut}</div></div><span class="badge b-bad">Bloqué</span></div>`).join("") : `<p class="t2" style="font-size:13px">Aucun retard.</p>`}</div></div>
+      <div class="panel"><div class="panel-h"><h3>Signalements ouverts <span class="pill ${k.reports ? "warm" : "c"}">${k.reports}</span></h3></div><div class="panel-b">${reportRows(true)}</div></div>
+    </div>`];
+}
+function reportRows(openOnly) {
+  const st = S(), list = st.reports.filter(r => !openOnly || r.status === "ouvert").slice().reverse();
+  if (!list.length) return `<p class="t2" style="font-size:13px">Aucun signalement.</p>`;
+  return list.map(r => { const what = r.target.kind === "room" ? `Salle ${r.target.id}` : st.catalog[r.target.id].name;
+    return `<div class="row"><span class="thumb">${ic(r.target.kind === "room" ? "fan" : st.catalog[r.target.id].icon, 16)}</span><div><div class="n">${esc(r.type)} · ${esc(what)}</div><div class="m">${esc(short(r.by))} · jour ${r.day}${r.text ? " · « " + esc(r.text) + " »" : ""}${r.photo ? " · photo jointe" : ""}</div></div>${r.status === "ouvert" ? `<button class="btn sm" type="button" data-bo-report="${r.id}">${ic("check", 14)}Traité</button>` : `<span class="badge b-ok">Traité</span>`}</div>`; }).join("");
+}
+function boValid(k) { const t = validTasks(); return ["Validations sur place", "Niveau 1 · remises et retours avec l'emprunteur", "", t || empty("Rien à valider", "Les demandes de remise et les retours de niveau 1 apparaîtront ici.")]; }
+function boPhotos(k) { const t = photoTasks(); return ["Contrôle photo", "Niveau 2 · le matériel peut déjà être réemprunté", "", t || empty("Aucune photo en attente", "Chaque retour de niveau 2 arrive ici avec sa photo.")]; }
+function matRows() {
+  const st = S(), B = ui.bo, q = B.matSearch.trim().toLowerCase();
+  const ids = Object.keys(st.catalog).filter(id => {
+    const c = st.catalog[id], it = st.items[id];
+    if (B.matCat !== "all" && c.cat !== B.matCat) return false;
+    if (B.matFilter === "n1" && c.niveau !== 1) return false;
+    if (B.matFilter === "n2" && c.niveau !== 2) return false;
+    if (B.matFilter === "dispo" && it.status !== "disponible") return false;
+    if (B.matFilter === "out" && !["emprunte", "remise_a_valider", "retour_a_valider"].includes(it.status)) return false;
+    if (B.matFilter === "off" && !["anomalie", "hors_service", "perdu"].includes(it.status)) return false;
+    return !q || c.name.toLowerCase().includes(q) || c.qr.toLowerCase().includes(q);
+  });
+  if (!ids.length) return `<tr><td colspan="6"><div class="emptystate"><b>Aucun matériel</b><span>Modifiez la recherche ou les filtres.</span></div></td></tr>`;
+  return ids.map(id => { const c = st.catalog[id], it = st.items[id], l = it.loanId && st.loans.find(x => x.id === it.loanId), [sl, sc] = STATUS_BO[it.status];
+    return `<tr class="click${chg("item:" + id)}" data-drawer="item|${id}" tabindex="0"><td><div class="nm"><span class="thumb">${ic(c.icon, 16)}</span><span><b>${esc(c.name)}</b><span class="mono t3" style="font-size:11px">${c.qr}</span></span></div></td><td>${esc(Engine.CATS[c.cat].short)}</td><td>${lvl(id)}</td><td>${esc(c.place)}</td><td><span class="badge ${sc}">${sl}</span>${it.pending ? ` <span class="badge b-pri">photo</span>` : ""}${l ? `<div class="t2" style="font-size:12px">${esc(short(l.responsibleId))}</div>` : ""}</td><td class="num mono">${eur(Engine.forfait(st, id))}</td></tr>`; }).join("");
+}
+function boMateriel() {
+  const st = S(), B = ui.bo, total = Object.keys(st.catalog).length, out = Object.values(st.items).filter(i => i.status === "emprunte").length;
+  return ["Matériel", `${total} matériels · ${out} sortis · ${Object.values(st.items).filter(i => ["anomalie", "hors_service", "perdu"].includes(i.status)).length} retirés`, `<button class="btn primary" type="button" data-bo-modal="add">${ic("plus", 16)}Ajouter un matériel</button>`,
+    `<div class="toolbar"><label class="searchbox" for="mat-search">${ic("search")}<input id="mat-search" type="search" placeholder="Nom ou code QR" value="${esc(B.matSearch)}" autocomplete="off"></label>
+      <div class="chips" role="group" aria-label="Filtrer">${[["all", "Tout"], ["n1", "Niveau 1"], ["n2", "Niveau 2"], ["dispo", "Disponibles"], ["out", "Sortis"], ["off", "Retirés"]].map(([v, l]) => `<button class="chip" type="button" data-matfilter="${v}" aria-pressed="${B.matFilter === v}">${l}</button>`).join("")}</div>
+      <select class="input" id="mat-cat" style="width:auto;height:36px" aria-label="Catégorie"><option value="all">Toutes les catégories</option>${Object.entries(Engine.CATS).map(([kk, c]) => `<option value="${kk}" ${B.matCat === kk ? "selected" : ""}>${c.name}</option>`).join("")}</select></div>
+    <div class="tablewrap"><table class="tbl"><thead><tr><th>Matériel</th><th>Catégorie</th><th>Niveau</th><th>Lieu</th><th>Statut</th><th class="num">Forfait</th></tr></thead><tbody id="mat-rows">${matRows()}</tbody></table></div>`];
+}
+function boPrets() {
+  const st = S(), B = ui.bo, q = B.loanSearch.trim().toLowerCase();
+  const LS = { remise_a_valider: ["Remise à valider", "b-warn"], actif: ["En cours", "b-pri"], retour_a_valider: ["Retour à valider", "b-warn"], rendu: ["Rendu", "b-ok"], perdu: ["Perdu", "b-bad"], annule: ["Annulé", "b-off"] };
+  const list = st.loans.filter(l => B.loanTab === "open" ? ["remise_a_valider", "actif", "retour_a_valider"].includes(l.status) : !["remise_a_valider", "actif", "retour_a_valider"].includes(l.status))
+    .filter(l => !q || st.catalog[l.itemId].name.toLowerCase().includes(q) || P(l.responsibleId).name.toLowerCase().includes(q)).slice().reverse();
+  const openN = st.loans.filter(l => ["remise_a_valider", "actif", "retour_a_valider"].includes(l.status)).length;
+  return ["Prêts", `${openN} en cours · ${boCounts().late} en retard`, "",
+    `<div class="tabs" role="tablist"><button type="button" role="tab" data-loantab="open" aria-selected="${B.loanTab === "open"}">En cours <span class="pill c">${openN}</span></button><button type="button" role="tab" data-loantab="hist" aria-selected="${B.loanTab === "hist"}">Historique</button></div>
+    <div class="toolbar"><label class="searchbox" for="loan-search">${ic("search")}<input id="loan-search" type="search" placeholder="Matériel ou emprunteur" value="${esc(B.loanSearch)}" autocomplete="off"></label></div>
+    <div class="tablewrap"><table class="tbl"><thead><tr><th>Matériel</th><th>Responsable</th><th>Sorti</th><th>Statut</th><th class="num">Forfait</th></tr></thead><tbody>${list.length ? list.map(l => { const late = Engine.overdue(st, l), [sl, sc] = late ? ["En retard", "b-bad"] : LS[l.status];
+      return `<tr class="click${chg("item:" + l.itemId)}" data-drawer="item|${l.itemId}" tabindex="0"><td><div class="nm"><span class="thumb">${ic(st.catalog[l.itemId].icon, 16)}</span><b>${esc(st.catalog[l.itemId].name)}</b></div></td><td><div class="nm">${av(l.responsibleId, "xs")}<span>${esc(P(l.responsibleId).name)}${l.forClass ? `<span class="t3" style="display:block;font-size:12px">pour la ${l.forClass}</span>` : ""}</span></div></td><td class="mono">Jour ${l.dayOut}</td><td><span class="badge ${sc}">${sl}</span></td><td class="num mono">${eur(l.forfait)}</td></tr>`; }).join("") : `<tr><td colspan="5"><div class="emptystate"><b>Aucun prêt</b><span>Rien à afficher ici.</span></div></td></tr>`}</tbody></table></div>`];
+}
+function boPeople() {
+  const st = S(), q = ui.bo.peopleSearch.trim().toLowerCase();
+  const ids = Object.keys(st.people).filter(pid => ["eleve", "intervenant"].includes(st.people[pid].role)).filter(pid => !q || st.people[pid].name.toLowerCase().includes(q));
+  return ["Emprunteurs", `${ids.length} comptes · ${boCounts().blocked} bloqué(s)`, "",
+    `<div class="toolbar"><label class="searchbox" for="people-search">${ic("search")}<input id="people-search" type="search" placeholder="Nom" value="${esc(ui.bo.peopleSearch)}" autocomplete="off"></label></div>
+    <div class="tablewrap"><table class="tbl"><thead><tr><th>Nom</th><th>Profil</th><th>Prêts en cours</th><th>À rembourser</th><th>Statut</th></tr></thead><tbody>${ids.map(pid => { const br = Engine.blockReason(st, pid), debt = st.incidents.filter(i => i.responsibleId === pid && i.statut === "a_rembourser").reduce((a, i) => a + i.montant, 0);
+      return `<tr class="click${chg("person:" + pid)}" data-drawer="person|${pid}" tabindex="0"><td><div class="nm">${av(pid)}<b>${esc(P(pid).name)}</b></div></td><td>${esc(roleLabel(pid))}</td><td class="mono">${openLoans(pid).length}</td><td class="mono">${debt ? eur(debt) : "—"}</td><td>${br ? `<span class="badge b-bad">Bloqué</span>` : st.exempt[pid] === st.clock.day ? `<span class="badge b-warn">Débloqué aujourd'hui</span>` : `<span class="badge b-ok">Actif</span>`}${P(pid).charte ? "" : ` <span class="badge b-off">Charte non acceptée</span>`}</td></tr>`; }).join("")}</tbody></table></div>`];
+}
+function boIncidents(k) {
+  const st = S(), B = ui.bo, due = st.incidents.filter(i => i.statut === "a_rembourser"), paid = st.incidents.filter(i => i.statut === "rembourse");
+  const row = i => { const c = st.catalog[i.itemId], adj = B.adjust === i.id;
+    const acts = i.statut === "rembourse" ? `<span class="badge b-ok">Payé · jour ${i.paidDay}</span>` : isDir()
+      ? (adj ? `<div class="chips"><input class="input mono" id="adjust-input" type="number" min="0" max="${i.montant}" value="${i.montant}" style="width:96px;height:30px"><button class="btn primary sm" type="button" data-bo-adjust-save="${i.id}">OK</button><button class="btn ghost sm" type="button" data-bo-adjust="">Annuler</button></div>`
+        : `<div class="chips"><button class="btn ghost sm" type="button" data-bo-adjust="${i.id}">${ic("edit", 14)}Ajuster</button><button class="btn primary sm" type="button" data-bo-pay="${i.id}">${ic("check", 14)}Enregistrer le paiement</button></div>`)
+      : lockBtn("Enregistrer le paiement", `data-bo-pay="${i.id}"`);
+    return task(i.statut === "rembourse" ? "photo" : "money", "receipt", `${eur(i.montant)} · ${esc(P(i.responsibleId).name)}`, `${esc(c.name)} · ${esc(i.motif)} · jour ${i.day}`, acts, "", "incidents"); };
+  return ["Incidents & paiements", "Le paiement se fait au bureau, l'app suit « à rembourser » puis « payé »", "",
+    `<div class="tabs" role="tablist"><button type="button" role="tab" data-inctab="due" aria-selected="${B.incTab === "due"}">À rembourser <span class="pill ${due.length ? "hot" : "c"}">${due.length}</span></button><button type="button" role="tab" data-inctab="paid" aria-selected="${B.incTab === "paid"}">Payés <span class="pill c">${paid.length}</span></button><button type="button" role="tab" data-inctab="reports" aria-selected="${B.incTab === "reports"}">Signalements <span class="pill ${k.reports ? "warm" : "c"}">${k.reports}</span></button></div>
+    ${B.incTab === "due" ? (due.map(row).join("") || empty("Aucun paiement en attente", "Les forfaits dus apparaîtront ici.")) : B.incTab === "paid" ? (paid.map(row).join("") || empty("Aucun paiement enregistré", "")) : `<div class="panel"><div class="panel-b">${reportRows(false)}</div></div>`}`];
+}
+function boStock() {
+  const st = S();
+  return ["Consommables", "Comptage rapide chaque semaine · pas de suivi nominatif", `<button class="btn primary" type="button" data-bo-a="comptage">${ic("check", 16)}Enregistrer le comptage</button>`,
+    `<div class="grid2" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">${Object.entries(st.stock).map(([kk, x]) => { const low = x.qty < x.min, pct = Math.min(100, x.qty / (x.min * 3) * 100);
+      return `<div class="stockcard${chg("stock")}"><div style="display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:10px;align-items:center"><span class="thumb">${ic(x.icon, 18)}</span><b>${x.name}</b></div>${low ? `<span class="badge b-bad">Sous le seuil</span>` : `<span class="badge b-ok">OK</span>`}</div>
+        <div><span style="font-family:var(--f-display);font-size:32px;font-weight:800">${x.qty}</span> <span class="t2">${x.unit}</span></div>
+        <div class="bar"><i class="${low ? "low" : ""}" style="width:${pct}%"></i></div><div class="t3" style="font-size:12px">Seuil : ${x.min} · dernier comptage jour ${x.lastCount}</div>
+        <div class="field"><label for="stock-${kk}">Comptage de la semaine</label><input class="input mono" id="stock-${kk}" type="number" min="0" value="${x.qty}"></div></div>`; }).join("")}</div>`];
+}
+function boSalles() {
+  const st = S(), B = ui.bo;
+  return ["Salles", "Ventilateurs rattachés aux salles · inventaire mensuel", "",
+    `<div class="tablewrap"><table class="tbl"><thead><tr><th>Salle</th><th>Attendus</th><th>Présents</th><th>Dernière vérification</th><th>Statut</th><th></th></tr></thead><tbody>${Object.entries(st.rooms).map(([r, x]) => { const d = B.rooms[r] != null ? B.rooms[r] : x.present, open = st.reports.find(z => z.target.kind === "room" && z.target.id === r && z.status === "ouvert");
+      return `<tr class="${chg("room:" + r)}"><td><div class="nm"><span class="thumb">${ic("door", 16)}</span><b>Salle ${r}</b></div></td><td class="mono">${x.fans}</td><td><span class="stepper"><button type="button" data-room="${r}|-1" aria-label="Moins">${ic("minus", 14)}</button><span>${d}</span><button type="button" data-room="${r}|1" aria-label="Plus">${ic("plus", 14)}</button></span></td><td class="mono">Jour ${x.lastCheck}</td><td>${x.present < x.fans ? `<span class="badge b-bad">${x.fans - x.present} manquant(s)</span>` : `<span class="badge b-ok">Complet</span>`}${open ? ` <span class="badge b-warn">signalé</span>` : ""}</td><td class="num"><button class="btn sm" type="button" data-bo-room="${r}">${ic("check", 14)}Valider</button></td></tr>`; }).join("")}</tbody></table></div>
+    <p class="t2" style="font-size:13px">${ic("info", 14)} Ajustez le nombre de ventilateurs trouvés, puis validez la vérification de chaque salle.</p>`];
+}
+const SAMPLE_INV = [
+  { name: "Casque d'anglais #07", cat: "cours", niveau: 2, place: "Bureau de la pédagogie", forfait: 25, type: "casque" },
+  { name: "Souris filaire #04", cat: "cours", niveau: 2, place: "Bureau de la pédagogie", forfait: 12, type: "souris" },
+  { name: "Multiprise modèle C", cat: "cours", niveau: "", place: "Bureau de la pédagogie", forfait: 18, error: "Niveau manquant (colonne D)" },
+  { name: "Jeu Dobble", cat: "jeux", niveau: 2, place: "Bureau de la pédagogie", forfait: 15, type: "dobble" }
+];
+const SAMPLE_CLS = ["B1", "B2", "B3", "M1", "M2"];
+function boImports() {
+  const st = S(), I = ui.bo.imp;
+  const inv = I.inv === "preview" ? `<div class="tablewrap"><table class="tbl"><thead><tr><th>Nom</th><th>Catégorie</th><th>Niveau</th><th class="num">Forfait</th><th>Contrôle</th></tr></thead><tbody>${SAMPLE_INV.map(r => `<tr class="${r.error ? "err" : ""}"><td>${esc(r.name)}</td><td>${esc(Engine.CATS[r.cat].short)}</td><td>${r.niveau || "—"}</td><td class="num mono">${eur(r.forfait)}</td><td>${r.error ? `<span class="badge b-bad">${esc(r.error)}</span>` : `<span class="badge b-ok">Valide</span>`}</td></tr>`).join("")}</tbody></table></div>
+      <div class="chips"><button class="btn primary" type="button" data-bo-a="importinv">${ic("upload", 16)}Importer les ${SAMPLE_INV.filter(r => !r.error).length} lignes valides</button><button class="btn ghost" type="button" data-bo-imp="inv|">Annuler</button><span class="t2" style="font-size:12px">La ligne en erreur est ignorée : corrigez-la dans Calc puis réimportez.</span></div>`
+    : I.inv === "done" ? `<div class="status ok"><span class="ico">${ic("check", 18)}</span><div><b>Import terminé</b><span>Les nouveaux matériels sont dans l'inventaire avec leur code QR.</span></div></div><button class="btn" type="button" data-go="materiel">Voir l'inventaire</button>`
+    : `<div class="dropzone">${ic("sheet", 28)}<b>Déposez un fichier .ods ou .csv</b><span>Colonnes : nom, catégorie, niveau, lieu, forfait</span><button class="btn" type="button" data-bo-imp="inv|preview">Choisir « inventaire_rentree.ods » (exemple)</button></div>`;
+  const cls = I.cls === "preview" ? `<div class="chips">${SAMPLE_CLS.map(c => `<span class="chip">${c}${st.classes.includes(c) ? "" : ` <span class="badge b-pri">nouvelle</span>`}</span>`).join("")}</div><div class="chips"><button class="btn primary" type="button" data-bo-a="importcls">${ic("upload", 16)}Importer ${SAMPLE_CLS.length} classes</button><button class="btn ghost" type="button" data-bo-imp="cls|">Annuler</button></div>`
+    : I.cls === "done" ? `<div class="status ok"><span class="ico">${ic("check", 18)}</span><div><b>Liste des classes à jour</b><span>Les intervenants les voient dans « Pour ma classe ».</span></div></div>`
+    : `<div class="dropzone">${ic("sheet", 28)}<b>Déposez la liste des classes</b><span>Une colonne : code de la classe</span><button class="btn" type="button" data-bo-imp="cls|preview">Choisir « classes_2026.ods » (exemple)</button></div>`;
+  return ["Imports Calc", "Aucune API : on importe des fichiers Calc", "",
+    `<div class="grid2"><div class="panel"><div class="panel-h"><h3>${ic("box", 16)}Inventaire</h3><span class="micro">${Object.keys(st.catalog).length} matériels</span></div><div class="panel-b">${inv}</div></div>
+    <div class="panel"><div class="panel-h"><h3>${ic("school", 16)}Liste des classes</h3><span class="micro">${st.classes.join(" · ")}</span></div><div class="panel-b">${cls}</div></div></div>
+    <div class="panel"><div class="panel-h"><h3>${ic("clock", 16)}Emplois du temps et salles</h3><span class="pill c">V1.1</span></div><div class="panel-b"><p class="t2" style="font-size:13px">Import PRONOTE → Calc au début de chaque semestre, changements du jour dans l'app. Prévu en V1.1.</p></div></div>`];
+}
+function boSettings() {
+  const st = S(), dir = isDir();
+  return ["Réglages", "Charte, notifications et accès", "",
+    `<div class="grid2"><div class="panel"><div class="panel-h"><h3>${ic("file", 16)}Charte d'utilisation</h3>${dir ? "" : `<span class="lockline">${ic("lock", 11)}Modifiable par Sandrine</span>`}</div><div class="panel-b">
+      <textarea class="input" id="charte-text" style="min-height:260px;font-size:13px" ${dir ? "" : "readonly"}>${esc(st.settings.charte)}</textarea>
+      ${dir ? `<button class="btn primary" type="button" data-bo-a="savecharte">${ic("check", 16)}Enregistrer la charte</button>` : ""}<p class="t2" style="font-size:12px">Acceptée une fois à la première connexion. Les forfaits sont affichés à chaque emprunt.</p></div></div>
+    <div style="display:grid;gap:16px;align-content:start">
+      <div class="panel"><div class="panel-h"><h3>${ic("bell", 16)}Notifications</h3></div><div class="panel-b">
+        <div class="setrow"><div><b>Rappel de 16h30</b><div class="t2" style="font-size:12px">Push + email aux emprunteurs qui ont un prêt en cours</div></div><button class="switch" type="button" role="switch" aria-checked="${st.settings.rappel}" data-bo-set="rappel" aria-label="Rappel de 16h30"></button></div>
+        <div class="setrow"><div><b>Récap de 8h</b><div class="t2" style="font-size:12px">Email aux 3 membres de l'équipe</div></div><button class="switch" type="button" role="switch" aria-checked="${st.settings.recap}" data-bo-set="recap" aria-label="Récap de 8h"></button></div></div></div>
+      <div class="panel"><div class="panel-h"><h3>${ic("shield", 16)}Rôles et accès</h3></div><div class="panel-b">${["cyrianne", "lydia", "sandrine"].map(pid => `<div class="row">${av(pid)}<div><div class="n">${esc(P(pid).name)}</div><div class="m">${P(pid).role === "direction" ? "Direction · toutes les opérations + forfaits, paiements, charte" : "Équipe pédagogique · valider, contrôler, gérer le matériel"}</div></div><span class="pill c">${P(pid).role === "direction" ? "Admin" : "Équipe"}</span></div>`).join("")}
+        <p class="t2" style="font-size:12px">Élèves et intervenants se connectent avec leur email école.</p></div></div>
+    </div></div>`];
+}
+function boDrawer() {
+  const st = S(), [kind, id] = ui.bo.drawer;
+  let head, body;
+  if (kind === "item") {
+    const c = st.catalog[id], it = st.items[id], l = it.loanId && st.loans.find(x => x.id === it.loanId), [sl, sc] = STATUS_BO[it.status], dir = isDir();
+    const hist = st.loans.filter(x => x.itemId === id).slice().reverse();
+    const fin = (label, value, comp) => `<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><div class="n" style="font-weight:500">${esc(label)}</div>${dir ? `<span class="chips"><input class="input mono" type="number" min="0" id="ff-${comp || "main"}" value="${value}" style="width:90px;height:30px"><button class="btn sm" type="button" data-bo-forfait="${id}|${comp || ""}">OK</button></span>` : `<span class="mono">${eur(value)}</span>`}</div>`;
+    head = `<span class="thumb">${ic(c.icon, 22)}</span><div><h3>${esc(c.name)}</h3><div class="t2" style="font-size:12px;display:flex;gap:6px;align-items:center;margin-top:2px">${lvl(id)}${esc(Engine.CATS[c.cat].name)}</div></div>`;
+    body = `<div class="dsect"><div style="display:flex;gap:14px;align-items:center">${qrSvg(c.qr)}<div style="display:grid;gap:6px"><span class="badge ${sc}">${sl}</span>${l ? `<span class="t2" style="font-size:13px">Chez ${esc(P(l.responsibleId).name)}${l.forClass ? " (pour la " + l.forClass + ")" : ""} depuis le jour ${l.dayOut}</span>` : ""}<span class="mono t3" style="font-size:12px">${c.qr}</span><span class="t2" style="font-size:12px">${ic("pin", 12)} ${esc(c.place)}</span><button class="btn sm" type="button" data-bo-a="print">${ic("printer", 14)}Imprimer l'étiquette</button></div></div></div>
+      <div class="dsect"><div style="display:flex;justify-content:space-between;align-items:center"><span class="micro">Forfaits ${c.composants ? "par composant" : ""}</span>${dir ? `<span class="t3" style="font-size:11px">S'applique à tout le type</span>` : `<span class="lockline">${ic("lock", 11)}Modifiable par Sandrine</span>`}</div>
+        <div>${c.composants ? c.composants.map(x => fin(x.name, x.forfait, x.id)).join("") + `<div class="row" style="grid-template-columns:minmax(0,1fr) auto"><b>Total du kit</b><b class="mono">${eur(Engine.forfait(st, id))}</b></div>` : fin("Forfait perte / casse", c.forfait)}</div></div>
+      <div class="dsect"><span class="micro">Historique des prêts</span><div>${hist.length ? hist.map(x => `<div class="row">${av(x.responsibleId, "xs")}<div><div class="n">${esc(P(x.responsibleId).name)}</div><div class="m">Jour ${x.dayOut}${x.forClass ? " · pour la " + x.forClass : ""}</div></div><span class="t2" style="font-size:12px">${{ rendu: "Rendu", actif: "En cours", perdu: "Perdu", annule: "Annulé", remise_a_valider: "Remise", retour_a_valider: "Retour" }[x.status]}</span></div>`).join("") : `<p class="t2" style="font-size:13px">Jamais emprunté.</p>`}</div></div>
+      <div class="dsect"><span class="micro">Actions</span><div class="chips">${["anomalie", "hors_service", "perdu"].includes(it.status) ? `<button class="btn primary" type="button" data-bo-act="REMETTRE|${id}">${ic("wrench", 16)}Remettre en service</button>` : `<button class="btn" type="button" data-bo-act="RETIRER|${id}" ${it.status !== "disponible" ? "disabled" : ""}>${ic("ban", 16)}Retirer du prêt</button>`}</div></div>`;
+  } else {
+    const p = P(id), br = Engine.blockReason(st, id), loans = st.loans.filter(x => x.responsibleId === id).slice().reverse(), incs = st.incidents.filter(i => i.responsibleId === id);
+    head = `${av(id, "lg")}<div><h3>${esc(p.name)}</h3><div class="t2" style="font-size:12px">${esc(roleLabel(id))}</div></div>`;
+    body = `<div class="dsect">${br ? `<div class="status bad"><span class="ico">${ic("lock", 18)}</span><div><b>Bloqué</b><span>${esc(br)}</span></div></div><button class="btn" type="button" data-bo-unblock="${id}">${ic("lock", 16)}Débloquer pour aujourd'hui</button>` : `<div class="status ok"><span class="ico">${ic("check", 18)}</span><div><b>Peut emprunter</b><span>${p.charte ? "Charte acceptée" : "Charte pas encore acceptée"}</span></div></div>`}</div>
+      <div class="dsect"><span class="micro">Incidents</span><div>${incs.length ? incs.map(i => `<div class="row"><span class="thumb">${ic("receipt", 16)}</span><div><div class="n">${eur(i.montant)} · ${esc(st.catalog[i.itemId].name)}</div><div class="m">${esc(i.motif)}</div></div><span class="badge ${i.statut === "rembourse" ? "b-ok" : "b-bad"}">${i.statut === "rembourse" ? "Payé" : "À rembourser"}</span></div>`).join("") : `<p class="t2" style="font-size:13px">Aucun incident.</p>`}</div></div>
+      <div class="dsect"><span class="micro">Prêts</span><div>${loans.length ? loans.map(x => `<div class="row"><span class="thumb">${ic(st.catalog[x.itemId].icon, 16)}</span><div><div class="n">${esc(st.catalog[x.itemId].name)}</div><div class="m">Jour ${x.dayOut}${x.forClass ? " · pour la " + x.forClass : ""}</div></div><span class="t2" style="font-size:12px">${{ rendu: "Rendu", actif: Engine.overdue(st, x) ? "En retard" : "En cours", perdu: "Perdu", annule: "Annulé", remise_a_valider: "Remise", retour_a_valider: "Retour" }[x.status]}</span></div>`).join("") : `<p class="t2" style="font-size:13px">Aucun prêt.</p>`}</div></div>`;
+  }
+  return `<div class="overlay" data-bo-close="1"><aside class="drawer" role="dialog" aria-label="Détail"><div class="drawer-h">${head}<button class="btn ghost icon" type="button" data-bo-close="1" aria-label="Fermer">${ic("x", 18)}</button></div><div class="drawer-b">${body}</div></aside></div>`;
+}
+function boModal() {
+  return `<div class="modalwrap" data-bo-close="1"><div class="modal" role="dialog" aria-label="Ajouter un matériel">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:20px">Ajouter un matériel</h3><button class="btn ghost icon" type="button" data-bo-close="1" aria-label="Fermer">${ic("x", 18)}</button></div>
+    <div class="formgrid"><div class="field full"><label for="add-name">Nom</label><input class="input" id="add-name" placeholder="Ex. : Casque d'anglais #07"></div>
+      <div class="field"><label for="add-cat">Catégorie</label><select class="input" id="add-cat">${Object.entries(Engine.CATS).map(([k, c]) => `<option value="${k}">${c.name}</option>`).join("")}</select></div>
+      <div class="field"><label for="add-niveau">Niveau</label><select class="input" id="add-niveau"><option value="1">Niveau 1 · critique</option><option value="2" selected>Niveau 2 · standard</option></select></div>
+      <div class="field"><label for="add-place">Lieu</label><select class="input" id="add-place"><option>Bureau de la pédagogie</option><option>Armoire du studio</option></select></div>
+      <div class="field"><label for="add-forfait">Forfait (€)</label><input class="input mono" id="add-forfait" type="number" min="0" value="20"></div></div>
+    <p class="hint">${ic("info", 14)}Un code QR est généré automatiquement. Imprimez l'étiquette depuis la fiche.</p>
+    <div class="chips" style="justify-content:flex-end"><button class="btn ghost" type="button" data-bo-close="1">Annuler</button><button class="btn primary" type="button" data-bo-a="addsave">${ic("plus", 16)}Ajouter</button></div></div></div>`;
+}
+
+/* =====================================================================
+   ORCHESTRATION : actions, rendu global, événements
+   ===================================================================== */
+function diffKeys(a, b) {
+  const s = new Set();
+  for (const id in b.items) if (JSON.stringify(a.items[id]) !== JSON.stringify(b.items[id]) || JSON.stringify(a.catalog[id]) !== JSON.stringify(b.catalog[id])) s.add("item:" + id);
+  for (const pid in b.people) if (Engine.blockReason(a, pid) !== Engine.blockReason(b, pid)) s.add("person:" + pid);
+  if (JSON.stringify(a.incidents) !== JSON.stringify(b.incidents)) s.add("incidents");
+  if (JSON.stringify(a.stock) !== JSON.stringify(b.stock)) s.add("stock");
+  for (const r in b.rooms) if (JSON.stringify(a.rooms[r]) !== JSON.stringify(b.rooms[r])) s.add("room:" + r);
+  return s;
+}
+let toastTimer = null;
+function run(action, opts = {}) {
+  ui.history.push({ state: ui.state });
+  const prev = ui.state, r = Engine.dispatch(ui.state, action);
+  ui.state = r.state; ui.last = { ...r, action };
+  if (typeof SC !== "undefined") for (const k of [r.rule, ...r.events.map(e => e.rule)].filter(Boolean)) SC.coverage[k] = (SC.coverage[k] || 0) + 1;
+  ui.flash = diffKeys(prev, ui.state);
+  const n = r.events.find(e => e.kind === "notif" && e.to && e.to.includes(ui.persona));
+  if (n) { ui.app.toast = n.id; ui.app.toastNew = true; }
+  if (r.ok && opts.onOk) opts.onOk(r);
+  if (opts.always) opts.always(r);
+  render();
+  showToast(r);
+  ui.flash = new Set();
+  return r;
+}
+function showToast(r) {
+  const el = $("dtoast"), rule = r.rule && RULE[r.rule];
+  el.hidden = false;
+  el.innerHTML = `<span class="c ${r.ok ? "ok" : "no"}">${ic(r.ok ? "check" : "x", 16)}</span><div><div class="m">${esc(r.msg)}</div>${rule ? `<div class="r">${rule.code} · ${esc(rule.t)}</div>` : ""}</div><button type="button" data-a="closedtoast" aria-label="Fermer">${ic("x", 14)}</button>`;
+  el.style.animation = "none"; void el.offsetWidth; el.style.animation = "";
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.hidden = true; }, 7000);
+}
+function undo() { if (typeof SC !== "undefined" && SC.mode === "guided" && SC.step) return void prevStep(); const h = ui.history.pop(); if (!h) return; ui.state = h.state; ui.app.sheet = null; ui.app.toast = null; ui.bo.drawer = null; ui.bo.modal = null; ui.flash = new Set(); $("dtoast").hidden = true; render(); }
+function resetAll(keepScenario) {
+  if (!keepScenario && typeof SC !== "undefined" && SC.mode === "guided") return void startScenario(SC.id);
+  ui.state = Engine.seed(); ui.history = []; ui.sessions = { ines: true, tom: false, diallo: true };
+  Object.assign(ui.app, { tab: "home", push: null, sheet: null, toast: null, search: "", cat: "all" });
+  Object.assign(ui.bo, { screen: "dashboard", drawer: null, modal: null, missing: {}, rooms: {}, imp: { inv: null, cls: null }, adjust: null });
+  $("dtoast").hidden = true; render();
+}
+function renderDemo() {
+  const st = S(), soir = st.clock.phase === "soir";
+  $("viewseg").innerHTML = [["split", "columns", "Côte à côte"], ["app", "phone", "App"], ["bo", "monitor", "Back-office"]].map(([k, i, l]) => `<button type="button" data-view="${k}" aria-pressed="${ui.view === k}">${ic(i, 14)}<span class="dm-lbl">${l}</span></button>`).join("");
+  $("clock").innerHTML = `${ic(soir ? "moon" : "sun", 14)}Jour ${st.clock.day} · ${timeStr()}`;
+  $("endday").innerHTML = `${ic("moon", 14)}<span class="dm-lbl">Fin de journée</span>`; $("endday").disabled = soir;
+  $("nextday").innerHTML = `${ic("sun", 14)}<span class="dm-lbl">Lendemain 8h</span>`;
+  $("undo").innerHTML = `${ic("undo", 14)}<span class="dm-lbl">Annuler</span>`; $("undo").disabled = !ui.history.length;
+  $("reset").innerHTML = `${ic("reset", 14)}<span class="dm-lbl">Réinitialiser</span>`;
+  const stage = $("stage");
+  stage.className = "stage v-" + ui.view + (ui.view === "split" && ui.narrowTab === "bo" ? " show-bo" : "");
+}
+function render() { renderDemo(); if (typeof renderStory === "function") renderStory(); renderPersonas(); renderApp(); renderBo(); }
+function goPush(push) { ui.app.push = push; ui.app.sheet = null; renderApp(); const sc = $("pscroll"); if (sc) sc.scrollTop = 0; }
+
+/* ---------- clics ---------- */
+document.addEventListener("click", e => {
+  const t = e.target.closest("button, .scrim, .overlay, .modalwrap, tr[data-drawer], label");
+  if (!t || t.tagName === "LABEL") return;
+  const d = t.dataset, A = ui.app, B = ui.bo, pid = ui.persona;
+
+  // overlays: close only when clicking the backdrop itself
+  if (t.classList.contains("scrim")) { if (e.target === t) { A.sheet = null; renderApp(); } return; }
+  if (t.classList.contains("overlay") || t.classList.contains("modalwrap")) { if (e.target === t) { B.drawer = null; B.modal = null; renderBo(); } return; }
+
+  // demo bar
+  if (d.view) { ui.view = d.view; renderDemo(); return; }
+  if (t.id === "endday") return void run({ type: "FIN_DE_JOURNEE" });
+  if (t.id === "nextday") return void run({ type: "LENDEMAIN" });
+  if (t.id === "undo") return void undo();
+  if (t.id === "reset") return void resetAll();
+  if (d.a === "closedtoast") { $("dtoast").hidden = true; return; }
+
+  // app
+  if (d.persona) { ui.persona = d.persona; Object.assign(A, { tab: "home", push: null, sheet: null, toast: null, search: "", cat: "all" }); ui.narrowTab = "app"; renderDemo(); renderPersonas(); renderApp(); return; }
+  if (d.close) { A.sheet = null; renderApp(); return; }
+  if (d.tab) { A.tab = d.tab; A.push = null; A.toast = null; renderApp(); return; }
+  if (d.cat) { A.cat = d.cat; renderApp(); return; }
+  if (d.alerts) { A.alerts = d.alerts; renderApp(); return; }
+  if (d.type) return void goPush({ kind: "type", type: d.type });
+  if (d.item) return void goPush({ kind: "item", id: d.item });
+  if (d.borrow) { A.sheet = { kind: "borrow", id: d.borrow, accepted: false, forClass: null }; A.sheetNew = true; renderApp(); return; }
+  if (d.return) { A.sheet = { kind: "return", id: d.return, checks: {}, photo: false }; A.sheetNew = true; renderApp(); return; }
+  if (d.watch) return void run({ type: "PREVENEZ_MOI", by: pid, item: d.watch });
+  if (d.scanpick) {
+    const it = S().items[d.scanpick], l = it.loanId && S().loans.find(x => x.id === it.loanId);
+    A.push = { kind: "item", id: d.scanpick };
+    A.sheet = l && l.responsibleId === pid && l.status === "actif" ? { kind: "return", id: d.scanpick, checks: {}, photo: false } : it.status === "disponible" ? { kind: "borrow", id: d.scanpick, accepted: false, forClass: null } : null;
+    A.sheetNew = true; renderApp(); return;
+  }
+  if (d.for !== undefined && A.sheet) { A.sheet.forClass = d.for || null; if (d.for) A.sheet.lastClass = d.for; renderApp(); return; }
+  if (d.repkind) { A.report.kind = d.repkind; A.report.target = $("rep-target").value; A.report.text = $("rep-text").value; renderApp(); return; }
+  switch (d.a) {
+    case "login": ui.sessions[pid] = true; renderApp(); return;
+    case "logout": ui.sessions[pid] = false; Object.assign(A, { tab: "home", push: null }); renderApp(); return;
+    case "acceptcharte": run({ type: "ACCEPTER_CHARTE", by: pid }, { onOk: () => { A.tab = "home"; } }); return;
+    case "closetoast": A.toast = null; renderApp(); return;
+    case "scan": A.sheet = { kind: "scan" }; A.sheetNew = true; renderApp(); return;
+    case "back": A.push = null; renderApp(); return;
+    case "report": A.report = { target: "", kind: "", text: "", photo: false }; goPush({ kind: "report" }); return;
+    case "readcharte": goPush({ kind: "charte" }); return;
+    case "repphoto": A.report.photo = !A.report.photo; A.report.target = $("rep-target").value; A.report.text = $("rep-text").value; renderApp(); return;
+    case "sendreport": {
+      const [kind, id] = $("rep-target").value.split(":");
+      run({ type: "SIGNALER", by: pid, target: { kind, id }, kind: A.report.kind, text: $("rep-text").value, photo: A.report.photo }, { onOk: () => { A.push = null; A.tab = "home"; } });
+      return;
+    }
+    case "takephoto": A.sheet.photo = !A.sheet.photo; renderApp(); return;
+    case "confirmborrow": { const sh = A.sheet; run({ type: "EMPRUNTER", by: pid, item: sh.id, forClass: sh.forClass || undefined }, { onOk: () => { A.push = null; A.tab = "home"; A.sheet = null; } }); if (A.sheet) { A.sheet = null; renderApp(); } return; }
+    case "confirmreturn": {
+      const sh = A.sheet, parts = (S().catalog[sh.id].composants || [{ id: "incomplet" }]).map(x => x.id);
+      run({ type: "RENDRE", by: pid, item: sh.id, missing: parts.find(x => sh.checks[x] === false) }, { onOk: () => { A.push = null; A.tab = "home"; } });
+      A.sheet = null; renderApp(); return;
+    }
+  }
+
+  // back-office
+  if (d.go) { B.screen = d.go; B.drawer = null; B.modal = null; ui.narrowTab = "bo"; renderDemo(); renderBo(); return; }
+  if (d.bouser) { B.user = d.bouser; B.adjust = null; renderBo(); return; }
+  if (d.boClose) { B.drawer = null; B.modal = null; renderBo(); return; }
+  if (d.drawer) { B.drawer = d.drawer.split("|"); renderBo(); return; }
+  if (d.miss) { const [k, id] = d.miss.split("|"); B.missing[k] = B.missing[k] === id ? "" : id; renderBo(); return; }
+  if (d.boAct) { const [type, item, k] = d.boAct.split("|"); const a = { type, by: B.user, item }; if (k && B.missing[k]) a.missing = B.missing[k]; if (k) delete B.missing[k]; run(a); return; }
+  if (d.boPay) return void run({ type: "REMBOURSEMENT", by: B.user, incident: d.boPay });
+  if (d.boAdjust !== undefined) { B.adjust = d.boAdjust || null; renderBo(); return; }
+  if (d.boAdjustSave) { const v = $("adjust-input").value; run({ type: "AJUSTER_MONTANT", by: B.user, incident: d.boAdjustSave, value: v }, { onOk: () => { B.adjust = null; } }); return; }
+  if (d.boReport) return void run({ type: "TRAITER_SIGNALEMENT", by: B.user, report: d.boReport });
+  if (d.boUnblock) return void run({ type: "DEBLOQUER", by: B.user, person: d.boUnblock });
+  if (d.boForfait) { const [item, comp] = d.boForfait.split("|"); run({ type: "MODIFIER_FORFAIT", by: B.user, item, comp: comp || null, value: $("ff-" + (comp || "main")).value }); return; }
+  if (d.boModal) { B.modal = d.boModal; renderBo(); setTimeout(() => $("add-name") && $("add-name").focus(), 30); return; }
+  if (d.matfilter) { B.matFilter = d.matfilter; renderBo(); return; }
+  if (d.loantab) { B.loanTab = d.loantab; renderBo(); return; }
+  if (d.inctab) { B.incTab = d.inctab; renderBo(); return; }
+  if (d.room) { const [r, delta] = d.room.split("|"); const cur = B.rooms[r] != null ? B.rooms[r] : S().rooms[r].present; B.rooms[r] = Math.max(0, cur + +delta); renderBo(); return; }
+  if (d.boRoom) { const r = d.boRoom, v = B.rooms[r] != null ? B.rooms[r] : S().rooms[r].present; run({ type: "VERIFIER_SALLE", by: B.user, room: r, present: v }, { onOk: () => { delete B.rooms[r]; } }); return; }
+  if (d.boImp) { const [k, v] = d.boImp.split("|"); B.imp[k] = v || null; renderBo(); return; }
+  if (d.boSet) return void run({ type: "REGLAGE", by: B.user, key: d.boSet, value: !S().settings[d.boSet] });
+  switch (d.boA) {
+    case "comptage": { const counts = {}; for (const k in S().stock) counts[k] = $("stock-" + k).value; run({ type: "COMPTAGE", by: B.user, counts }); return; }
+    case "importinv": run({ type: "IMPORT_INVENTAIRE", by: B.user, rows: SAMPLE_INV.filter(r => !r.error) }, { onOk: () => { B.imp.inv = "done"; } }); return;
+    case "importcls": run({ type: "IMPORT_CLASSES", by: B.user, classes: SAMPLE_CLS }, { onOk: () => { B.imp.cls = "done"; } }); return;
+    case "savecharte": run({ type: "MODIFIER_CHARTE", by: B.user, text: $("charte-text").value }); return;
+    case "print": showToast({ ok: true, msg: "Étiquette envoyée à l'imprimante du bureau (simulation).", rule: null }); return;
+    case "addsave": {
+      const name = $("add-name").value.trim();
+      if (!name) { $("add-name").focus(); $("add-name").style.borderColor = "var(--danger)"; return; }
+      run({ type: "AJOUTER_MATERIEL", by: B.user, data: { name, cat: $("add-cat").value, niveau: $("add-niveau").value, place: $("add-place").value, forfait: $("add-forfait").value } }, { onOk: () => { B.modal = null; B.matFilter = "all"; B.matSearch = ""; } });
+      return;
+    }
+  }
+});
+
+/* ---------- saisies (sans re-rendu complet pour garder le focus) ---------- */
+document.addEventListener("input", e => {
+  const t = e.target;
+  if (t.id === "app-search") { ui.app.search = t.value; $("catlist").innerHTML = catalogList(); }
+  if (t.id === "mat-search") { ui.bo.matSearch = t.value; $("mat-rows").innerHTML = matRows(); }
+  if (t.id === "loan-search") { ui.bo.loanSearch = t.value; const pos = t.selectionStart; renderBo(); const n = $("loan-search"); n.focus(); n.setSelectionRange(pos, pos); }
+  if (t.id === "people-search") { ui.bo.peopleSearch = t.value; const pos = t.selectionStart; renderBo(); const n = $("people-search"); n.focus(); n.setSelectionRange(pos, pos); }
+});
+document.addEventListener("change", e => {
+  const t = e.target, A = ui.app;
+  if (t.id === "charte-ok") $("charte-go").disabled = !t.checked;
+  if (t.id === "accept" && A.sheet) { A.sheet.accepted = t.checked; const b = $("confirmborrow"); if (b) b.disabled = !t.checked; }
+  if (t.dataset.part && A.sheet) A.sheet.checks[t.dataset.part] = t.checked;
+  if (t.id === "mat-cat") { ui.bo.matCat = t.value; $("mat-rows").innerHTML = matRows(); }
+});
+document.addEventListener("keydown", e => {
+  const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if (e.key === "Escape") { if (ui.app.sheet) { ui.app.sheet = null; renderApp(); } else if (ui.bo.drawer || ui.bo.modal) { ui.bo.drawer = null; ui.bo.modal = null; renderBo(); } return; }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z" && !typing) { e.preventDefault(); undo(); return; }
+  if (e.key === "Enter" && e.target.matches("tr[data-drawer]")) { ui.bo.drawer = e.target.dataset.drawer.split("|"); renderBo(); }
+});
+
+
+/* =====================================================================
+   SCÉNARIOS GUIDÉS (joués dans les vrais écrans)
+   ===================================================================== */
+const SCENARIOS = [
+  { id: "onboarding", title: "Première connexion", desc: "Tom découvre l'app et emprunte en libre-service", keepTomOut: true,
+    watch: "La charte n'est acceptée qu'une fois. Le forfait est affiché avant l'emprunt. Le casque redevient disponible dès le retour, avant même le contrôle.",
+    steps: [
+      ["Tom se connecte avec son compte école et accepte la charte", { type: "LOGIN_CHARTE", by: "tom" }],
+      ["Tom emprunte le casque d'anglais #01", { type: "EMPRUNTER", by: "tom", item: "casque-01" }],
+      ["Inès essaie de prendre le même casque", { type: "EMPRUNTER", by: "ines", item: "casque-01" }],
+      ["Tom rend le casque le soir, checklist + photo", { type: "RENDRE", by: "tom", item: "casque-01" }],
+      ["Lydia regarde la photo depuis le back-office : conforme", { type: "CONTROLER_PHOTO", by: "lydia", item: "casque-01" }]
+    ] },
+  { id: "kit", title: "Kit caméra incomplet", desc: "Validation sur place et composant manquant",
+    watch: "Inès ne peut pas valider elle-même. L'incident vise la batterie (45 €), pas le kit. Seule Sandrine enregistre le paiement.",
+    steps: [
+      ["Inès demande le kit Canon R10 depuis l'app", { type: "EMPRUNTER", by: "ines", item: "kit-r10-01" }],
+      ["Inès tente de valider elle-même la remise", { type: "VALIDER_REMISE", by: "ines", item: "kit-r10-01" }],
+      ["Lydia vérifie le kit et valide la remise", { type: "VALIDER_REMISE", by: "lydia", item: "kit-r10-01" }],
+      ["Inès rapporte le kit en cochant tout", { type: "RENDRE", by: "ines", item: "kit-r10-01" }],
+      ["Lydia contrôle sur place : une batterie manque", { type: "VALIDER_RETOUR", by: "lydia", item: "kit-r10-01", missing: "batterie2" }],
+      ["Lydia tente d'enregistrer le paiement", { type: "REMBOURSEMENT", by: "lydia", incident: "last" }],
+      ["Sandrine enregistre le paiement d'Inès", { type: "REMBOURSEMENT", by: "sandrine", incident: "last" }]
+    ] },
+  { id: "reemprunt", title: "Réemprunt avant contrôle", desc: "La photo protège le nouvel emprunteur",
+    watch: "Inès rend un jeu incomplet sans le dire. Tom le reprend avant le contrôle. Au contrôle, c'est Inès qui doit le forfait, pas Tom.",
+    steps: [
+      ["Inès emprunte le jeu Dixit", { type: "EMPRUNTER", by: "ines", item: "dixit-01" }],
+      ["Inès le rend en cochant « complet »", { type: "RENDRE", by: "ines", item: "dixit-01" }],
+      ["Tom emprunte le jeu, la photo n'est pas encore vue", { type: "EMPRUNTER", by: "tom", item: "dixit-01" }],
+      ["Lydia voit sur la photo d'Inès : des cartes manquent", { type: "CONTROLER_PHOTO", by: "lydia", item: "dixit-01", missing: "incomplet" }],
+      ["Lydia tente de contrôler un PC sur photo", { type: "CONTROLER_PHOTO", by: "lydia", item: "pc-01" }]
+    ] },
+  { id: "classe", title: "Prêt pour la classe", desc: "L'intervenant reste responsable",
+    watch: "Inès ne peut ni emprunter « pour ma classe », ni rendre à la place de M. Diallo.",
+    steps: [
+      ["Inès tente d'emprunter Time's Up « pour ma classe »", { type: "EMPRUNTER", by: "ines", item: "timesup-01", forClass: "B3" }],
+      ["M. Diallo emprunte Time's Up pour la B3", { type: "EMPRUNTER", by: "diallo", item: "timesup-01", forClass: "B3" }],
+      ["Inès tente de rendre le jeu à sa place", { type: "RENDRE", by: "ines", item: "timesup-01" }],
+      ["M. Diallo rend le jeu avec la photo", { type: "RENDRE", by: "diallo", item: "timesup-01" }],
+      ["Lydia contrôle la photo : conforme", { type: "CONTROLER_PHOTO", by: "lydia", item: "timesup-01" }]
+    ] },
+  { id: "boite", title: "Boîte intervenant", desc: "Prise le matin, rendue le soir, contrôlée plus tard",
+    watch: "M. Diallo se sert seul le matin. Il signale la télécommande manquante au retour. Le contrôle se fait le lendemain, sans le bloquer.",
+    steps: [
+      ["M. Diallo prend la boîte #01 le matin", { type: "EMPRUNTER", by: "diallo", item: "boite-01" }],
+      ["Le soir, il la rend en signalant la télécommande manquante", { type: "RENDRE", by: "diallo", item: "boite-01", missing: "telecommande" }],
+      ["Fin de journée", { type: "FIN_DE_JOURNEE" }],
+      ["Le lendemain, 8h", { type: "LENDEMAIN" }],
+      ["Lydia contrôle la photo : télécommande manquante", { type: "CONTROLER_PHOTO", by: "lydia", item: "boite-01", missing: "telecommande" }],
+      ["M. Diallo prend la boîte #03 pour sa journée", { type: "EMPRUNTER", by: "diallo", item: "boite-03" }]
+    ] },
+  { id: "blocage", title: "Oubli, blocage, perte", desc: "Blocage le soir, perte à J+2",
+    watch: "Blocage des emprunts le soir même, perte déclarée à J+2 avec un forfait de 450 €. Le blocage se lève seul au paiement.",
+    steps: [
+      ["Tom demande le PC de prêt #01", { type: "EMPRUNTER", by: "tom", item: "pc-01" }],
+      ["Lydia valide la remise", { type: "VALIDER_REMISE", by: "lydia", item: "pc-01" }],
+      ["Fin de journée : Tom est parti avec le PC", { type: "FIN_DE_JOURNEE" }],
+      ["Le lendemain, 8h", { type: "LENDEMAIN" }],
+      ["Tom veut emprunter un casque", { type: "EMPRUNTER", by: "tom", item: "casque-03" }],
+      ["Jour 3, 8h : le PC n'est toujours pas revenu", { type: "LENDEMAIN" }],
+      ["Sandrine enregistre le paiement de 450 €", { type: "REMBOURSEMENT", by: "sandrine", incident: "last" }],
+      ["Tom emprunte à nouveau un casque", { type: "EMPRUNTER", by: "tom", item: "casque-03" }]
+    ] },
+  { id: "prevenez", title: "« Prévenez-moi »", desc: "Tous prévenus, premier arrivé servi",
+    watch: "Inès et M. Diallo sont prévenus en même temps. Le premier qui scanne le prend, l'autre voit « indisponible ».",
+    steps: [
+      ["Tom emprunte le jeu Dixit", { type: "EMPRUNTER", by: "tom", item: "dixit-01" }],
+      ["Inès demande à être prévenue", { type: "PREVENEZ_MOI", by: "ines", item: "dixit-01" }],
+      ["M. Diallo demande à être prévenu", { type: "PREVENEZ_MOI", by: "diallo", item: "dixit-01" }],
+      ["Tom rend le jeu", { type: "RENDRE", by: "tom", item: "dixit-01" }],
+      ["M. Diallo le scanne en premier", { type: "EMPRUNTER", by: "diallo", item: "dixit-01" }],
+      ["Inès arrive juste après", { type: "EMPRUNTER", by: "ines", item: "dixit-01" }]
+    ] },
+  { id: "campus", title: "Signalement, salles et forfaits", desc: "Le travail de l'équipe au quotidien",
+    watch: "Un signalement arrive depuis l'app et se traite dans le back-office. Seule Sandrine modifie un forfait, et le changement vaut pour tous les casques.",
+    steps: [
+      ["Inès signale qu'il manque le ventilateur de la salle 104", { type: "SIGNALER", by: "ines", target: { kind: "room", id: "104" }, kind: "Manquant", text: "Plus de ventilateur depuis ce matin." }],
+      ["Lydia vérifie la salle 104 : 0 ventilateur sur 1", { type: "VERIFIER_SALLE", by: "lydia", room: "104", present: 0 }],
+      ["Lydia marque le signalement comme traité", { type: "TRAITER_SIGNALEMENT", by: "lydia", report: "last" }],
+      ["Lydia enregistre le comptage : 40 stylos", { type: "COMPTAGE", by: "lydia", counts: { feutres: 18, stylos: 40, couverts: 32 } }],
+      ["Lydia tente de passer le forfait des casques à 30 €", { type: "MODIFIER_FORFAIT", by: "lydia", item: "casque-01", value: 30 }],
+      ["Sandrine passe le forfait des casques à 30 €", { type: "MODIFIER_FORFAIT", by: "sandrine", item: "casque-01", value: 30 }]
+    ] }
+];
+const SC = { mode: "guided", id: "onboarding", step: 0, marks: [], picker: false, rules: false, done: {}, coverage: {} };
+
+function scenarioSeed(sc) {
+  const s = Engine.seed();
+  // On part d'un campus « calme » : les prêts du matin sont rendus, pour que chaque scénario soit lisible.
+  for (const l of s.loans) if (l.status === "actif") { l.status = "rendu"; s.items[l.itemId].status = "disponible"; s.items[l.itemId].loanId = null; }
+  if (!sc.keepTomOut) s.people.tom.charte = true;
+  return s;
+}
+function startScenario(id) {
+  const sc = SCENARIOS.find(x => x.id === id);
+  Object.assign(SC, { mode: "guided", id, step: 0, marks: [], picker: false, rules: false });
+  ui.state = scenarioSeed(sc); ui.history = []; ui.last = null;
+  ui.sessions = { ines: true, tom: !sc.keepTomOut, diallo: true };
+  ui.persona = sc.steps[0][1].by && ["ines", "tom", "diallo"].includes(sc.steps[0][1].by) ? sc.steps[0][1].by : "ines";
+  Object.assign(ui.app, { tab: "home", push: null, sheet: null, toast: null, search: "", cat: "all" });
+  Object.assign(ui.bo, { user: "lydia", screen: "dashboard", drawer: null, modal: null, missing: {}, rooms: {}, adjust: null });
+  $("dtoast").hidden = true;
+  render();
+}
+function resolve(a) {
+  const st = S(), x = { ...a };
+  if (x.incident === "last") { const i = [...st.incidents].reverse().find(z => z.statut === "a_rembourser"); x.incident = i && i.id; }
+  if (x.report === "last") { const r = [...st.reports].reverse().find(z => z.status === "ouvert"); x.report = r && r.id; }
+  return x;
+}
+function focusFor(a, r) {
+  const st = S(), A = ui.app, B = ui.bo, borrowers = ["ines", "tom", "diallo"];
+  const itemLoan = a.item ? [...st.loans].reverse().find(l => l.itemId === a.item) : null;
+  if (a.by && borrowers.includes(a.by)) {
+    ui.persona = a.by; A.sheet = null; A.search = ""; A.cat = "all";
+    if (["EMPRUNTER", "PREVENEZ_MOI"].includes(a.type) && (!r.ok || a.type === "PREVENEZ_MOI") && r.rule !== "blocage" && r.rule !== "bureau") { A.push = { kind: "item", id: a.item }; }
+    else { A.push = null; A.tab = "home"; }
+    if (a.type === "RENDRE" && !r.ok) A.tab = "home";
+    ui.narrowTab = "app";
+    if (["EMPRUNTER", "RENDRE"].includes(a.type) && r.ok && st.catalog[a.item].niveau === 1) B.screen = "valid";
+    if (a.type === "RENDRE" && r.ok && st.catalog[a.item].niveau === 2) B.screen = "photos";
+    if (a.type === "SIGNALER") B.screen = "dashboard";
+  }
+  if (a.by && ["cyrianne", "lydia", "sandrine"].includes(a.by)) {
+    B.user = a.by; B.drawer = null; B.modal = null; ui.narrowTab = "bo";
+    B.screen = { VALIDER_REMISE: "valid", VALIDER_RETOUR: "valid", CONTROLER_PHOTO: r.ok ? "incidents" : "photos", REMBOURSEMENT: "incidents", AJUSTER_MONTANT: "incidents", DEBLOQUER: "people", VERIFIER_SALLE: "salles", TRAITER_SIGNALEMENT: "incidents", COMPTAGE: "stock", MODIFIER_FORFAIT: "materiel", RETIRER: "materiel", REMETTRE: "materiel" }[a.type] || B.screen;
+    if (a.type === "CONTROLER_PHOTO") B.screen = r.ok && a.missing ? "incidents" : "photos";
+    if (a.type === "VALIDER_RETOUR" && r.ok && a.missing) B.screen = "incidents";
+    if (a.type === "TRAITER_SIGNALEMENT") B.incTab = "reports";
+    if (["REMBOURSEMENT", "AJUSTER_MONTANT"].includes(a.type)) B.incTab = r.ok ? "paid" : "due";
+    if (a.type === "MODIFIER_FORFAIT") B.drawer = ["item", a.item];
+    const inc = a.type === "REMBOURSEMENT" ? st.incidents.find(i => i.id === a.incident) : null;
+    const target = inc ? inc.responsibleId : itemLoan && itemLoan.responsibleId;
+    if (target && borrowers.includes(target)) { ui.persona = target; A.push = null; A.tab = "home"; A.sheet = null; }
+  }
+  if (a.type === "FIN_DE_JOURNEE" || a.type === "LENDEMAIN") {
+    B.screen = "dashboard"; B.drawer = null;
+    const blocked = borrowers.find(pid => Engine.blockReason(st, pid));
+    if (blocked) ui.persona = blocked;
+    A.push = null; A.tab = "home"; A.sheet = null;
+  }
+  if (a.type === "FIN_DE_JOURNEE" || a.type === "LENDEMAIN") ui.narrowTab = "app";
+  if (window.matchMedia("(max-width:1279px)").matches) ui.view = ui.narrowTab === "bo" ? "bo" : "app";
+  const n = r.events.find(e => e.kind === "notif" && e.to && e.to.includes(ui.persona));
+  A.toast = n ? n.id : null; A.toastNew = !!n;
+}
+function playStep() {
+  const sc = SCENARIOS.find(x => x.id === SC.id); if (SC.step >= sc.steps.length) return;
+  SC.marks.push(ui.history.length);
+  let a = sc.steps[SC.step][1];
+  if (a.type === "LOGIN_CHARTE") { ui.sessions[a.by] = true; a = { type: "ACCEPTER_CHARTE", by: a.by }; }
+  a = resolve(a);
+  SC.step++;
+  if (SC.step >= sc.steps.length) SC.done[sc.id] = true;
+  run(a, { always: r => focusFor(a, r) });
+}
+function prevStep() {
+  if (!SC.step) return;
+  const mark = SC.marks.pop();
+  while (ui.history.length > mark) { const h = ui.history.pop(); ui.state = h.state; }
+  SC.step--;
+  const sc = SCENARIOS.find(x => x.id === SC.id);
+  if (SC.step === 0 && sc.keepTomOut) ui.sessions.tom = false;
+  Object.assign(ui.app, { sheet: null, toast: null }); ui.bo.drawer = null; $("dtoast").hidden = true;
+  render();
+}
+function renderStory() {
+  const el = $("story");
+  $("modeseg").innerHTML = `<button type="button" data-scmode="guided" aria-pressed="${SC.mode === "guided"}">${ic("flag", 14)}<span class="dm-lbl">Scénarios</span></button><button type="button" data-scmode="free" aria-pressed="${SC.mode === "free"}">${ic("grid", 14)}<span class="dm-lbl">Libre</span></button>`;
+  if (SC.mode !== "guided") { el.hidden = true; return; }
+  el.hidden = false;
+  const idx = SCENARIOS.findIndex(x => x.id === SC.id), sc = SCENARIOS[idx], n = sc.steps.length, fin = SC.step >= n, next = SCENARIOS[idx + 1];
+  const cur = !fin && sc.steps[SC.step][1], actor = cur && cur.by;
+  const seen = Engine.RULES.filter(([k]) => SC.coverage[k]).length;
+  const segs = sc.steps.map((_, i) => `<i class="${i < SC.step ? "done" : i === SC.step ? "now" : ""}"></i>`).join("");
+  const pop = SC.picker ? `<div class="popover" role="menu">${SCENARIOS.map((x, i) => `<button class="popitem${SC.done[x.id] ? " done" : ""}" role="menuitem" type="button" data-scen="${x.id}" aria-current="${x.id === sc.id}"><span class="num">${SC.done[x.id] ? ic("check", 14) : i + 1}</span><span><span class="pt">${esc(x.title)}</span><span class="ps">${esc(x.desc)}</span></span><span class="micro">${x.steps.length} ét.</span></button>`).join("")}</div>` : "";
+  const rules = SC.rules ? `<div class="popover right" role="dialog" aria-label="Règles vérifiées"><div style="padding:8px 8px 4px;display:flex;justify-content:space-between;align-items:center"><b>${seen} sur 16 règles vérifiées</b><button class="btn ghost sm" type="button" data-screset="1">Remettre à zéro</button></div><ul class="rulelist" style="margin:0;padding:0">${Engine.RULES.map(([k, code, t]) => `<li class="${SC.coverage[k] ? "seen" : ""}"><span class="ck">${SC.coverage[k] ? ic("check", 12) : ""}</span><span class="code">${code}</span><span>${esc(t)}</span><span class="mono t3">${SC.coverage[k] ? "×" + SC.coverage[k] : ""}</span></li>`).join("")}</ul></div>` : "";
+  const actorHtml = actor && S().people[actor] ? `<span class="who">${av(actor, "xs")}${esc(S().people[actor].short)} · ${["cyrianne", "lydia", "sandrine"].includes(actor) ? "back-office" : "app mobile"}</span>` : cur ? `<span class="who">${ic("clock", 14)}Horloge</span>` : "";
+  el.innerHTML = `
+    <button class="picker" type="button" data-scpicker="1" aria-haspopup="menu" aria-expanded="${SC.picker}"><span class="num">${idx + 1}</span><span><span class="pt">${esc(sc.title)}</span><span class="ps">${n} étapes · changer de scénario</span></span>${ic("chevd")}</button>
+    <div class="narr">
+      <div class="narr-top"><span class="segs" aria-hidden="true">${segs}</span><span class="micro">${fin ? "Terminé" : `Étape ${SC.step + 1} sur ${n}`}</span>${actorHtml}</div>
+      ${fin ? `<div style="display:flex;gap:10px;align-items:center"><span class="donebadge">${ic("check")}</span><h2>Scénario terminé. Qu'est-ce qui vous a surpris ?</h2></div>` : `<h2>${esc(sc.steps[SC.step][0])}</h2>`}
+      <p class="watch">${ic("info", 14)}<span>${esc(sc.watch)}</span></p>
+    </div>
+    <div class="story-actions">
+      <button class="covchip" type="button" data-scrules="1" aria-expanded="${SC.rules}">${ic("shield", 14)}Règles <b>${seen}/16</b></button>
+      <button class="btn ghost" type="button" data-scprev="1" ${SC.step ? "" : "disabled"}>${ic("chevl", 14)}Précédente</button>
+      ${fin ? (next ? `<button class="btn primary lg" type="button" data-scen="${next.id}">Scénario suivant ${ic("arrowr", 16)}</button>` : `<button class="btn primary lg" type="button" data-scmode="free">Explorer librement ${ic("arrowr", 16)}</button>`)
+            : `<button class="btn primary lg" type="button" data-scnext="1">Étape suivante <span class="kbd">→</span></button>`}
+      ${rules}
+    </div>${pop}`;
+}
+document.addEventListener("click", e => {
+  const t = e.target.closest("button"); if (!t) { if (SC.picker || SC.rules) { SC.picker = SC.rules = false; renderStory(); } return; }
+  const d = t.dataset;
+  if (d.scmode) { if (d.scmode === "guided") startScenario(SC.id); else if (SC.mode !== "free") { SC.mode = "free"; SC.picker = SC.rules = false; ui.persona = "ines"; resetAll(true); } return; }
+  if (d.scpicker) { SC.picker = !SC.picker; SC.rules = false; renderStory(); return; }
+  if (d.scrules) { SC.rules = !SC.rules; SC.picker = false; renderStory(); return; }
+  if (d.screset) { SC.coverage = {}; renderStory(); return; }
+  if (d.scen) { startScenario(d.scen); return; }
+  if (d.scnext) { playStep(); return; }
+  if (d.scprev) { prevStep(); return; }
+  if ((SC.picker || SC.rules) && !t.closest(".popover")) { SC.picker = SC.rules = false; renderStory(); }
+});
+document.addEventListener("keydown", e => {
+  const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if (e.key === "ArrowRight" && !typing && SC.mode === "guided" && !ui.app.sheet && !ui.bo.modal) { e.preventDefault(); playStep(); }
+  if (e.key === "ArrowLeft" && !typing && SC.mode === "guided" && !ui.app.sheet && !ui.bo.modal) { e.preventDefault(); prevStep(); }
+  if (e.key === "Escape" && (SC.picker || SC.rules)) { SC.picker = SC.rules = false; renderStory(); }
+});
+
+if (window.matchMedia('(max-width:1279px)').matches) ui.view = 'app';
+startScenario('onboarding');
+</script>
+
+</body>
+</html>

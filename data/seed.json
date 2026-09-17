@@ -1,0 +1,1467 @@
+{
+  "meta": {
+    "version": 1,
+    "description": "Jeu de démo « au travail » cohérent avec le Figma validé. Les compteurs se calculent depuis ces données.",
+    "source": "Figma lN2EFZzYHfTuAW9agcHstV (Maquette-MDS)"
+  },
+  "horloge": {
+    "maintenant": "2026-09-17T10:15",
+    "bureau": {
+      "ouverture": "08:00",
+      "fermeture": "18:00"
+    },
+    "rappel": "16:30",
+    "recap": "08:00"
+  },
+  "personaParDefaut": {
+    "app": "ines",
+    "backOffice": "lydia"
+  },
+  "categories": {
+    "studio": {
+      "nom": "Studio photo & vidéo",
+      "court": "Studio"
+    },
+    "informatique": {
+      "nom": "Informatique",
+      "court": "Informatique"
+    },
+    "cours": {
+      "nom": "Matériel de cours",
+      "court": "Cours"
+    },
+    "jeux": {
+      "nom": "Jeux de société",
+      "court": "Jeux"
+    },
+    "boites": {
+      "nom": "Boîtes intervenant",
+      "court": "Boîtes",
+      "reserveA": "intervenant"
+    }
+  },
+  "lieux": [
+    "Armoire du studio",
+    "Bureau de la pédagogie"
+  ],
+  "classes": [
+    "B1",
+    "B3",
+    "M1"
+  ],
+  "personnes": [
+    {
+      "id": "ines",
+      "nom": "Inès Martin",
+      "prenom": "Inès",
+      "role": "eleve",
+      "classe": "B3",
+      "couleur": "#0E76B6",
+      "email": "ines.martin@my-digital-school.org",
+      "charteAcceptee": "2026-09-02T09:12",
+      "empruntsAnnee": 14
+    },
+    {
+      "id": "tom",
+      "nom": "Tom Leroy",
+      "prenom": "Tom",
+      "role": "eleve",
+      "classe": "B1",
+      "couleur": "#662483",
+      "email": "tom.leroy@my-digital-school.org",
+      "charteAcceptee": "2026-09-03T10:40",
+      "empruntsAnnee": 6
+    },
+    {
+      "id": "lea",
+      "nom": "Léa Dubois",
+      "prenom": "Léa",
+      "role": "eleve",
+      "classe": "M1",
+      "couleur": "#B35C1E",
+      "email": "lea.dubois@my-digital-school.org",
+      "charteAcceptee": "2026-09-02T14:05",
+      "empruntsAnnee": 9
+    },
+    {
+      "id": "yanis",
+      "nom": "Yanis Benali",
+      "prenom": "Yanis",
+      "role": "eleve",
+      "classe": "B3",
+      "couleur": "#2B6F77",
+      "email": "yanis.benali@my-digital-school.org",
+      "charteAcceptee": "2026-09-04T08:55",
+      "empruntsAnnee": 7
+    },
+    {
+      "id": "sarah",
+      "nom": "Sarah Nguyen",
+      "prenom": "Sarah",
+      "role": "eleve",
+      "classe": "B1",
+      "couleur": "#8A3B6B",
+      "email": "sarah.nguyen@my-digital-school.org",
+      "charteAcceptee": "2026-09-03T11:20",
+      "empruntsAnnee": 5
+    },
+    {
+      "id": "noah",
+      "nom": "Noah Petit",
+      "prenom": "Noah",
+      "role": "eleve",
+      "classe": "B1",
+      "couleur": "#11707A",
+      "email": "noah.petit@my-digital-school.org",
+      "charteAcceptee": null,
+      "empruntsAnnee": 0,
+      "note": "Jamais connecté : sert à tester Connexion + Charte"
+    },
+    {
+      "id": "diallo",
+      "nom": "M. Diallo",
+      "prenom": "M. Diallo",
+      "role": "intervenant",
+      "classes": [
+        "B3",
+        "M1"
+      ],
+      "couleur": "#16794A",
+      "email": "a.diallo@my-digital-school.org",
+      "charteAcceptee": "2026-09-01T09:00",
+      "empruntsAnnee": 11
+    },
+    {
+      "id": "roche",
+      "nom": "Mme Roche",
+      "prenom": "Mme Roche",
+      "role": "intervenant",
+      "classes": [
+        "M1"
+      ],
+      "couleur": "#5B5FC7",
+      "email": "c.roche@my-digital-school.org",
+      "charteAcceptee": "2026-09-01T09:30",
+      "empruntsAnnee": 8
+    },
+    {
+      "id": "cyrianne",
+      "nom": "Cyrianne",
+      "role": "equipe",
+      "couleur": "#C8558A",
+      "droits": "Valider, contrôler, gérer le matériel"
+    },
+    {
+      "id": "lydia",
+      "nom": "Lydia",
+      "role": "equipe",
+      "couleur": "#D06A32",
+      "droits": "Valider, contrôler, gérer le matériel"
+    },
+    {
+      "id": "sandrine",
+      "nom": "Sandrine",
+      "role": "direction",
+      "couleur": "#3C3C3B",
+      "droits": "Tout, plus forfaits, paiements et charte"
+    }
+  ],
+  "materiels": [
+    {
+      "id": "kit-r10-01",
+      "type": "kit-canon-r10",
+      "nom": "Kit Canon R10 #01",
+      "categorie": "studio",
+      "icone": "Appareil photo",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-KIT-R10-01",
+      "statut": "remise_a_valider",
+      "composants": [
+        {
+          "id": "boitier",
+          "nom": "Boîtier Canon R10",
+          "forfait": 600
+        },
+        {
+          "id": "objectif",
+          "nom": "Objectif RF 18-150mm",
+          "forfait": 350
+        },
+        {
+          "id": "bague",
+          "nom": "Bague d’adaptation",
+          "forfait": 60
+        },
+        {
+          "id": "batterie1",
+          "nom": "Batterie LP-E17 (1/2)",
+          "forfait": 45
+        },
+        {
+          "id": "batterie2",
+          "nom": "Batterie LP-E17 (2/2)",
+          "forfait": 45
+        },
+        {
+          "id": "sd",
+          "nom": "Carte SD 256 Go",
+          "forfait": 30
+        }
+      ]
+    },
+    {
+      "id": "ronin-01",
+      "type": "ronin",
+      "nom": "Stabilisateur DJI Ronin RSC2",
+      "categorie": "studio",
+      "icone": "Caméra",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-RONIN-01",
+      "statut": "remise_a_valider",
+      "composants": [
+        {
+          "id": "stabilisateur",
+          "nom": "Stabilisateur",
+          "forfait": 380
+        },
+        {
+          "id": "poignee",
+          "nom": "Poignée trépied",
+          "forfait": 30
+        },
+        {
+          "id": "cables",
+          "nom": "Câbles de contrôle",
+          "forfait": 20
+        }
+      ]
+    },
+    {
+      "id": "trepied-01",
+      "type": "trepied",
+      "nom": "Trépied LeoFoto",
+      "categorie": "studio",
+      "icone": "Trépied",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-TREPIED-01",
+      "statut": "disponible",
+      "forfait": 180
+    },
+    {
+      "id": "micro-hf-01",
+      "type": "micro-hf",
+      "nom": "Micro HF Godox",
+      "categorie": "studio",
+      "icone": "Micro",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-MICRO-HF-01",
+      "statut": "retour_a_valider",
+      "composants": [
+        {
+          "id": "emetteur",
+          "nom": "Émetteur + micro cravate",
+          "forfait": 80
+        },
+        {
+          "id": "recepteur",
+          "nom": "Récepteur",
+          "forfait": 70
+        }
+      ]
+    },
+    {
+      "id": "zoom-h5-01",
+      "type": "zoom-h5",
+      "nom": "Enregistreur Zoom H5",
+      "categorie": "studio",
+      "icone": "Enregistreur",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-ZOOM-H5-01",
+      "statut": "remise_a_valider",
+      "forfait": 280
+    },
+    {
+      "id": "tascam-01",
+      "type": "tascam",
+      "nom": "Enregistreur Tascam DR-70D",
+      "categorie": "studio",
+      "icone": "Enregistreur",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-TASCAM-01",
+      "statut": "disponible",
+      "forfait": 220
+    },
+    {
+      "id": "casque-senn-01",
+      "type": "casque-sennheiser",
+      "nom": "Casque Sennheiser",
+      "categorie": "studio",
+      "icone": "Casque audio",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-CASQUE-SENN-01",
+      "statut": "disponible",
+      "forfait": 120
+    },
+    {
+      "id": "hoya-01",
+      "type": "filtre-hoya",
+      "nom": "Filtre variable Hoya",
+      "categorie": "studio",
+      "icone": "Appareil photo",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-HOYA-01",
+      "statut": "disponible",
+      "forfait": 90
+    },
+    {
+      "id": "eclairage-01",
+      "type": "eclairage-newer",
+      "nom": "Kit éclairage Newer",
+      "categorie": "studio",
+      "icone": "Ampoule",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-ECLAIRAGE-01",
+      "statut": "disponible",
+      "forfait": 160
+    },
+    {
+      "id": "led-01",
+      "type": "led-newer",
+      "nom": "Pack LED Newer + batteries",
+      "categorie": "studio",
+      "icone": "Ampoule",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-LED-01",
+      "statut": "disponible",
+      "forfait": 110
+    },
+    {
+      "id": "ministudio-01",
+      "type": "mini-studio",
+      "nom": "Mini studio photo",
+      "categorie": "studio",
+      "icone": "Colis",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-MINISTUDIO-01",
+      "statut": "disponible",
+      "forfait": 70
+    },
+    {
+      "id": "streaming-01",
+      "type": "streaming",
+      "nom": "Kit streaming Audio-Technica",
+      "categorie": "studio",
+      "icone": "Micro",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-STREAMING-01",
+      "statut": "disponible",
+      "forfait": 190
+    },
+    {
+      "id": "sd32-01",
+      "type": "carte-sd-32",
+      "nom": "Carte SD 32 Go",
+      "categorie": "studio",
+      "icone": "Carte SD",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-SD32-01",
+      "statut": "disponible",
+      "forfait": 15
+    },
+    {
+      "id": "sac-01",
+      "type": "sac",
+      "nom": "Sac à dos de transport",
+      "categorie": "studio",
+      "icone": "Colis",
+      "niveau": 1,
+      "lieu": "Armoire du studio",
+      "qr": "MDS-SAC-01",
+      "statut": "disponible",
+      "forfait": 60
+    },
+    {
+      "id": "pc-01",
+      "type": "pc",
+      "nom": "PC de prêt #01",
+      "categorie": "informatique",
+      "icone": "Ordinateur portable",
+      "niveau": 1,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-PC-01",
+      "statut": "hors_service",
+      "composants": [
+        {
+          "id": "pc",
+          "nom": "Ordinateur portable",
+          "forfait": 420
+        },
+        {
+          "id": "chargeur",
+          "nom": "Chargeur",
+          "forfait": 30
+        }
+      ],
+      "note": "Écran à réparer"
+    },
+    {
+      "id": "pc-02",
+      "type": "pc",
+      "nom": "PC de prêt #02",
+      "categorie": "informatique",
+      "icone": "Ordinateur portable",
+      "niveau": 1,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-PC-02",
+      "statut": "emprunte",
+      "composants": [
+        {
+          "id": "pc",
+          "nom": "Ordinateur portable",
+          "forfait": 420
+        },
+        {
+          "id": "chargeur",
+          "nom": "Chargeur",
+          "forfait": 30
+        }
+      ]
+    },
+    {
+      "id": "pc-03",
+      "type": "pc",
+      "nom": "PC de prêt #03",
+      "categorie": "informatique",
+      "icone": "Ordinateur portable",
+      "niveau": 1,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-PC-03",
+      "statut": "disponible",
+      "composants": [
+        {
+          "id": "pc",
+          "nom": "Ordinateur portable",
+          "forfait": 420
+        },
+        {
+          "id": "chargeur",
+          "nom": "Chargeur",
+          "forfait": 30
+        }
+      ]
+    },
+    {
+      "id": "casque-01",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #01",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-01",
+      "statut": "anomalie",
+      "forfait": 25,
+      "note": "Câble abîmé, en réparation"
+    },
+    {
+      "id": "casque-02",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #02",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-02",
+      "statut": "emprunte",
+      "forfait": 25
+    },
+    {
+      "id": "casque-03",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #03",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-03",
+      "statut": "emprunte",
+      "forfait": 25
+    },
+    {
+      "id": "casque-04",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #04",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-04",
+      "statut": "hors_service",
+      "forfait": 25,
+      "note": "Panne signalée, en attente de réparation"
+    },
+    {
+      "id": "casque-05",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #05",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-05",
+      "statut": "emprunte",
+      "forfait": 25
+    },
+    {
+      "id": "casque-06",
+      "type": "casque-anglais",
+      "nom": "Casque d’anglais #06",
+      "categorie": "cours",
+      "icone": "Casque audio",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CASQUE-06",
+      "statut": "emprunte",
+      "forfait": 25
+    },
+    {
+      "id": "souris-01",
+      "type": "souris-filaire",
+      "nom": "Souris filaire #01",
+      "categorie": "cours",
+      "icone": "Souris",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-SOURIS-01",
+      "statut": "emprunte",
+      "forfait": 12
+    },
+    {
+      "id": "souris-02",
+      "type": "souris-filaire",
+      "nom": "Souris filaire #02",
+      "categorie": "cours",
+      "icone": "Souris",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-SOURIS-02",
+      "statut": "emprunte",
+      "forfait": 12
+    },
+    {
+      "id": "souris-03",
+      "type": "souris-filaire",
+      "nom": "Souris filaire #03",
+      "categorie": "cours",
+      "icone": "Souris",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-SOURIS-03",
+      "statut": "emprunte",
+      "forfait": 12
+    },
+    {
+      "id": "souris-apple-01",
+      "type": "souris-apple",
+      "nom": "Souris Apple #01",
+      "categorie": "cours",
+      "icone": "Souris",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-SOURIS-APPLE-01",
+      "statut": "disponible",
+      "forfait": 79
+    },
+    {
+      "id": "souris-apple-02",
+      "type": "souris-apple",
+      "nom": "Souris Apple #02",
+      "categorie": "cours",
+      "icone": "Souris",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-SOURIS-APPLE-02",
+      "statut": "anomalie",
+      "forfait": 79,
+      "note": "Molette cassée"
+    },
+    {
+      "id": "multi-a-01",
+      "type": "multiprise-a",
+      "nom": "Multiprise modèle A #01",
+      "categorie": "cours",
+      "icone": "Prise",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-MULTI-A-01",
+      "statut": "disponible",
+      "forfait": 15
+    },
+    {
+      "id": "multi-a-02",
+      "type": "multiprise-a",
+      "nom": "Multiprise modèle A #02",
+      "categorie": "cours",
+      "icone": "Prise",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-MULTI-A-02",
+      "statut": "disponible",
+      "forfait": 15
+    },
+    {
+      "id": "multi-b-01",
+      "type": "multiprise-b",
+      "nom": "Multiprise modèle B #01",
+      "categorie": "cours",
+      "icone": "Prise",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-MULTI-B-01",
+      "statut": "emprunte",
+      "forfait": 20
+    },
+    {
+      "id": "dixit-01",
+      "type": "dixit",
+      "nom": "Jeu Dixit",
+      "categorie": "jeux",
+      "icone": "Cartes de jeu",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-DIXIT-01",
+      "statut": "disponible",
+      "forfait": 35
+    },
+    {
+      "id": "codenames-01",
+      "type": "codenames",
+      "nom": "Jeu Codenames",
+      "categorie": "jeux",
+      "icone": "Cartes de jeu",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-CODENAMES-01",
+      "statut": "disponible",
+      "forfait": 25
+    },
+    {
+      "id": "timesup-01",
+      "type": "times-up",
+      "nom": "Jeu Time’s Up",
+      "categorie": "jeux",
+      "icone": "Cartes de jeu",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-TIMESUP-01",
+      "statut": "disponible",
+      "forfait": 30
+    },
+    {
+      "id": "boite-01",
+      "type": "boite-intervenant",
+      "nom": "Boîte intervenant #01",
+      "categorie": "boites",
+      "icone": "Colis",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-BOITE-01",
+      "statut": "disponible",
+      "composants": [
+        {
+          "id": "telecommande",
+          "nom": "Télécommande vidéoprojecteur",
+          "forfait": 20
+        },
+        {
+          "id": "feutres",
+          "nom": "Feutres",
+          "forfait": 8
+        }
+      ],
+      "reserveA": "intervenant"
+    },
+    {
+      "id": "boite-02",
+      "type": "boite-intervenant",
+      "nom": "Boîte intervenant #02",
+      "categorie": "boites",
+      "icone": "Colis",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-BOITE-02",
+      "statut": "disponible",
+      "composants": [
+        {
+          "id": "telecommande",
+          "nom": "Télécommande vidéoprojecteur",
+          "forfait": 20
+        },
+        {
+          "id": "feutres",
+          "nom": "Feutres",
+          "forfait": 8
+        }
+      ],
+      "reserveA": "intervenant"
+    },
+    {
+      "id": "boite-03",
+      "type": "boite-intervenant",
+      "nom": "Boîte intervenant #03",
+      "categorie": "boites",
+      "icone": "Colis",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-BOITE-03",
+      "statut": "emprunte",
+      "composants": [
+        {
+          "id": "telecommande",
+          "nom": "Télécommande vidéoprojecteur",
+          "forfait": 20
+        },
+        {
+          "id": "feutres",
+          "nom": "Feutres",
+          "forfait": 8
+        }
+      ],
+      "reserveA": "intervenant"
+    },
+    {
+      "id": "boite-04",
+      "type": "boite-intervenant",
+      "nom": "Boîte intervenant #04",
+      "categorie": "boites",
+      "icone": "Colis",
+      "niveau": 2,
+      "lieu": "Bureau de la pédagogie",
+      "qr": "MDS-BOITE-04",
+      "statut": "disponible",
+      "composants": [
+        {
+          "id": "telecommande",
+          "nom": "Télécommande vidéoprojecteur",
+          "forfait": 20
+        },
+        {
+          "id": "feutres",
+          "nom": "Feutres",
+          "forfait": 8
+        }
+      ],
+      "reserveA": "intervenant"
+    }
+  ],
+  "prets": [
+    {
+      "id": "P101",
+      "materiel": "pc-02",
+      "responsable": "yanis",
+      "emprunteur": "yanis",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-16T09:40",
+      "forfait": 450,
+      "valideePar": "cyrianne"
+    },
+    {
+      "id": "P102",
+      "materiel": "kit-r10-01",
+      "responsable": "ines",
+      "emprunteur": "ines",
+      "pourClasse": null,
+      "statut": "remise_a_valider",
+      "demandeLe": "2026-09-17T10:12",
+      "forfait": 1130
+    },
+    {
+      "id": "P103",
+      "materiel": "ronin-01",
+      "responsable": "diallo",
+      "emprunteur": "diallo",
+      "pourClasse": "B3",
+      "statut": "remise_a_valider",
+      "demandeLe": "2026-09-17T09:58",
+      "forfait": 430
+    },
+    {
+      "id": "P104",
+      "materiel": "zoom-h5-01",
+      "responsable": "lea",
+      "emprunteur": "lea",
+      "pourClasse": null,
+      "statut": "remise_a_valider",
+      "demandeLe": "2026-09-17T10:14",
+      "forfait": 280
+    },
+    {
+      "id": "P105",
+      "materiel": "micro-hf-01",
+      "responsable": "tom",
+      "emprunteur": "tom",
+      "pourClasse": null,
+      "statut": "retour_a_valider",
+      "sortiLe": "2026-09-17T08:50",
+      "forfait": 150,
+      "valideePar": "lydia",
+      "retourDeclareLe": "2026-09-17T10:05",
+      "declaration": "tout coché"
+    },
+    {
+      "id": "P106",
+      "materiel": "casque-02",
+      "responsable": "tom",
+      "emprunteur": "tom",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-17T09:05",
+      "forfait": 25
+    },
+    {
+      "id": "P107",
+      "materiel": "casque-03",
+      "responsable": "ines",
+      "emprunteur": "ines",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-17T09:20",
+      "forfait": 25
+    },
+    {
+      "id": "P108",
+      "materiel": "boite-03",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:05",
+      "forfait": 28
+    },
+    {
+      "id": "P109",
+      "materiel": "multi-b-01",
+      "responsable": "sarah",
+      "emprunteur": "sarah",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-17T10:02",
+      "forfait": 20
+    },
+    {
+      "id": "P111",
+      "materiel": "souris-01",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": "M1",
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:10",
+      "forfait": 12
+    },
+    {
+      "id": "P112",
+      "materiel": "souris-02",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": "M1",
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:10",
+      "forfait": 12
+    },
+    {
+      "id": "P113",
+      "materiel": "souris-03",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": "M1",
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:10",
+      "forfait": 12
+    },
+    {
+      "id": "P114",
+      "materiel": "casque-05",
+      "responsable": "diallo",
+      "emprunteur": "diallo",
+      "pourClasse": "B3",
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:45",
+      "forfait": 25
+    },
+    {
+      "id": "P115",
+      "materiel": "casque-06",
+      "responsable": "diallo",
+      "emprunteur": "diallo",
+      "pourClasse": "B3",
+      "statut": "actif",
+      "sortiLe": "2026-09-17T08:45",
+      "forfait": 25
+    },
+    {
+      "id": "P090",
+      "materiel": "trepied-01",
+      "responsable": "ines",
+      "emprunteur": "ines",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T10:05",
+      "renduLe": "2026-09-16T17:30",
+      "forfait": 180
+    },
+    {
+      "id": "P091",
+      "materiel": "multi-a-01",
+      "responsable": "ines",
+      "emprunteur": "ines",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T13:00",
+      "renduLe": "2026-09-16T17:55",
+      "forfait": 15
+    },
+    {
+      "id": "P092",
+      "materiel": "casque-02",
+      "responsable": "lea",
+      "emprunteur": "lea",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T09:10",
+      "renduLe": "2026-09-16T17:40",
+      "forfait": 25
+    },
+    {
+      "id": "P093",
+      "materiel": "codenames-01",
+      "responsable": "sarah",
+      "emprunteur": "sarah",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T12:30",
+      "renduLe": "2026-09-16T17:52",
+      "forfait": 25
+    },
+    {
+      "id": "P094",
+      "materiel": "boite-02",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T08:00",
+      "renduLe": "2026-09-16T18:05",
+      "forfait": 28
+    },
+    {
+      "id": "P095",
+      "materiel": "casque-05",
+      "responsable": "yanis",
+      "emprunteur": "yanis",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-16T09:00",
+      "renduLe": "2026-09-16T17:45",
+      "forfait": 25
+    },
+    {
+      "id": "P080",
+      "materiel": "souris-apple-02",
+      "responsable": "sarah",
+      "emprunteur": "sarah",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-14T09:30",
+      "renduLe": "2026-09-14T17:48",
+      "forfait": 79
+    },
+    {
+      "id": "P081",
+      "materiel": "casque-01",
+      "responsable": "lea",
+      "emprunteur": "lea",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-14T09:15",
+      "renduLe": "2026-09-14T18:02",
+      "forfait": 25
+    },
+    {
+      "id": "P082",
+      "materiel": "sd32-01",
+      "responsable": "yanis",
+      "emprunteur": "yanis",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-14T10:00",
+      "renduLe": "2026-09-14T17:20",
+      "forfait": 15
+    },
+    {
+      "id": "P083",
+      "materiel": "casque-01",
+      "responsable": "yanis",
+      "emprunteur": "yanis",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-11T09:00",
+      "renduLe": "2026-09-11T17:10",
+      "forfait": 25
+    },
+    {
+      "id": "P084",
+      "materiel": "trepied-01",
+      "responsable": "yanis",
+      "emprunteur": "yanis",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-08T10:00",
+      "renduLe": "2026-09-08T17:00",
+      "forfait": 180
+    },
+    {
+      "id": "P070",
+      "materiel": "boite-04",
+      "responsable": "roche",
+      "emprunteur": "roche",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-10T08:00",
+      "renduLe": "2026-09-10T17:50",
+      "forfait": 28
+    },
+    {
+      "id": "P071",
+      "materiel": "kit-r10-01",
+      "responsable": "ines",
+      "emprunteur": "ines",
+      "pourClasse": null,
+      "statut": "rendu",
+      "sortiLe": "2026-09-08T09:00",
+      "renduLe": "2026-09-08T17:40",
+      "forfait": 1130
+    }
+  ],
+  "photosDeRetour": [
+    {
+      "id": "PH1",
+      "pret": "P093",
+      "materiel": "codenames-01",
+      "responsable": "sarah",
+      "fichier": "IMG_0142.jpg",
+      "prisLe": "2026-09-16T17:52",
+      "declaration": "Déclaré complet",
+      "statut": "a_controler"
+    },
+    {
+      "id": "PH2",
+      "pret": "P092",
+      "materiel": "casque-02",
+      "responsable": "lea",
+      "fichier": "IMG_0139.jpg",
+      "prisLe": "2026-09-16T17:40",
+      "declaration": "Déclaré complet",
+      "statut": "a_controler",
+      "reempruntePar": "tom"
+    },
+    {
+      "id": "PH3",
+      "pret": "P094",
+      "materiel": "boite-02",
+      "responsable": "roche",
+      "fichier": "IMG_0145.jpg",
+      "prisLe": "2026-09-16T18:05",
+      "declaration": "Problème signalé : « feutres secs »",
+      "composantSignale": "feutres",
+      "statut": "a_controler"
+    },
+    {
+      "id": "PH4",
+      "pret": "P080",
+      "materiel": "souris-apple-02",
+      "responsable": "sarah",
+      "prisLe": "2026-09-14T17:48",
+      "statut": "probleme",
+      "controlePar": "lydia",
+      "controleLe": "2026-09-15T09:10",
+      "incident": "I1"
+    },
+    {
+      "id": "PH5",
+      "pret": "P095",
+      "materiel": "casque-05",
+      "responsable": "yanis",
+      "prisLe": "2026-09-16T17:45",
+      "statut": "conforme",
+      "controlePar": "cyrianne",
+      "controleLe": "2026-09-17T08:32"
+    },
+    {
+      "id": "PH6",
+      "pret": "P091",
+      "materiel": "multi-a-01",
+      "responsable": "ines",
+      "prisLe": "2026-09-16T17:55",
+      "statut": "conforme",
+      "controlePar": "lydia",
+      "controleLe": "2026-09-16T18:20"
+    }
+  ],
+  "prevenus": {
+    "casque-anglais": []
+  },
+  "incidents": [
+    {
+      "id": "I1",
+      "materiel": "souris-apple-02",
+      "responsable": "sarah",
+      "type": "casse",
+      "motif": "Molette cassée · vue sur la photo de retour",
+      "montant": 79,
+      "statut": "a_rembourser",
+      "creeLe": "2026-09-15T09:10"
+    },
+    {
+      "id": "I2",
+      "materiel": "casque-01",
+      "responsable": "lea",
+      "type": "casse",
+      "motif": "Câble abîmé · réparable",
+      "montantInitial": 25,
+      "montant": 15,
+      "ajustePar": "sandrine",
+      "statut": "a_rembourser",
+      "creeLe": "2026-09-14T18:02"
+    },
+    {
+      "id": "I3",
+      "materiel": "sd32-01",
+      "responsable": "yanis",
+      "type": "casse",
+      "motif": "Carte illisible",
+      "montant": 15,
+      "statut": "rembourse",
+      "creeLe": "2026-09-14T17:20",
+      "payeLe": "2026-09-14T17:35"
+    },
+    {
+      "id": "I4",
+      "materiel": "boite-04",
+      "responsable": "roche",
+      "type": "composant",
+      "composant": "feutres",
+      "motif": "Feutres manquants",
+      "montant": 8,
+      "statut": "rembourse",
+      "creeLe": "2026-09-10T17:50",
+      "payeLe": "2026-09-10T18:00"
+    },
+    {
+      "id": "I5",
+      "materiel": "kit-r10-01",
+      "responsable": "ines",
+      "type": "composant",
+      "composant": "batterie2",
+      "motif": "Batterie LP-E17 manquante",
+      "montant": 45,
+      "statut": "rembourse",
+      "creeLe": "2026-09-08T17:40",
+      "payeLe": "2026-09-08T17:50"
+    }
+  ],
+  "signalements": [
+    {
+      "id": "S1",
+      "par": "lea",
+      "cible": {
+        "type": "salle",
+        "id": "103"
+      },
+      "categorie": "Manquant",
+      "texte": "Plus qu’un ventilateur",
+      "photo": false,
+      "le": "2026-09-16T15:20",
+      "statut": "ouvert"
+    },
+    {
+      "id": "S2",
+      "par": "tom",
+      "cible": {
+        "type": "materiel",
+        "id": "casque-04"
+      },
+      "categorie": "Panne",
+      "texte": "Le côté gauche grésille",
+      "photo": true,
+      "le": "2026-09-17T09:40",
+      "statut": "ouvert"
+    },
+    {
+      "id": "S3",
+      "par": "sarah",
+      "cible": {
+        "type": "materiel",
+        "id": "timesup-01"
+      },
+      "categorie": "Casse",
+      "texte": "Sablier fêlé",
+      "photo": true,
+      "le": "2026-09-15T11:00",
+      "statut": "ouvert"
+    },
+    {
+      "id": "S4",
+      "par": "yanis",
+      "cible": {
+        "type": "salle",
+        "id": "201"
+      },
+      "categorie": "Déplacé",
+      "texte": "Ventilateur en salle 104",
+      "photo": false,
+      "le": "2026-09-14T16:10",
+      "statut": "ouvert"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "N1",
+      "pour": [
+        "ines"
+      ],
+      "le": "2026-09-17T10:12",
+      "icone": "Cloche",
+      "texte": "Demande envoyée : présente-toi à l’armoire du studio pour le Kit Canon R10 #01.",
+      "lue": false,
+      "regle": "R04"
+    },
+    {
+      "id": "N2",
+      "pour": [
+        "ines"
+      ],
+      "le": "2026-09-17T09:20",
+      "icone": "Coche",
+      "texte": "Remise validée : Casque d’anglais #03 est à rendre ce soir avant 18h.",
+      "lue": true,
+      "regle": "R05"
+    },
+    {
+      "id": "N3",
+      "pour": [
+        "ines"
+      ],
+      "le": "2026-09-16T18:05",
+      "icone": "Image",
+      "texte": "Photo de retour conforme : Trépied LeoFoto. Merci !",
+      "lue": true
+    },
+    {
+      "id": "N4",
+      "pour": [
+        "ines"
+      ],
+      "le": "2026-09-16T17:50",
+      "icone": "Échange",
+      "texte": "Kit éclairage Newer est de retour. Le premier qui scanne le prend.",
+      "lue": true,
+      "regle": "R14"
+    },
+    {
+      "id": "N5",
+      "pour": [
+        "ines"
+      ],
+      "le": "2026-09-16T16:30",
+      "icone": "Horloge",
+      "texte": "16h30 · Pense à rendre Trépied LeoFoto avant 18h.",
+      "lue": true,
+      "regle": "R15"
+    },
+    {
+      "id": "N6",
+      "pour": [
+        "yanis"
+      ],
+      "le": "2026-09-16T18:00",
+      "icone": "Cadenas",
+      "texte": "Tes emprunts sont bloqués : PC de prêt #02 non rendu. Rapporte-le au bureau.",
+      "lue": false,
+      "regle": "R10"
+    },
+    {
+      "id": "N7",
+      "pour": [
+        "equipe"
+      ],
+      "le": "2026-09-17T08:00",
+      "icone": "Enveloppe",
+      "texte": "Récap de 8h",
+      "lue": true,
+      "regle": "R15"
+    }
+  ],
+  "consommables": [
+    {
+      "id": "stylos",
+      "nom": "Stylos",
+      "unite": "stylos",
+      "icone": "Stylo",
+      "quantite": 4,
+      "seuil": 10,
+      "dernierComptage": "2026-09-14T09:00"
+    },
+    {
+      "id": "feutres",
+      "nom": "Feutres",
+      "unite": "boîtes",
+      "icone": "Stylo",
+      "quantite": 18,
+      "seuil": 10,
+      "dernierComptage": "2026-09-14T09:00"
+    },
+    {
+      "id": "couverts",
+      "nom": "Couverts",
+      "unite": "lots",
+      "icone": "Colis",
+      "quantite": 32,
+      "seuil": 20,
+      "dernierComptage": "2026-09-14T09:00"
+    }
+  ],
+  "comptages": [
+    {
+      "le": "2026-09-14T09:00",
+      "par": "lydia",
+      "quantites": {
+        "stylos": 4,
+        "feutres": 18,
+        "couverts": 32
+      }
+    },
+    {
+      "le": "2026-09-07T09:00",
+      "par": "cyrianne",
+      "quantites": {
+        "stylos": 11,
+        "feutres": 21,
+        "couverts": 35
+      }
+    },
+    {
+      "le": "2026-08-31T09:00",
+      "par": "lydia",
+      "quantites": {
+        "stylos": 16,
+        "feutres": 24,
+        "couverts": 38
+      }
+    }
+  ],
+  "salles": [
+    {
+      "id": "101",
+      "attendus": 2,
+      "presents": 2,
+      "verifieeLe": "2026-09-01T09:00"
+    },
+    {
+      "id": "102",
+      "attendus": 1,
+      "presents": 1,
+      "verifieeLe": "2026-09-01T09:05"
+    },
+    {
+      "id": "103",
+      "attendus": 2,
+      "presents": 1,
+      "verifieeLe": "2026-09-17T08:40"
+    },
+    {
+      "id": "104",
+      "attendus": 1,
+      "presents": 2,
+      "verifieeLe": "2026-09-17T08:45"
+    },
+    {
+      "id": "201",
+      "attendus": 2,
+      "presents": 1,
+      "verifieeLe": "2026-09-01T09:20"
+    }
+  ],
+  "reglages": {
+    "charte": "Charte d’utilisation du matériel MyDigitalSchool\n1. Le matériel est prêté pour un usage pédagogique sur le campus.\n2. Tout matériel emprunté est rendu le jour même, avant de quitter l’école, avec une photo prise dans l’app.\n3. Le matériel de niveau 1 (studio, PC) est remis et contrôlé par un membre de l’équipe pédagogique.\n4. En cas de perte ou de casse, le forfait affiché au moment de l’emprunt est dû. Si un composant manque, seul son forfait est dû.\n5. Un matériel non rendu le soir bloque tes emprunts. Au bout de 2 jours, il est déclaré perdu.\n6. Les intervenants qui empruntent « pour leur classe » restent responsables du matériel et font eux-mêmes le retour.\n7. Les photos sont conservées 30 jours après contrôle, l’historique une année scolaire.",
+    "charteModifieeLe": "2026-09-01T09:00",
+    "rappel1630": true,
+    "recap8h": true
+  },
+  "exemptions": {},
+  "importExemple": {
+    "inventaire": {
+      "fichier": "inventaire_rentree.ods",
+      "deposePar": "lydia",
+      "deposeLe": "2026-09-17T10:02",
+      "lignes": [
+        {
+          "nom": "Casque d’anglais #07",
+          "categorie": "cours",
+          "niveau": 2,
+          "lieu": "Bureau de la pédagogie",
+          "forfait": 25,
+          "icone": "Casque audio"
+        },
+        {
+          "nom": "Souris filaire #04",
+          "categorie": "cours",
+          "niveau": 2,
+          "lieu": "Bureau de la pédagogie",
+          "forfait": 12,
+          "icone": "Souris"
+        },
+        {
+          "nom": "Multiprise modèle C",
+          "categorie": "cours",
+          "niveau": null,
+          "lieu": "Bureau de la pédagogie",
+          "forfait": 18,
+          "icone": "Prise",
+          "erreur": "Niveau manquant (colonne C)"
+        },
+        {
+          "nom": "Jeu Dobble",
+          "categorie": "jeux",
+          "niveau": 2,
+          "lieu": "Bureau de la pédagogie",
+          "forfait": 15,
+          "icone": "Cartes de jeu"
+        }
+      ]
+    },
+    "classes": {
+      "fichier": "classes_2026.ods",
+      "classes": [
+        "B1",
+        "B2",
+        "B3",
+        "M1",
+        "M2"
+      ]
+    }
+  }
+}
