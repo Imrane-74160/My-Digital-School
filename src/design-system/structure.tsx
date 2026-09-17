@@ -96,7 +96,8 @@ export function EnTeteEcranMobile({
         </Link>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
-        <h1 className="mds-titre-ecran-mobile text-texte-principal">{titre}</h1>
+        {/* Titre vide : l'écran porte son propre titre plus bas (fiche matériel), pas deux h1. */}
+        {titre !== '' && <h1 className="mds-titre-ecran-mobile text-texte-principal">{titre}</h1>}
         {sousTitre && <p className="mds-texte-petit text-texte-secondaire">{sousTitre}</p>}
       </div>
       {aDroite}

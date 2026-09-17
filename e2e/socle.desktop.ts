@@ -38,7 +38,8 @@ test('la coque du back-office répond sur les onze écrans B2 → B12', async ({
 
 test('B1 · Se connecter vit hors de la coque : ni menu, ni en-tête de page', async ({ page }) => {
   await page.goto('/admin/connexion')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Se connecter')
+  // Titre du Figma (`14:950`), la carte étant seule sur le fond dégradé.
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bon retour parmi nous')
   await expect(page.getByTestId('menu-principal')).toHaveCount(0)
   await expect(page.getByTestId('en-tete-back-office')).toHaveCount(0)
 })
@@ -49,4 +50,26 @@ test('aucun défilement horizontal à 1440 px', async ({ page }) => {
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
   )
   expect(debordement).toBe(false)
+})
+
+test('Côte à côte · les deux surfaces partagent le même état', async ({ page }) => {
+  await page.goto('/cote-a-cote')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Côte à côte')
+
+  const app = page.frameLocator('iframe[title="App mobile"]')
+  const bo = page.frameLocator('iframe[title="Back-office"]')
+  await expect(app.getByRole('heading', { level: 1 })).toContainText('Bonjour')
+  await expect(bo.getByRole('heading', { level: 1 })).toHaveText('Tableau de bord')
+
+  // Le panneau de démo reste celui de la page parente : il n'apparaît pas dans les cadres.
+  await expect(page.getByTestId('bouton-demo')).toBeVisible()
+  await expect(app.getByTestId('bouton-demo')).toHaveCount(0)
+  await expect(bo.getByTestId('bouton-demo')).toHaveCount(0)
+})
+
+test('Accueil de la démo · le QR mène à /app', async ({ page }) => {
+  await page.goto('/')
+  const qr = page.getByRole('img', { name: /QR code/ })
+  await expect(qr).toBeVisible()
+  await expect(qr).toHaveAttribute('aria-label', /\/app$/)
 })

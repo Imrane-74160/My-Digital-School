@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router'
 import { AccueilDemo } from './pages/AccueilDemo'
+import { CoteACote } from './pages/CoteACote'
 import { EcranEnChantier } from './pages/EcranEnChantier'
 import { Introuvable } from './pages/Introuvable'
 import { Accueil } from './app-mobile/Accueil'
@@ -95,6 +96,7 @@ const versRoute =
 
 export const routeur = createBrowserRouter([
   { path: '/', element: <AccueilDemo /> },
+  { path: '/cote-a-cote', element: <CoteACote /> },
   { path: '/design-system', element: <GalerieDesignSystem /> },
   { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute(ECRAN_APP)) },
   {

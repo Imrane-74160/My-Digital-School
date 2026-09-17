@@ -91,8 +91,8 @@ export function Materiel() {
                     statut={badge.statut}
                     libelleStatut={badge.libelle}
                     modeDeRemise={modeDeRemise(premiere)}
-                    {...(badge.disponible
-                      ? { vers: `/app/materiel/${badge.disponible.id}` }
+                    {...(badge.unite
+                      ? { vers: `/app/materiel/${badge.unite.id}` }
                       : {
                           onPrevenir: () =>
                             executer({ type: 'PREVENEZ_MOI', par: persona.id, typeMateriel: type }),

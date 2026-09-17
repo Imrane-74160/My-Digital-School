@@ -13,6 +13,12 @@ import { useMDS } from '@/store/useMDS'
 const PERSONAS_APP = ['ines', 'tom', 'lea', 'yanis', 'sarah', 'noah', 'diallo', 'roche'] as const
 const UTILISATEURS_BO = ['lydia', 'cyrianne', 'sandrine'] as const
 
+/**
+ * En mode « Côte à côte », les deux surfaces vivent dans des cadres : le panneau
+ * reste celui de la page parente, sinon il apparaîtrait trois fois.
+ */
+const dansUnCadre = () => typeof window !== 'undefined' && window.self !== window.top
+
 export function PanneauDemo() {
   const [ouvert, setOuvert] = useState(false)
   const etat = useMDS((magasin) => magasin.etat)
@@ -47,6 +53,8 @@ export function PanneauDemo() {
 
   const maintenant = etat.horloge.maintenant
   const nom = (id: string) => selecteurs.prenom(selecteurs.personne(etat, id))
+
+  if (dansUnCadre()) return null
 
   return (
     <>

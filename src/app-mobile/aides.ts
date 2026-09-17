@@ -51,24 +51,25 @@ export function badgeDeType(
   etat: EtatMDS,
   type: string,
   personneId: string,
-): { statut: StatutBadge; libelle: string; disponible?: Materiel | undefined } {
+): { statut: StatutBadge; libelle: string; unite?: Materiel | undefined } {
   const unites = selecteurs.unitesDuType(etat, type)
   const libres = unites.filter((unite) => unite.statut === 'disponible')
 
   // Une unité du type est-elle déjà chez la persona, ou en attente de remise ?
+  // Dans ce cas la ligne mène à SON exemplaire : c'est de là qu'elle le rend.
   for (const unite of unites) {
     const pret = selecteurs.pretOuvertDe(etat, unite.id)
     if (pret?.responsable !== personneId) continue
-    if (pret.statut === 'remise_a_valider') return { statut: 'À valider', libelle: 'Ta demande' }
-    return { statut: 'En cours', libelle: 'Chez toi' }
+    if (pret.statut === 'remise_a_valider') return { statut: 'À valider', libelle: 'Ta demande', unite }
+    return { statut: 'En cours', libelle: 'Chez toi', unite }
   }
 
   if (libres.length === 0) return { statut: 'Retiré', libelle: 'Indisponible' }
-  if (libres.length === 1) return { statut: 'Disponible', libelle: 'Disponible', disponible: libres[0] }
+  if (libres.length === 1) return { statut: 'Disponible', libelle: 'Disponible', unite: libres[0] }
   return {
     statut: 'Disponible',
     libelle: `${libres.length} disponibles`,
-    disponible: libres[0],
+    unite: libres[0],
   }
 }
 

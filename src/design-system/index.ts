@@ -58,6 +58,8 @@ export { BarreDeNavigationMobile } from './BarreDeNavigationMobile'
 export { EnTeteDeCarte } from './EnTeteDeCarte'
 export { Infobulle } from './Infobulle'
 export { LienDeNavigation } from './LienDeNavigation'
+// Utilitaire, pas un composant Figma : le motif de QR est dérivé du code du matériel.
+export { MotifQR } from './MotifQR'
 
 // Structure, cartes et tableaux
 export {

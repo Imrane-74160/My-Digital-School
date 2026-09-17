@@ -42,6 +42,8 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 - Type avec unité disponible → Fiche. Type indisponible → cloche ▶ PREVENEZ_MOI **sur le type** (◐ état « Tu seras prévenu(e) »).
 - Jamais le nom de l'emprunteur d'un matériel indisponible.
 
+**Arbitrage (A4)** : une ligne « **Chez toi** » ou « **Ta demande** » mène à la fiche de **l'exemplaire de la persona** (c'est de là qu'elle le rend) et n'affiche plus la cloche « Me prévenir » — on ne s'inscrit pas sur un type qu'on détient déjà. La cloche ne reste que sur « Indisponible ».
+
 ### A5 · Fiche + feuille Emprunter — `30:2` — `/app/materiel/:itemId`
 - Fiche : bouton retour, **fil d'Ariane** (en-tête mobile), visuel, nom, badges (dispo, « N1 · remise par l'équipe »), puis bloc Informations à **2 lignes seulement** : « Où le trouver » et « Retour ». Le forfait n'apparaît **que dans la feuille Emprunter** (Figma `30:2`).
 - CTA contextuel : Disponible → ouvre la **feuille Emprunter** · Chez toi → « Rendre ce matériel » · Demande envoyée → message · Indisponible → « Me prévenir à son retour » · Retiré → « Momentanément retiré du prêt » · Soir → « Bureau fermé » (désactivé).
@@ -106,6 +108,7 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
   Les **deux boutons coexistent** dans le Figma, côte à côte, même quand une puce est déjà marquée manquante : « Conforme » ▶ VALIDER_RETOUR et « Créer l'incident · {montant du composant} » ▶ VALIDER_RETOUR{manquant}. L'équipe garde donc la main jusqu'au dernier clic.
 - Chaque carte porte un badge de type (« Remise » / « Retour ») à gauche du nom et un badge « N1 » à droite. Titre de la carte : « À valider sur place », sous-titre « Niveau 1 · l'équipe vérifie le matériel avec l'emprunteur », amorce des puces : « Contenu vérifié ».
 - Prêt de classe : « pour la {classe} » **remplace** « {classe} · attend au bureau » dans la ligne d'identité (une seule ligne, pas deux éléments).
+- **Arbitrage (B3)** : les deux boutons coexistent toujours, mais « Créer l'incident » reste **désactivé tant qu'aucune puce n'est marquée manquante** — sans puce, il n'y a pas de montant à afficher. Dès qu'une puce bascule, il porte son montant et les deux boutons sont actifs côte à côte.
 - Colonne « Niveau 1 » : 4 Règles (statique). ◐ Vide : « Tout est traité. Rien ne vous attend. »
 
 ### B4 · Contrôle photo — `22:2` — `/admin/controle-photo`
@@ -117,7 +120,7 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 ### B5 · Matériel — `24:3` — `/admin/materiel?id=`
 - Recherche (nom ou QR), filtres (Tout, Niveau 1, Niveau 2, Disponibles, Sortis, Retirés), catégorie, « Ajouter un matériel » (◐ panneau/formulaire : nom, catégorie, niveau, lieu, forfait ▶ AJOUTER_MATERIEL).
 - Colonnes du tableau : **Matériel** (nom + code QR en mono dessous) · Catégorie · Niveau · Statut · Forfait (aligné à droite). Sous-titre de la carte : « {n} matériels · {n} sortis · {n} retirés du prêt ».
-- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (généré depuis le code), statut actuel + la même note + encart d'action contextuelle (titre « À valider sur place », sous-ligne « {Nom} attend au bureau depuis {HH:MM} », bouton « Valider la remise »), puis **« Forfait par composant »** : une ligne par composant, éditable par Sandrine ▶ MODIFIER_FORFAIT{composant} appliqué à **tout le type** ; Lydia voit les mêmes lignes en lecture avec cadenas. Le **total est intitulé « Kit complet »** et reste **calculé** : jamais saisi. Puis « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER (◐ désactivé quand le matériel n'est pas en stock) / ◐ « Remettre en service » ▶ REMETTRE.
+- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (**dérivé du code** par `MotifQR` : hachage FNV-1a et les trois repères d'angle — étiquette imprimable, pas un code réellement lisible ; à remplacer par l'image Figma quand le MCP revient), statut actuel + la même note + encart d'action contextuelle (titre « À valider sur place », sous-ligne « {Nom} attend au bureau depuis {HH:MM} », bouton « Valider la remise »), puis **« Forfait par composant »** : une ligne par composant, éditable par Sandrine ▶ MODIFIER_FORFAIT{composant} appliqué à **tout le type** ; Lydia voit les mêmes lignes en lecture avec cadenas. Le **total est intitulé « Kit complet »** et reste **calculé** : jamais saisi. Puis « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER (◐ désactivé quand le matériel n'est pas en stock) / ◐ « Remettre en service » ▶ REMETTRE.
 - ◐ **Arrivée depuis B8** : `?id=<première unité du type>&ancre=forfait` ouvre la fiche défilée sur « Forfait par composant ». C'est le seul chemin pour changer le forfait d'un kit.
 
 ### B6 · Prêts — `26:2` — `/admin/prets`
@@ -133,7 +136,7 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 
 ### B8 · Incidents & paiements — `27:2` — `/admin/incidents?onglet=`
 - Onglets À rembourser / ◐ Payés / ◐ Signalements (réutilise la table du tableau de bord).
-- **Carte d'incident** : « Ajuster » (◐ saisie inline, baisse seulement) ▶ AJUSTER_MONTANT ; « Enregistrer le paiement » ▶ REMBOURSEMENT. Lydia : boutons verrouillés « Réservé à Sandrine » → refus R12.
+- **Carte d'incident** : « Ajuster » ouvre la saisie en ligne (baisse seulement), confirmée par « **Enregistrer l'ajustement** » — libellé distinct de « Enregistrer le paiement » pour lever l'ambiguïté du Figma ▶ AJUSTER_MONTANT ; « Enregistrer le paiement » ▶ REMBOURSEMENT. Lydia : boutons verrouillés « Réservé à Sandrine » → refus R12.
 - Payés récemment (Ligne de tableau · Paiement), sous-titre « Ce mois-ci ».
 - **Forfaits par type** (Ligne de forfait) : une ligne par `type`, avec son montant et un crayon. Deux comportements selon le type :
   - **Type à composants** (Kit Canon R10, PC de prêt, Ronin, Micro HF, Boîte intervenant) : le montant affiché est le **total calculé**, somme des composants. Le crayon **ne modifie rien sur place** : il ouvre **B5 Matériel** sur la fiche de la première unité du type, défilée sur « Forfait par composant ». Pour Lydia, la même fiche s'ouvre en lecture seule avec cadenas.
@@ -171,7 +174,7 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 ---
 ## C. Panneau de démo (hors Figma, discret)
 Bouton flottant « Démo » (coin bas-gauche, touche `D`) ouvrant un panneau :
-- **Surface** : App mobile / Back-office / Côte à côte (desktop ≥ 1600 px).
+- **Surface** : App mobile / Back-office / Côte à côte (`/cote-a-cote`). **Arbitrage** : les deux surfaces vivent dans deux cadres du même document, chacune avec son propre store ; la synchronisation passe par l'événement `storage`, exactement comme entre deux onglets. Le panneau de démo reste celui de la page parente (sinon il apparaîtrait trois fois), et le back-office est mis à l'échelle plutôt que tronqué sous 1280 px.
 - **Persona app** : Inès, Tom, Léa, Yanis, Sarah, Noah (1re connexion), M. Diallo, Mme Roche. **Utilisateur BO** : Lydia, Cyrianne, Sandrine.
 - **Horloge** : heure courante, « 16h30 », « Fin de journée », « Lendemain 8h ».
 - **Annuler** (⌘Z, pile d'historique) · **Réinitialiser la démo** (recharge `seed.json`).

@@ -33,7 +33,7 @@ import {
   type Colonne,
 } from '@/design-system'
 import { badgeDeMateriel, contexteDuMateriel, iconeDe, teinteDe } from './aides'
-import { MotifQR } from './MotifQR'
+import { MotifQR } from '@/design-system'
 import { useEtat, useUtilisateurBO } from '@/store/hooks'
 import { useMDS } from '@/store/useMDS'
 

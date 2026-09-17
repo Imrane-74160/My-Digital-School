@@ -167,7 +167,7 @@ export function Incidents() {
                             />
                           </label>
                           <Bouton
-                            libelle="Ajuster"
+                            libelle="Enregistrer l’ajustement"
                             icone="Coche"
                             onClick={() => {
                               const valeur = Number(saisie)
