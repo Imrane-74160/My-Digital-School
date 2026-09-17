@@ -240,3 +240,123 @@ test('les 63 icônes du design system se rendent toutes', async ({ page }) => {
   const traits = await icones.evaluateAll((noeuds) => noeuds.map((n) => n.getAttribute('stroke-width')))
   expect(new Set(traits)).toEqual(new Set(['1.5']))
 })
+
+test('Champ 46:128 · hauteur 48 et anneau turquoise au focus', async ({ page }) => {
+  const champ = page.locator(`${section('46:128')} div:has(> input)`).first()
+  const mesure = await mesurer(page, `${section('46:128')} div:has(> input)`, 0)
+  expect(mesure.h).toBe(48)
+  expect(mesure.rayon).toBe('24px')
+  expect(mesure.pad).toBe('0px/18px/0px/16px')
+  expect(mesure.gap).toBe('10px')
+  expect(mesure.fond).toBe('rgb(255, 255, 255)')
+
+  // Au focus : trait turquoise de 2 px et anneau Focus/Anneau, sans que la boîte bouge.
+  const avant = await champ.evaluate((n) => n.getBoundingClientRect().height)
+  await page
+    .locator(`${section('46:128')} input`)
+    .first()
+    .focus()
+
+  // La couleur du trait est animée sur 120 ms : on attend la valeur d'arrivée.
+  await expect.poll(() => champ.evaluate((n) => getComputedStyle(n).borderTopColor)).toBe('rgb(45, 184, 197)')
+  expect(await champ.evaluate((n) => getComputedStyle(n).borderTopWidth)).toBe('2px')
+  expect(await champ.evaluate((n) => getComputedStyle(n).boxShadow)).toContain('rgba(45, 184, 197, 0.35)')
+  // Le trait passe de 1 à 2 px sans que la boîte bouge : le padding compense.
+  expect(await champ.evaluate((n) => n.getBoundingClientRect().height)).toBe(avant)
+})
+
+test('Case à cocher 46:144 · 24 px, rayon 7, libellé cliquable', async ({ page }) => {
+  const cases = page.locator(`${section('46:128')} label:has(input[type="checkbox"])`)
+  const carre = await mesurer(page, `${section('46:128')} label span[aria-hidden]`, 0)
+  expect([carre.w, carre.h]).toEqual([24, 24])
+  expect(carre.rayon).toBe('7px')
+  expect(carre.fond).toBe('rgb(255, 255, 255)') // décochée : fond blanc, trait fort
+
+  // Cliquer le libellé coche la case.
+  const premiere = cases.first()
+  const entree = premiere.locator('input')
+  await expect(entree).not.toBeChecked()
+  await premiere.click()
+  await expect(entree).toBeChecked()
+  // Cochée, la case contient la coche : on cible la boîte, pas l'icône qu'elle porte.
+  const boite = premiere.locator('span[aria-hidden]').first()
+
+  // Le clic laisse la souris sur le libellé : c'est la variante « Cochée=Oui, État=Survol »
+  // du Figma, donc `état/turquoise-survol`.
+  await expect
+    .poll(() => boite.evaluate((n) => getComputedStyle(n).backgroundColor))
+    .toBe('rgb(37, 167, 179)')
+
+  // Souris écartée : on retrouve la variante « Cochée=Oui, État=Défaut », turquoise de marque.
+  await page.mouse.move(0, 0)
+  await expect
+    .poll(() => boite.evaluate((n) => getComputedStyle(n).backgroundColor))
+    .toBe('rgb(45, 184, 197)')
+})
+
+test('Interrupteur 89:425 · piste 44 × 26 et curseur qui glisse de 18 px', async ({ page }) => {
+  const interrupteur = page.locator(`${section('46:128')} button[role="switch"]`).first()
+  const piste = await mesurer(page, `${section('46:128')} button[role="switch"]`, 0)
+  expect([piste.w, piste.h]).toEqual([44, 26])
+  expect(piste.rayon).toBe('999px')
+  expect(piste.pad).toBe('3px/3px/3px/3px')
+
+  // Activé : piste turquoise, curseur à droite.
+  await expect(interrupteur).toHaveAttribute('aria-checked', 'true')
+  expect(piste.fond).toBe('rgb(45, 184, 197)')
+  const curseur = interrupteur.locator('span')
+  expect(await curseur.evaluate((n) => getComputedStyle(n).width)).toBe('20px')
+
+  // Coupé : piste en trait/fort, curseur revenu à gauche.
+  await interrupteur.click()
+  await expect(interrupteur).toHaveAttribute('aria-checked', 'false')
+  await expect
+    .poll(() => interrupteur.evaluate((n) => getComputedStyle(n).backgroundColor))
+    .toBe('rgb(154, 163, 173)')
+})
+
+test('Liste déroulante 46:100 · ouverture, choix, fermeture', async ({ page }) => {
+  const declencheur = page.locator(`${section('46:128')} button[aria-haspopup="listbox"]`)
+  const mesure = await mesurer(page, `${section('46:128')} button[aria-haspopup="listbox"]`, 0)
+  expect(mesure.h).toBe(40)
+  expect(mesure.rayon).toBe('20px')
+  expect(mesure.pad).toBe('0px/14px/0px/16px')
+
+  await expect(declencheur).toHaveAttribute('aria-expanded', 'false')
+  await declencheur.click()
+  await expect(declencheur).toHaveAttribute('aria-expanded', 'true')
+
+  const menu = page.locator(`${section('46:128')} [role="listbox"]`)
+  await expect(menu).toBeVisible()
+  await expect(menu.locator('[role="option"]')).toHaveCount(3)
+  // Les options font 150 × 34, au rayon « pastille ».
+  const option = await mesurer(page, `${section('46:128')} [role="option"] button`, 0)
+  expect([option.w, option.h]).toEqual([150, 34])
+  expect(option.rayon).toBe('8px')
+
+  await menu.getByRole('option', { name: 'Cette année' }).click()
+  await expect(menu).toBeHidden()
+  await expect(declencheur).toContainText('Cette année')
+})
+
+test('Onglet 46:76 · actif en anthracite, compteur turquoise', async ({ page }) => {
+  const onglets = page.locator(`${section('46:76')} [role="tab"]`)
+  const actif = await mesurer(page, `${section('46:76')} [role="tab"]`, 0)
+  expect(actif.rayon).toBe('20px')
+  expect(actif.pad).toBe('10px/16px/10px/16px')
+  expect(actif.gap).toBe('6px')
+  expect(actif.fond).toBe('rgb(60, 60, 59)')
+
+  await expect(onglets.nth(0)).toHaveAttribute('aria-selected', 'true')
+  // Libellé inverse, compteur turquoise en chasse fixe.
+  const libelle = onglets.nth(0).locator('span').first()
+  const compteur = onglets.nth(0).locator('span').nth(1)
+  expect(await libelle.evaluate((n) => getComputedStyle(n).color)).toBe('rgb(255, 255, 255)')
+  expect(await compteur.evaluate((n) => getComputedStyle(n).color)).toBe('rgb(45, 184, 197)')
+  expect(await compteur.evaluate((n) => getComputedStyle(n).fontFamily)).toContain('JetBrains Mono')
+
+  // La sélection suit le clic.
+  await onglets.nth(1).click()
+  await expect(onglets.nth(1)).toHaveAttribute('aria-selected', 'true')
+  await expect(onglets.nth(0)).toHaveAttribute('aria-selected', 'false')
+})

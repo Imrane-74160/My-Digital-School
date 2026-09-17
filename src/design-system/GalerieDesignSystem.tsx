@@ -4,6 +4,11 @@ import { Avatar } from './Avatar'
 import { BadgeDeStatut } from './BadgeDeStatut'
 import { Bouton } from './Bouton'
 import { BoutonIcone } from './BoutonIcone'
+import { CaseACocher } from './CaseACocher'
+import { Champ } from './Champ'
+import { Interrupteur } from './Interrupteur'
+import { ListeDeroulante } from './ListeDeroulante'
+import { Onglets } from './Onglets'
 import { Icone } from './Icone'
 import { NOMS_ICONES } from './icones'
 import { Pastille } from './Pastille'
@@ -94,6 +99,89 @@ function DemoPucesDeComposant() {
           />
         ))}
       </div>
+    </div>
+  )
+}
+
+/** Les composants de saisie, avec un état réel pour voir focus, bascule et menu. */
+function DemoFormulaires() {
+  const [recherche, setRecherche] = useState('')
+  const [rempli, setRempli] = useState('Kit Canon R10')
+  const [accepte, setAccepte] = useState(false)
+  const [rappel, setRappel] = useState(true)
+  const [recap, setRecap] = useState(false)
+  const [periode, setPeriode] = useState<'jour' | 'mois' | 'annee'>('mois')
+
+  return (
+    <div className="flex flex-col gap-lg">
+      <div className="flex flex-wrap items-center gap-lg">
+        <Champ
+          etiquette="Nom ou code QR"
+          placeholder="Nom ou code QR"
+          icone="Loupe"
+          valeur={recherche}
+          onChange={setRecherche}
+        />
+        <Champ etiquette="Matériel" icone="Loupe" valeur={rempli} onChange={setRempli} />
+      </div>
+      <div className="flex flex-col gap-md">
+        <CaseACocher
+          cochee={accepte}
+          onChange={setAccepte}
+          libelle="J’accepte le forfait de 1 130 € en cas de perte ou de casse."
+        />
+        <CaseACocher cochee onChange={() => {}} libelle="Tout le contenu est là" />
+        <CaseACocher cochee={false} onChange={() => {}} libelle="Désactivée" disabled />
+      </div>
+      <div className="flex flex-wrap items-center gap-lg">
+        <div className="flex items-center gap-sm">
+          <Interrupteur active={rappel} onChange={setRappel} etiquette="Rappel de 16h30" />
+          <span className="mds-texte-corps text-texte-principal">Rappel de 16h30</span>
+        </div>
+        <div className="flex items-center gap-sm">
+          <Interrupteur active={recap} onChange={setRecap} etiquette="Récap de 8h" />
+          <span className="mds-texte-corps text-texte-principal">Récap de 8h</span>
+        </div>
+      </div>
+      <ListeDeroulante
+        etiquette="Période"
+        valeur={periode}
+        onChange={setPeriode}
+        options={[
+          { valeur: 'jour', libelle: 'Aujourd’hui' },
+          { valeur: 'mois', libelle: 'Ce mois-ci' },
+          { valeur: 'annee', libelle: 'Cette année' },
+        ]}
+      />
+    </div>
+  )
+}
+
+/** Les onglets de Validations sur place, compteurs compris. */
+function DemoOnglets() {
+  const [actif, setActif] = useState<'tout' | 'remises' | 'retours'>('tout')
+  return (
+    <div className="flex flex-col gap-md">
+      <Onglets
+        etiquette="Validations"
+        actif={actif}
+        onChange={setActif}
+        onglets={[
+          { cle: 'tout', libelle: 'Tout', compteur: 4 },
+          { cle: 'remises', libelle: 'Remises', compteur: 3 },
+          { cle: 'retours', libelle: 'Retours', compteur: 1 },
+        ]}
+      />
+      <Onglets
+        etiquette="Alertes"
+        actif="notifications"
+        onChange={() => {}}
+        pleineLargeur
+        onglets={[
+          { cle: 'notifications', libelle: 'Notifications', compteur: 5 },
+          { cle: 'historique', libelle: 'Historique' },
+        ]}
+      />
     </div>
   )
 }
@@ -274,6 +362,22 @@ export function GalerieDesignSystem() {
         description="Vérifié, Neutre, Manquant. « Survol » est le survol de Neutre. Les puces de bascule sont cliquables ; celles de la carte de validation d’une remise ne le sont pas."
       >
         <DemoPucesDeComposant />
+      </Section>
+
+      <Section
+        titre="Champ · Case à cocher · Interrupteur · Liste déroulante"
+        noeud="46:128"
+        description="Champ (46:128) hauteur 48, anneau turquoise au focus · Case à cocher (46:144) 24 px rayon 7, libellé cliquable · Interrupteur (89:425) piste 44 × 26, curseur de 20 px · Liste déroulante (46:100) menu à l’ombre d’élévation."
+      >
+        <DemoFormulaires />
+      </Section>
+
+      <Section
+        titre="Onglet"
+        noeud="46:76"
+        description="Onglets de filtre posés dans leur piste. Actif en anthracite plein, compteur turquoise en chasse fixe ; inactif sans fond, compteur en texte tertiaire."
+      >
+        <DemoOnglets />
       </Section>
 
       <Section

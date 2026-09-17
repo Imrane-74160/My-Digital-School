@@ -45,3 +45,10 @@ export type {
   TypeBouton,
   TypePastille,
 } from './variantes'
+export { CaseACocher } from './CaseACocher'
+export { Champ } from './Champ'
+export { Interrupteur } from './Interrupteur'
+export { ListeDeroulante } from './ListeDeroulante'
+export type { OptionListe } from './ListeDeroulante'
+export { Onglets } from './Onglets'
+export type { Onglet } from './Onglets'
