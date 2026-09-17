@@ -14,7 +14,7 @@ Validées en ateliers avec l'équipe (6 rounds). Le moteur de référence `refer
 | R07 | composant | Composant manquant : on doit le forfait du composant, pas celui du kit. | Puces composants, Forfait par composant |
 | R08 | retour | Seul le responsable du prêt fait le retour. | Refus si un autre tente de rendre |
 | R09 | classe | « Pour ma classe » réservé aux intervenants, qui restent responsables. Boîtes intervenant réservées aux intervenants. | Feuille Emprunter (intervenant), Prêts de classe |
-| R10 | blocage | Non rendu à 18h le jour même : emprunts bloqués. | App Accueil bloqué, BO Emprunteurs, KPI |
+| R10 | blocage | Non rendu à 18h le jour même : emprunts bloqués. L'échéance est atteinte **dès** 18:00, pas une minute après. | App Accueil bloqué, BO Emprunteurs, KPI |
 | R11 | perte | Toujours absent à J+2 à 18h : déclaré perdu, forfait dû. | Carte « Prêts en retard », incident perte |
 | R12 | argent | Forfaits, ajustements (baisse seulement) et paiements : réservés à Sandrine. | Mention « Réservé à Sandrine » + refus pour Lydia/Cyrianne |
 | R13 | equipe | Valider, contrôler, gérer matériel / salles / stocks / imports / réglages : réservé à l'équipe. | Tout le back-office |
@@ -62,8 +62,9 @@ Soir : actif non rendu à 18h ─► responsable bloqué ─► J+2 18h ─► p
 | IMPORT_CLASSES {classes} | équipe | — | remplace la liste des classes |
 | MODIFIER_CHARTE {titre?, articles} | Sandrine | — | charte mise à jour : `{ titre, articles: [{ id, titre, texte }] }`, 7 articles |
 | REGLAGE {rappel16h30 \| recap8h, valeur} | équipe | — | active / coupe l'envoi |
-| FIN_DE_JOURNEE (horloge) | démo | déjà le soir → refus | rappel 16h30 si activé · remises non validées annulées · blocages appliqués |
-| LENDEMAIN (horloge) | démo | — | jour +1 à 8h · exemptions expirées · prêts à J+2 passent `perdu` · **génère et stocke l'instantané du récap de 8h** si `recap8h` est actif |
+| FIN_DE_JOURNEE (horloge) | démo | déjà le soir → refus | remises non validées annulées · **prêts à J+2 passent `perdu` + incident au forfait complet (R11)** · blocages appliqués |
+| ALLER_A_16H30 (horloge) | démo | déjà 16h30 passées → refus | heure à 16h30 · rappel aux responsables d'un prêt `actif` si `rappel1630` est activé (R15) |
+| LENDEMAIN (horloge) | démo | — | clôt la journée si besoin · jour +1 à 8h · exemptions expirées · **génère et stocke l'instantané du récap de 8h** si `recap8h` est actif |
 
 Toute action refusée renvoie `{ ok:false, msg, rule }` et **ne modifie pas l'état**. Les changements de blocage déclenchent automatiquement une notification à la personne (« Tes emprunts sont bloqués : … » / « Tu peux de nouveau emprunter. »).
 
@@ -113,3 +114,5 @@ Côté Lydia, les actions de Sandrine restent **visibles** avec la mention « R�
 - **`prets` P110 rétabli** (bug de génération) : Léa / Pack LED Newer, sorti à 9:30, validé par Cyrianne. Sortis = 12, comme le Figma.
 - **`materiels[].note`** s'affiche **uniquement au back-office** : sous le badge de statut dans la table Matériel et dans « Statut actuel » de la fiche. Jamais dans l'app.
 - **Horloge injectable** : aucun `Date.now()` dans `src/domain/`. Fuseau `Europe/Paris`, départ `2026-09-17T10:15`.
+- **La perte (R11) se produit à ▶ FIN_DE_JOURNEE**, pas à ▶ LENDEMAIN : c'est la conséquence directe de l'arbitrage « J+2 à 18h » (le moteur de référence la faisait à 8h). Vérifié par `docs/06` P5.4 : « Lendemain 8h » puis « Fin de journée » (vendredi 18h) → le PC de Yanis passe `perdu`.
+- **Le rappel de 16h30 est sa propre action** (▶ ALLER_A_16H30) et non un effet de bord de la fin de journée : avec une horloge en heures réelles, 16h30 et 18h sont deux instants distincts que le panneau de démo atteint séparément.

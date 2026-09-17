@@ -12,12 +12,13 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - **Fini quand** : `npm run dev` affiche la page d'accueil démo avec les polices et couleurs MDS. ✅
 - **Vérifié** : lint, format, typecheck, build, 9 tests Vitest, 12 tests Playwright (mobile 390×844 + desktop 1440×839).
 
-## Phase 1 · Domaine (sans UI)
-- [ ] Types TS depuis `data/seed.json` ; `loadSeed()`
-- [ ] Port de `reference/engine-prototype.js` → `src/domain/engine.ts` : `dispatch(state, action)`, sélecteurs (`blockReason`, `forfait`, compteurs KPI, `recapText`), horloge en date/heure réelles (bureau 8h–18h, 16h30, J+2 18h)
-- [ ] 1 test Vitest minimum par règle R01–R16 + refus (état inchangé)
-- [ ] Store : état, pile d'annulation, persistance localStorage, synchro entre onglets, `reset()`
-- **Fini quand** : tous les tests passent ; les compteurs calculés correspondent aux situations de `docs/05-donnees-demo.md`.
+## Phase 1 · Domaine (sans UI) — fait
+- [x] Types TS depuis `data/seed.json` (`types.ts`) ; `chargerSeed()` avec validation explicite par chemin de champ + invariants (`seed.ts`)
+- [x] Port de `reference/engine-prototype.js` → `src/domain/engine.ts` : `dispatch(etat, action)` sur 24 actions, sélecteurs (`raisonDeBlocage`, `forfaitMateriel`, `compteurs`, `construireRecap`, `lignesAFaire`), horloge en dates réelles sans `Date` ni `Intl` (`horloge.ts`)
+- [x] 128 tests Vitest : 1 par règle R01–R16 (cas accepté **et** refusé avec son code), 1 refus par action protégée (17), immuabilité vérifiée avec `toBe`, compteurs KPI, cycles de vie N1 et N2, horloge
+- [x] Store Zustand : état, pile d'annulation (25 pas, horloge comprise), persistance `localStorage` sous une clé versionnée, synchro entre onglets, `reinitialiser()`
+- **Fini quand** : tous les tests passent ; les compteurs calculés correspondent aux situations de `docs/05-donnees-demo.md`. ✅
+- **Vérifié** : Sortis 12 · En retard 1 · À valider 4 · Photos 3 · À rembourser 2 (94 €) · Stock bas 1 · Signalements ouverts 4 · Bloqués 1, et le récap de 8h reproduit les 7 lignes du Figma.
 
 ## Phase 2 · Design system
 - [ ] Composants de `docs/04-design-system.md` avec toutes leurs variantes et états (survol, appui, focus, désactivé)
