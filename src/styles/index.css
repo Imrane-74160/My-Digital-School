@@ -1,0 +1,128 @@
+@import 'tailwindcss';
+
+/* Source unique des valeurs : le fichier exporté du Figma. Jamais de copie, jamais de valeur en dur. */
+@import '../../design/tokens.css';
+
+/* Chaque token Figma devient un utilitaire Tailwind, en gardant son nom Figma pour rester traçable.
+   `inline` fait pointer l'utilitaire directement sur la variable --mds-* : une seule source de vérité. */
+@theme inline {
+  /* Marque */
+  --color-marque-anthracite: var(--mds-marque-anthracite);
+  --color-marque-turquoise: var(--mds-marque-turquoise);
+  --color-marque-turquoise-clair: var(--mds-marque-turquoise-clair);
+  --color-marque-turquoise-fonce: var(--mds-marque-turquoise-fonce);
+  --color-marque-jaune: var(--mds-marque-jaune);
+  --color-marque-orange: var(--mds-marque-orange);
+  --color-marque-orange-clair: var(--mds-marque-orange-clair);
+  --color-marque-orange-fonce: var(--mds-marque-orange-fonce);
+  --color-marque-bleu-ciel: var(--mds-marque-bleu-ciel);
+  --color-marque-bleu: var(--mds-marque-bleu);
+  --color-marque-bleu-clair: var(--mds-marque-bleu-clair);
+  --color-marque-bleu-fonce: var(--mds-marque-bleu-fonce);
+  --color-marque-bleu-action: var(--mds-marque-bleu-action);
+  --color-marque-rose: var(--mds-marque-rose);
+  --color-marque-rose-clair: var(--mds-marque-rose-clair);
+  --color-marque-rose-fonce: var(--mds-marque-rose-fonce);
+
+  /* Texte */
+  --color-texte-principal: var(--mds-texte-principal);
+  --color-texte-secondaire: var(--mds-texte-secondaire);
+  --color-texte-tertiaire: var(--mds-texte-tertiaire);
+  --color-texte-inverse: var(--mds-texte-inverse);
+  --color-texte-desactive: var(--mds-texte-desactive);
+
+  /* Surfaces */
+  --color-surface-carte: var(--mds-surface-carte);
+  --color-surface-champ: var(--mds-surface-champ);
+  --color-surface-pastille: var(--mds-surface-pastille);
+  --color-surface-bouton-doux: var(--mds-surface-bouton-doux);
+  --color-surface-desactive: var(--mds-surface-desactive);
+
+  /* Traits */
+  --color-trait-bordure: var(--mds-trait-bordure);
+  --color-trait-grille: var(--mds-trait-grille);
+  --color-trait-rayure: var(--mds-trait-rayure);
+  --color-trait-fort: var(--mds-trait-fort);
+
+  /* États interactifs */
+  --color-etat-turquoise-survol: var(--mds-etat-turquoise-survol);
+  --color-etat-turquoise-presse: var(--mds-etat-turquoise-presse);
+  --color-etat-orange-survol: var(--mds-etat-orange-survol);
+  --color-etat-orange-presse: var(--mds-etat-orange-presse);
+  --color-etat-doux-survol: var(--mds-etat-doux-survol);
+  --color-etat-doux-presse: var(--mds-etat-doux-presse);
+  --color-etat-nav-survol: var(--mds-etat-nav-survol);
+  --color-etat-focus: var(--mds-etat-focus);
+
+  /* Espacements */
+  --spacing-xs: var(--mds-espacement-xs);
+  --spacing-sm: var(--mds-espacement-sm);
+  --spacing-md: var(--mds-espacement-md);
+  --spacing-lg: var(--mds-espacement-lg);
+  --spacing-xl: var(--mds-espacement-xl);
+  --spacing-2xl: var(--mds-espacement-2xl);
+  --spacing-3xl: var(--mds-espacement-3xl);
+
+  /* Rayons */
+  --radius-pastille: var(--mds-rayon-pastille);
+  --radius-vignette: var(--mds-rayon-vignette);
+  --radius-bouton: var(--mds-rayon-bouton);
+  --radius-champ: var(--mds-rayon-champ);
+  --radius-carte-mobile: var(--mds-rayon-carte-mobile);
+  --radius-carte: var(--mds-rayon-carte);
+  --radius-rond: var(--mds-rayon-rond);
+
+  /* Ombres */
+  --shadow-douce: var(--mds-ombre-douce);
+  --shadow-survol-bouton: var(--mds-ombre-survol-bouton);
+  --shadow-elevation: var(--mds-ombre-elevation);
+  --shadow-focus-anneau: var(--mds-focus-anneau);
+
+  /* Courbes et durées */
+  --ease-sortie: var(--mds-easing-sortie);
+  --ease-feuille: var(--mds-easing-feuille);
+  --duration-appui: var(--mds-duree-appui);
+  --duration-rapide: var(--mds-duree-rapide);
+  --duration-base: var(--mds-duree-base);
+  --duration-lent: var(--mds-duree-lent);
+
+  /* Polices */
+  --font-titre: var(--mds-police-titre);
+  --font-texte: var(--mds-police-texte);
+  --font-mono: var(--mds-police-mono);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background-image: var(--mds-fond-ecran);
+    background-attachment: fixed;
+    color: var(--mds-texte-principal);
+    font-family: var(--mds-police-texte);
+    -webkit-font-smoothing: antialiased;
+    /* Aucun défilement horizontal, y compris à 390 px (exigence du parcours transversal). */
+    overflow-x: hidden;
+  }
+
+  /* Anneau de focus Focus/Anneau du Figma, sur tout élément focusable au clavier. */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--mds-focus-anneau);
+    border-radius: var(--mds-rayon-pastille);
+  }
+
+  /* Cibles tactiles ≥ 44 px sur mobile (WCAG 2.1 AA). */
+  @media (pointer: coarse) {
+    button,
+    a[role='button'],
+    [role='tab'],
+    [role='switch'] {
+      min-height: 44px;
+    }
+  }
+}

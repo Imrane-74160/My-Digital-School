@@ -2,11 +2,15 @@
 
 Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm run test`, captures comparées au Figma, commit. Cocher ici.
 
-## Phase 0 · Socle
-- [ ] Vite + React + TS strict, React Router, Zustand, Tailwind v4, lucide-react, @fontsource (3 polices), Vitest, Playwright, ESLint/Prettier
-- [ ] `design/tokens.css` importé, thème Tailwind mappé sur les variables `--mds-*`
-- [ ] Routes vides `/`, `/app/*`, `/admin/*`, `/design-system` ; cadre téléphone 390×844 sur desktop, plein écran < 500 px
-- **Fini quand** : `npm run dev` affiche la page d'accueil démo avec les polices et couleurs MDS.
+## Phase 0 · Socle — fait
+- [x] Vite 8 + React 19 + TS 6 strict, React Router 8, Tailwind v4, lucide-react, @fontsource (3 polices), Vitest 5, Playwright, ESLint/Prettier
+      (Zustand installé, branché en Phase 1 · TypeScript reste en 6.0 : typescript-eslint exige `<6.1`)
+- [x] `design/tokens.css` importé **sans copie**, thème Tailwind mappé sur les 66 variables `--mds-*`
+- [x] Routes `/`, `/app/*` (A1→A10), `/admin/*` (B1→B12), `/design-system`, page introuvable ; cadre téléphone 390×844 sur desktop, plein écran < 500 px
+- [x] Barre de navigation masquée sur les 5 écrans plein écran du Figma (Connexion, Charte, Rendre, Scanner, Signaler)
+- [x] Garde-fous : `design/`, `data/`, `reference/` et la documentation protégés de Prettier ; `src/domain/` interdit d'importer React, le DOM ou le store (règle ESLint)
+- **Fini quand** : `npm run dev` affiche la page d'accueil démo avec les polices et couleurs MDS. ✅
+- **Vérifié** : lint, format, typecheck, build, 9 tests Vitest, 12 tests Playwright (mobile 390×844 + desktop 1440×839).
 
 ## Phase 1 · Domaine (sans UI)
 - [ ] Types TS depuis `data/seed.json` ; `loadSeed()`

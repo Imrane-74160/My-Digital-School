@@ -40,15 +40,8 @@
       "reserveA": "intervenant"
     }
   },
-  "lieux": [
-    "Armoire du studio",
-    "Bureau de la pédagogie"
-  ],
-  "classes": [
-    "B1",
-    "B3",
-    "M1"
-  ],
+  "lieux": ["Armoire du studio", "Bureau de la pédagogie"],
+  "classes": ["B1", "B3", "M1"],
   "personnes": [
     {
       "id": "ines",
@@ -122,10 +115,7 @@
       "nom": "M. Diallo",
       "prenom": "M. Diallo",
       "role": "intervenant",
-      "classes": [
-        "B3",
-        "M1"
-      ],
+      "classes": ["B3", "M1"],
       "couleur": "#16794A",
       "email": "a.diallo@my-digital-school.org",
       "charteAcceptee": "2026-09-01T09:00",
@@ -136,9 +126,7 @@
       "nom": "Mme Roche",
       "prenom": "Mme Roche",
       "role": "intervenant",
-      "classes": [
-        "M1"
-      ],
+      "classes": ["M1"],
       "couleur": "#5B5FC7",
       "email": "c.roche@my-digital-school.org",
       "charteAcceptee": "2026-09-01T09:30",
@@ -1223,9 +1211,7 @@
   "notifications": [
     {
       "id": "N1",
-      "pour": [
-        "ines"
-      ],
+      "pour": ["ines"],
       "le": "2026-09-17T10:12",
       "icone": "Cloche",
       "texte": "Demande envoyée : présente-toi à l’armoire du studio pour le Kit Canon R10 #01.",
@@ -1234,9 +1220,7 @@
     },
     {
       "id": "N2",
-      "pour": [
-        "ines"
-      ],
+      "pour": ["ines"],
       "le": "2026-09-17T09:20",
       "icone": "Coche",
       "texte": "Emprunt confirmé : Casque d’anglais #03 est à rendre ce soir avant 18h.",
@@ -1245,9 +1229,7 @@
     },
     {
       "id": "N3",
-      "pour": [
-        "ines"
-      ],
+      "pour": ["ines"],
       "le": "2026-09-16T18:05",
       "icone": "Image",
       "texte": "Photo de retour conforme : Trépied LeoFoto. Merci !",
@@ -1255,9 +1237,7 @@
     },
     {
       "id": "N4",
-      "pour": [
-        "ines"
-      ],
+      "pour": ["ines"],
       "le": "2026-09-16T17:50",
       "icone": "Échange",
       "texte": "Kit éclairage Newer est de retour. Le premier qui scanne le prend.",
@@ -1266,9 +1246,7 @@
     },
     {
       "id": "N5",
-      "pour": [
-        "ines"
-      ],
+      "pour": ["ines"],
       "le": "2026-09-16T16:30",
       "icone": "Horloge",
       "texte": "16h30 · Pense à rendre Trépied LeoFoto avant 18h.",
@@ -1277,9 +1255,7 @@
     },
     {
       "id": "N6",
-      "pour": [
-        "yanis"
-      ],
+      "pour": ["yanis"],
       "le": "2026-09-16T18:00",
       "icone": "Cadenas",
       "texte": "Tes emprunts sont bloqués : PC de prêt #02 non rendu. Rapporte-le au bureau.",
@@ -1288,9 +1264,7 @@
     },
     {
       "id": "N7",
-      "pour": [
-        "equipe"
-      ],
+      "pour": ["equipe"],
       "le": "2026-09-17T08:00",
       "icone": "Enveloppe",
       "texte": "Récap de 8h",
@@ -1477,13 +1451,7 @@
     },
     "classes": {
       "fichier": "classes_2026.ods",
-      "classes": [
-        "B1",
-        "B2",
-        "B3",
-        "M1",
-        "M2"
-      ]
+      "classes": ["B1", "B2", "B3", "M1", "M2"]
     }
   }
 }

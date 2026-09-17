@@ -1,0 +1,20 @@
+dist
+node_modules
+package-lock.json
+playwright-report
+test-results
+coverage
+
+# Fichiers FOURNIS avec le pack : sources de vérité, jamais reformatés.
+# design/ est l'export du Figma (le reformater casse la correspondance avec tokens.json
+# et avec les noms de familles de polices). reference/ est le moteur validé en ateliers.
+design/
+reference/
+data/
+
+# Documentation du projet : on édite son contenu à la main, on ne reflue pas sa mise en forme.
+# Prettier casse les tableaux Markdown compacts et ajoute des lignes vides entre titre et texte,
+# ce qui rend les diffs de docs illisibles.
+*.md
+docs/
+.claude/
