@@ -1,3 +1,5 @@
+import type { NomIcone } from './icones'
+
 /**
  * Variantes et tailles des composants, relevées sur la page « Composants » du Figma.
  *
@@ -52,6 +54,25 @@ export const TEINTES_PICTOGRAMME = [
 ] as const
 export const TAILLES_PICTOGRAMME = [32, 36, 40, 44, 48, 52, 56] as const
 export type TaillePictogramme = (typeof TAILLES_PICTOGRAMME)[number]
+
+export type OngletMobile = {
+  vers: string
+  icone: NomIcone
+  libelle: string
+  /** Le bouton central du scanner, en blanc plein. */
+  scanner?: boolean
+  /** Pastille de notification non lue, comme sur l'onglet Alertes. */
+  pastille?: boolean
+}
+
+/** Les cinq onglets du Figma, dans l'ordre dessiné. */
+export const ONGLETS_MOBILES: OngletMobile[] = [
+  { vers: '/app', icone: 'Maison', libelle: 'Accueil' },
+  { vers: '/app/materiel', icone: 'Grille', libelle: 'Matériel' },
+  { vers: '/app/scanner', icone: 'Scanner', libelle: 'Scanner', scanner: true },
+  { vers: '/app/alertes', icone: 'Cloche', libelle: 'Alertes' },
+  { vers: '/app/profil', icone: 'Utilisateur', libelle: 'Profil' },
+]
 
 // ─── Puce de composant (45:130) ──────────────────────────────────────────────
 

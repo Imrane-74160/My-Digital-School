@@ -22,6 +22,7 @@ export type { FamilleDeBadge, StatutBadge } from './statuts'
 export { Trepied } from './TrepiedIcone'
 export {
   ETATS_PUCE,
+  ONGLETS_MOBILES,
   FORMES_PICTOGRAMME,
   initialeDe,
   STYLES_BOUTON_ICONE,
@@ -35,6 +36,7 @@ export {
 } from './variantes'
 export type {
   EtatPuce,
+  OngletMobile,
   FormePictogramme,
   StyleBoutonIcone,
   TailleAvatar,
@@ -52,3 +54,7 @@ export { ListeDeroulante } from './ListeDeroulante'
 export type { OptionListe } from './ListeDeroulante'
 export { Onglets } from './Onglets'
 export type { Onglet } from './Onglets'
+export { BarreDeNavigationMobile } from './BarreDeNavigationMobile'
+export { EnTeteDeCarte } from './EnTeteDeCarte'
+export { Infobulle } from './Infobulle'
+export { LienDeNavigation } from './LienDeNavigation'

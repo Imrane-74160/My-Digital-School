@@ -4,9 +4,13 @@ import { Avatar } from './Avatar'
 import { BadgeDeStatut } from './BadgeDeStatut'
 import { Bouton } from './Bouton'
 import { BoutonIcone } from './BoutonIcone'
+import { BarreDeNavigationMobile } from './BarreDeNavigationMobile'
 import { CaseACocher } from './CaseACocher'
 import { Champ } from './Champ'
+import { EnTeteDeCarte } from './EnTeteDeCarte'
+import { Infobulle } from './Infobulle'
 import { Interrupteur } from './Interrupteur'
+import { LienDeNavigation } from './LienDeNavigation'
 import { ListeDeroulante } from './ListeDeroulante'
 import { Onglets } from './Onglets'
 import { Icone } from './Icone'
@@ -386,6 +390,68 @@ export function GalerieDesignSystem() {
         description="Filtre de l’écran Matériel. Active en anthracite plein ; « Pressée » est l’appui d’Inactive."
       >
         <DemoPucesDeCategorie />
+      </Section>
+
+      <Section
+        titre="Lien de navigation · Infobulle"
+        noeud="49:107"
+        description="Rail du back-office : cercle de 48 px, icône de 21 px, libellé en infobulle au survol. Actif en turquoise à icône sombre ; au repos, icône en texte inverse sur l’anthracite."
+      >
+        <div className="flex flex-col gap-lg">
+          <nav
+            aria-label="Aperçu du menu principal"
+            className="inline-flex w-[92px] flex-col items-center gap-sm rounded-carte bg-marque-anthracite py-xl"
+          >
+            <LienDeNavigation icone="Tableau de bord" libelle="Tableau de bord" vers="/admin" actif />
+            <LienDeNavigation
+              icone="Utilisateur validé"
+              libelle="Validations sur place"
+              vers="/admin/validations"
+              actif={false}
+            />
+            <LienDeNavigation
+              icone="Image"
+              libelle="Contrôle photo"
+              vers="/admin/controle-photo"
+              actif={false}
+            />
+            <LienDeNavigation icone="Colis" libelle="Matériel" vers="/admin/materiel" actif={false} />
+          </nav>
+          <div className="flex items-center gap-md">
+            <span className="mds-texte-petit text-texte-tertiaire">Infobulle seule</span>
+            <Infobulle libelle="Incidents & paiements" />
+          </div>
+        </div>
+      </Section>
+
+      <Section
+        titre="Barre de navigation mobile"
+        noeud="61:155"
+        description="Barre flottante anthracite de 358 px, cinq onglets de 56 px. Le scanner est le bouton blanc central ; l’onglet actif passe en turquoise à icône sombre."
+      >
+        <div className="rounded-carte p-lg" style={{ backgroundImage: 'var(--mds-fond-ecran)' }}>
+          <BarreDeNavigationMobile avecPastille={['Alertes']} />
+        </div>
+      </Section>
+
+      <Section
+        titre="En-tête de carte"
+        noeud="49:129"
+        description="En-tête commun aux cartes du back-office : pictogramme en contour de 40 px, titre 18/24, sous-titre 12/16, bouton d’options à droite."
+      >
+        <div className="flex flex-col gap-md">
+          <div className="rounded-carte ring-1 ring-trait-bordure">
+            <EnTeteDeCarte
+              icone="Liste cochée"
+              titre="À faire maintenant"
+              sousTitre="5 actions · mis à jour à 10:15"
+              options={() => {}}
+            />
+          </div>
+          <div className="rounded-carte ring-1 ring-trait-bordure">
+            <EnTeteDeCarte icone="Échange" titre="En ce moment" />
+          </div>
+        </div>
       </Section>
 
       <Section

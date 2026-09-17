@@ -360,3 +360,78 @@ test('Onglet 46:76 · actif en anthracite, compteur turquoise', async ({ page })
   await expect(onglets.nth(1)).toHaveAttribute('aria-selected', 'true')
   await expect(onglets.nth(0)).toHaveAttribute('aria-selected', 'false')
 })
+
+test('Lien de navigation 49:107 · cercle 48, infobulle au survol', async ({ page }) => {
+  const liens = page.locator(`${section('49:107')} nav a`)
+  const actif = await mesurer(page, `${section('49:107')} nav a`, 0)
+  expect([actif.w, actif.h]).toEqual([48, 48])
+  expect(actif.rayon).toBe('999px')
+  expect(actif.fond).toBe('rgb(45, 184, 197)')
+  expect(actif.couleur).toBe('rgb(29, 29, 27)') // icône sombre sur le turquoise
+
+  // Au repos, l'icône est en texte/inverse sur l'anthracite, sans fond.
+  const inactif = await mesurer(page, `${section('49:107')} nav a`, 1)
+  expect(inactif.couleur).toBe('rgb(255, 255, 255)')
+  expect(inactif.fond).toBe('rgba(0, 0, 0, 0)')
+
+  // Le lien actif est annoncé comme la page courante.
+  await expect(liens.nth(0)).toHaveAttribute('aria-current', 'page')
+
+  // L'infobulle n'apparaît qu'au survol.
+  const bulle = page.locator(`${section('49:107')} nav [role="tooltip"]`).nth(1)
+  expect(await bulle.evaluate((n) => getComputedStyle(n.parentElement!).opacity)).toBe('0')
+  await liens.nth(1).hover()
+  await expect.poll(() => bulle.evaluate((n) => getComputedStyle(n.parentElement!).opacity)).toBe('1')
+  await expect(bulle).toHaveText('Validations sur place')
+  expect(await bulle.evaluate((n) => getComputedStyle(n).backgroundColor)).toBe('rgb(29, 29, 27)')
+})
+
+test('Barre de navigation mobile 61:155 · 358 px, cinq onglets de 56', async ({ page }) => {
+  const barre = await mesurer(page, `${section('61:155')} nav`, 0)
+  expect(barre.w).toBe(358)
+  expect(barre.rayon).toBe('36px')
+  expect(barre.pad).toBe('8px/10px/8px/10px')
+  expect(barre.fond).toBe('rgb(60, 60, 59)')
+
+  const onglets = page.locator(`${section('61:155')} nav a`)
+  await expect(onglets).toHaveCount(5)
+  for (let index = 0; index < 5; index += 1) {
+    const mesure = await mesurer(page, `${section('61:155')} nav a`, index)
+    expect([mesure.w, mesure.h], `onglet ${index}`).toEqual([56, 56])
+    expect(mesure.rayon, `onglet ${index}`).toBe('999px')
+  }
+
+  // Le scanner est le bouton blanc central, à icône sombre.
+  const scanner = await mesurer(page, `${section('61:155')} nav a`, 2)
+  expect(scanner.fond).toBe('rgb(255, 255, 255)')
+  expect(scanner.couleur).toBe('rgb(29, 29, 27)')
+
+  // Les onglets au repos portent une icône en texte/inverse.
+  const repos = await mesurer(page, `${section('61:155')} nav a`, 1)
+  expect(repos.couleur).toBe('rgb(255, 255, 255)')
+  expect(repos.fond).toBe('rgba(0, 0, 0, 0)')
+})
+
+test('En-tête de carte 49:129 · pictogramme 40 en contour, titre 18/24', async ({ page }) => {
+  // La section de la galerie porte son propre <header> : on ne cible que ceux des cartes.
+  const enTetesDeCarte = `${section('49:129')} > div header`
+  const entete = await mesurer(page, enTetesDeCarte, 0)
+  expect(entete.h).toBeGreaterThanOrEqual(60)
+  expect(entete.pad).toBe('18px/20px/12px/20px')
+  expect(entete.gap).toBe('12px')
+
+  const picto = await mesurer(page, `${enTetesDeCarte} > span[aria-hidden]`, 0)
+  expect([picto.w, picto.h]).toEqual([40, 40])
+  expect(picto.rayon).toBe('999px')
+
+  const titre = page.locator(`${enTetesDeCarte} p`).first()
+  expect(await titre.evaluate((n) => getComputedStyle(n).fontSize)).toBe('18px')
+  expect(await titre.evaluate((n) => getComputedStyle(n).lineHeight)).toBe('24px')
+
+  const sousTitre = page.locator(`${enTetesDeCarte} p`).nth(1)
+  expect(await sousTitre.evaluate((n) => getComputedStyle(n).fontSize)).toBe('12px')
+  expect(await sousTitre.evaluate((n) => getComputedStyle(n).color)).toBe('rgb(90, 96, 107)')
+
+  // Le sous-titre est masqué quand il n'est pas fourni : la seconde carte n'a qu'un titre.
+  await expect(page.locator(enTetesDeCarte).nth(1).locator('p')).toHaveCount(1)
+})

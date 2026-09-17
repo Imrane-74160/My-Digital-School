@@ -25,8 +25,8 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - [x] **Bouton** (`43:101`) : 24 variantes (Type × Taille × État), géométrie vérifiée au pixel contre le Figma — M 102,5 × 40 (Figma 103 × 40), L 117,1 × 52 (Figma 117 × 52), rayons 20/24, paddings 16/16 et 16/20, gap 8, libellé Inter 500 14/18 et 16/18, halos de survol turquoise et orange.
 - [x] **Bouton icône** (`44:89`) · **Badge de statut** (`45:89`) · **Pastille** (`45:96`) · **Avatar** (`45:110` + taille 84) · **Pictogramme** (`59:150`) · **Puce de catégorie** (`61:132`) · **Puce de composant** (`45:130`) — géométrie, paddings, rayons, typo et couleurs vérifiés valeur par valeur
 - [x] **Champ** (`46:128`) · **Case à cocher** (`46:144`) · **Interrupteur** (`89:425`) · **Onglet** (`46:76`, avec sa piste) · **Liste déroulante** (`46:100`, ouverture et choix réels)
-- [ ] Infobulle · Lien de navigation · Onglet de navigation mobile
-- [ ] Structure : Barre d'état · Barre de navigation mobile · Menu principal · En-tête de page · En-tête de carte · Cellule d'en-tête · Titre de section
+- [x] **Infobulle** (`49:81`) · **Lien de navigation** (`49:107`, infobulle au survol) · **Barre de navigation mobile** (`61:155`, avec ses onglets `49:124`) · **En-tête de carte** (`49:129`)
+- [ ] Structure : Barre d'état · Menu principal · En-tête de page · Cellule d'en-tête · Titre de section
 - [ ] Tableaux : les 8 lignes de tableau + Ligne d'import
 - [ ] Cartes back-office : Indicateur · Action à faire · Ligne de stock · Carte de stock · Règle · Prêt de classe · Ligne de forfait · Carte d'incident · Ligne de réglage · Carte photo de retour · Carte de validation
 - [ ] Cartes mobile : Carte de prêt · Raccourci · Ligne de catalogue · Ligne d'information · Étape · Matériel détecté · Ligne de montant · Case avec libellé · Notification · Action du compte
