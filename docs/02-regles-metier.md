@@ -52,7 +52,7 @@ Soir : actif non rendu à 18h ─► responsable bloqué ─► J+2 18h ─► p
 | TRAITER_SIGNALEMENT {id} | équipe | — | `traite` + notif à l'auteur |
 | RETIRER / REMETTRE {item} | équipe | retirer : en stock · remettre : retiré/anomalie/perdu | statut ; remettre notifie les inscrits du **type** (R14) |
 | AJOUTER_MATERIEL {données} | équipe | — | nouvel id + QR `MDS-…` |
-| MODIFIER_FORFAIT {item, composant?, valeur} | Sandrine (R12) | — | s'applique à **tout le type** (« Un changement s'applique à tout le type ») |
+| MODIFIER_FORFAIT {typeMateriel, composant?, valeur} | Sandrine (R12) | kit sans `composant` → **refus** | s'applique à **tout le type** (« Un changement s'applique à tout le type »). Le total d'un kit **n'est jamais fixé directement** : il reste la somme de ses composants, qui se modifient un par un. |
 | AJUSTER_MONTANT {incident, valeur} | Sandrine | baisse uniquement | montant ajusté, mention « ajusté par Sandrine » |
 | REMBOURSEMENT {incident} | Sandrine | pas déjà payé | `rembourse` + notif merci ; lève un blocage « perte non remboursée » |
 | DEBLOQUER {personne} | équipe | personne bloquée | exemption jusqu'à la fin de la journée (R16) |
@@ -60,7 +60,7 @@ Soir : actif non rendu à 18h ─► responsable bloqué ─► J+2 18h ─► p
 | VERIFIER_SALLE {salle, presents} | équipe | — | présents + date de vérification |
 | IMPORT_INVENTAIRE {lignes valides} | équipe | lignes en erreur ignorées | ajoute les matériels |
 | IMPORT_CLASSES {classes} | équipe | — | remplace la liste des classes |
-| MODIFIER_CHARTE {titre?, articles} | Sandrine | — | charte mise à jour : `{ titre, articles: [{ id, titre, texte }] }`, 7 articles |
+| MODIFIER_CHARTE {titre?, articles} | Sandrine | liste vide → refus | reçoit les **7 textes d'articles**. Le nombre d'articles, leurs `id` et leurs `titre` courts sont **fixes** : ni ajout, ni suppression, ni renommage. Met aussi à jour `charteModifieeLe`. |
 | REGLAGE {rappel16h30 \| recap8h, valeur} | équipe | — | active / coupe l'envoi |
 | FIN_DE_JOURNEE (horloge) | démo | déjà le soir → refus | remises non validées annulées · **prêts à J+2 passent `perdu` + incident au forfait complet (R11)** · blocages appliqués |
 | ALLER_A_16H30 (horloge) | démo | déjà 16h30 passées → refus | heure à 16h30 · rappel aux responsables d'un prêt `actif` si `rappel1630` est activé (R15) |
@@ -115,7 +115,6 @@ Côté Lydia, les actions de Sandrine restent **visibles** avec la mention « R�
 - **`materiels[].note`** s'affiche **uniquement au back-office** : sous le badge de statut dans la table Matériel et dans « Statut actuel » de la fiche. Jamais dans l'app.
 - **Horloge injectable** : aucun `Date.now()` dans `src/domain/`. Fuseau `Europe/Paris`, départ `2026-09-17T10:15`.
 - **La perte (R11) se produit à ▶ FIN_DE_JOURNEE**, pas à ▶ LENDEMAIN : c'est la conséquence directe de l'arbitrage « J+2 à 18h » (le moteur de référence la faisait à 8h). Vérifié par `docs/06` P5.4 : « Lendemain 8h » puis « Fin de journée » (vendredi 18h) → le PC de Yanis passe `perdu`.
-- **Deux conflits Figma / arbitrages restent ouverts**, signalés au propriétaire du produit et non tranchés seuls :
-  1. *Éditeur de la charte (B12)* — l'arbitrage demande une édition **article par article** (titre + texte) ; le Figma `89:3051` dessine **un seul bloc éditable** contenant la ligne de titre puis les 7 articles numérotés en paragraphes, sans champ de titre. Le modèle `{ id, titre, texte }` couvre les deux : en attendant, le back-office édite **le texte des articles**, les titres courts restent fixes (ils ne servent qu'à l'écran mobile A2).
-  2. *Forfait par composant (B8)* — `▶ MODIFIER_FORFAIT` accepte `composant?` et A5 affiche « forfait total et par composant » ; le Figma `27:2` ne dessine **qu'une ligne par type**, avec un seul montant et un seul crayon, y compris pour un kit. Le moteur **refuse** aujourd'hui de fixer le forfait d'un kit sans nommer un composant (message : « … est un kit : modifie le forfait d'un composant, pas celui du kit. ») : c'est le comportement sûr, à confirmer.
+- **Éditeur de la charte (B12)** — on suit le Figma `89:3051` : **un seul bloc**, la ligne de titre puis les 7 articles numérotés en paragraphes. Chaque paragraphe est éditable sur place et l'ensemble garde l'apparence d'un bloc unique, sans champ de titre visible. Les titres courts de `reglages.charte.articles[].titre` restent **fixes dans le seed** et ne servent qu'à l'écran mobile A2.
+- **Forfait d'un kit (B8)** — le total d'un kit **n'est jamais fixé directement** : `▶ MODIFIER_FORFAIT` sans `composant` sur un matériel à composants est **refusé** (« … est un kit : modifie le forfait d'un composant, pas celui du kit. »). Sur « Forfaits par type », la ligne d'un kit affiche le total calculé et son crayon **ouvre la fiche B5** de la première unité du type, sur « Forfait par composant ». Une ligne sans composants s'édite sur place.
 - **Le rappel de 16h30 est sa propre action** (▶ ALLER_A_16H30) et non un effet de bord de la fin de journée : avec une horloge en heures réelles, 16h30 et 18h sont deux instants distincts que le panneau de démo atteint séparément.

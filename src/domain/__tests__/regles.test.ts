@@ -317,6 +317,37 @@ describe('R12 · forfaits, ajustements et paiements réservés à Sandrine', () 
     expect(incident.ajustePar).toBe('sandrine')
   })
 
+  it('refuse de fixer le forfait d’un kit sans nommer un composant, et ne touche à rien', () => {
+    // Le total d'un kit reste la somme de ses composants : il ne se saisit jamais.
+    const r = dispatch(etat, {
+      type: 'MODIFIER_FORFAIT',
+      par: 'sandrine',
+      typeMateriel: 'kit-canon-r10',
+      valeur: 900,
+    })
+    expect(r.ok).toBe(false)
+    expect(r.regle).toBe('R07')
+    expect(r.msg).toBe(
+      'Kit Canon R10 #01 est un kit : modifie le forfait d’un composant, pas celui du kit.',
+    )
+    expect(r.etat).toBe(etat)
+    expect(sel.forfaitsParType(etat).find((f) => f.type === 'kit-canon-r10')?.forfait).toBe(1130)
+  })
+
+  it('modifie le forfait d’un composant, et le total du kit suit', () => {
+    const apres = jouer(etat, {
+      type: 'MODIFIER_FORFAIT',
+      par: 'sandrine',
+      typeMateriel: 'kit-canon-r10',
+      composant: 'batterie2',
+      valeur: 60,
+    })
+    const composant = sel.materiel(apres, 'kit-r10-01').composants!.find((c) => c.id === 'batterie2')!
+    expect(composant.forfait).toBe(60)
+    // 1130 − 45 + 60 = 1145, recalculé et jamais stocké.
+    expect(sel.forfaitsParType(apres).find((f) => f.type === 'kit-canon-r10')?.forfait).toBe(1145)
+  })
+
   it('applique un changement de forfait à tout le type', () => {
     const apres = jouer(etat, {
       type: 'MODIFIER_FORFAIT',

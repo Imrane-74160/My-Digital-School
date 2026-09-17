@@ -117,7 +117,8 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 ### B5 · Matériel — `24:3` — `/admin/materiel?id=`
 - Recherche (nom ou QR), filtres (Tout, Niveau 1, Niveau 2, Disponibles, Sortis, Retirés), catégorie, « Ajouter un matériel » (◐ panneau/formulaire : nom, catégorie, niveau, lieu, forfait ▶ AJOUTER_MATERIEL).
 - Colonnes du tableau : **Matériel** (nom + code QR en mono dessous) · Catégorie · Niveau · Statut · Forfait (aligné à droite). Sous-titre de la carte : « {n} matériels · {n} sortis · {n} retirés du prêt ».
-- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (généré depuis le code), statut actuel + la même note + action contextuelle (Valider la remise…), forfait par composant (Sandrine : champs éditables ▶ MODIFIER_FORFAIT ; Lydia : lecture + cadenas), total, « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER / ◐ « Remettre en service » ▶ REMETTRE.
+- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (généré depuis le code), statut actuel + la même note + encart d'action contextuelle (titre « À valider sur place », sous-ligne « {Nom} attend au bureau depuis {HH:MM} », bouton « Valider la remise »), puis **« Forfait par composant »** : une ligne par composant, éditable par Sandrine ▶ MODIFIER_FORFAIT{composant} appliqué à **tout le type** ; Lydia voit les mêmes lignes en lecture avec cadenas. Le **total est intitulé « Kit complet »** et reste **calculé** : jamais saisi. Puis « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER (◐ désactivé quand le matériel n'est pas en stock) / ◐ « Remettre en service » ▶ REMETTRE.
+- ◐ **Arrivée depuis B8** : `?id=<première unité du type>&ancre=forfait` ouvre la fiche défilée sur « Forfait par composant ». C'est le seul chemin pour changer le forfait d'un kit.
 
 ### B6 · Prêts — `26:2` — `/admin/prets`
 - Onglets En cours / ◐ Historique, recherche matériel ou **responsable**, **Ligne de tableau · Prêts** → Matériel fiche.
@@ -133,7 +134,10 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 ### B8 · Incidents & paiements — `27:2` — `/admin/incidents?onglet=`
 - Onglets À rembourser / ◐ Payés / ◐ Signalements (réutilise la table du tableau de bord).
 - **Carte d'incident** : « Ajuster » (◐ saisie inline, baisse seulement) ▶ AJUSTER_MONTANT ; « Enregistrer le paiement » ▶ REMBOURSEMENT. Lydia : boutons verrouillés « Réservé à Sandrine » → refus R12.
-- Payés récemment (Ligne de tableau · Paiement). Forfaits par type (Ligne de forfait, bouton modifier ▶ MODIFIER_FORFAIT, Sandrine).
+- Payés récemment (Ligne de tableau · Paiement), sous-titre « Ce mois-ci ».
+- **Forfaits par type** (Ligne de forfait) : une ligne par `type`, avec son montant et un crayon. Deux comportements selon le type :
+  - **Type à composants** (Kit Canon R10, PC de prêt, Ronin, Micro HF, Boîte intervenant) : le montant affiché est le **total calculé**, somme des composants. Le crayon **ne modifie rien sur place** : il ouvre **B5 Matériel** sur la fiche de la première unité du type, défilée sur « Forfait par composant ». Pour Lydia, la même fiche s'ouvre en lecture seule avec cadenas.
+  - **Type sans composants** (Souris Apple, Casque d'anglais, Trépied…) : le crayon édite le montant **sur place** ▶ MODIFIER_FORFAIT (Sandrine). Chez Lydia le crayon reste visible et le clic affiche le refus R12, comme les autres actions réservées.
 
 ### B9 · Consommables — `84:2451` — `/admin/consommables`
 - Bandeau de règle sous le fil d'Ariane : « Comptage rapide chaque lundi · pas de suivi par personne · alerte dans le récap de 8h sous le seuil ».
@@ -155,7 +159,11 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 - Liste des classes : pastilles actuelles, zone de dépôt → ◐ aperçu → ▶ IMPORT_CLASSES.
 
 ### B12 · Réglages — `89:3051` — `/admin/reglages`
-- Charte : **liste numérotée, éditable article par article** (champ titre + zone de texte par article), un **seul bouton « Enregistrer la charte »** pour l'ensemble ▶ MODIFIER_CHARTE (Sandrine). Lydia : lecture seule + cadenas → refus R12.
+- Charte : **un seul bloc**, comme dans le Figma — la ligne de titre « Charte d'utilisation du matériel MyDigitalSchool », puis les **7 articles numérotés en paragraphes**. Chaque paragraphe est éditable **sur place** ; l'ensemble garde l'apparence d'un bloc unique, **sans champ de titre visible**.
+  - Ni ajout ni suppression d'article : les 7 `id` et leurs `titre` courts sont fixes dans le seed et ne servent qu'à l'écran mobile A2.
+  - Un **seul bouton « Enregistrer la charte »** ▶ MODIFIER_CHARTE, qui reçoit les 7 textes. Il est **désactivé tant que rien n'a changé**.
+  - Lydia : bloc en **lecture seule** avec cadenas → refus R12.
+- Bande d'information sous l'en-tête : « Connectée en tant que {Prénom} ({rôle}) : la charte et les forfaits ne sont modifiables que par elle. »
 - Notifications, sous-titre « Envois automatiques », 2 **Lignes de réglage** avec Interrupteur ▶ REGLAGE : « Rappel de 16h30 » / « Push et email aux emprunteurs qui ont un prêt en cours », et « Récap de 8h » / « Email à Cyrianne, Lydia et Sandrine ».
 - Sous-titre de la carte Charte : « Acceptée une fois à la première connexion · modifiée le {date} » (alimenté par `reglages.charteModifieeLe`).
 - Rôles et accès (statique depuis `personnes`) : une ligne par personne d'équipe avec sa description de droits et un badge « Équipe » ou « Direction ».
