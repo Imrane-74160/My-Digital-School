@@ -47,8 +47,7 @@ export const estDirection = (role: Role): boolean => role === 'direction'
 
 export const STATUTS_OUVERTS = ['remise_a_valider', 'actif', 'retour_a_valider'] as const
 
-export const estOuvert = (pret: Pret): boolean =>
-  (STATUTS_OUVERTS as readonly string[]).includes(pret.statut)
+export const estOuvert = (pret: Pret): boolean => (STATUTS_OUVERTS as readonly string[]).includes(pret.statut)
 
 export const pretsOuverts = (etat: EtatMDS): Pret[] => etat.prets.filter(estOuvert)
 
@@ -59,8 +58,7 @@ export const pretOuvertDe = (etat: EtatMDS, id: MaterielId): Pret | undefined =>
 export const pretsDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
   etat.prets.filter((p) => p.responsable === id)
 
-export const pretsEnCoursDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
-  pretsDe(etat, id).filter(estOuvert)
+export const pretsEnCoursDe = (etat: EtatMDS, id: PersonneId): Pret[] => pretsDe(etat, id).filter(estOuvert)
 
 export const historiqueDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
   pretsDe(etat, id)
@@ -78,8 +76,7 @@ export function estEnRetard(etat: EtatMDS, pret: Pret): boolean {
   return !h.apres(fermeture, etat.horloge.maintenant)
 }
 
-export const pretsEnRetard = (etat: EtatMDS): Pret[] =>
-  etat.prets.filter((p) => estEnRetard(etat, p))
+export const pretsEnRetard = (etat: EtatMDS): Pret[] => etat.prets.filter((p) => estEnRetard(etat, p))
 
 /** Échéance de perte : J+2 à la fermeture du bureau (R11, arbitré d'après le Figma). */
 export function echeanceDePerte(etat: EtatMDS, pret: Pret): Instant | null {
@@ -142,8 +139,7 @@ export function forfaitsParType(etat: EtatMDS): { type: TypeMateriel; nom: strin
   })
 }
 
-export const inscritsAuType = (etat: EtatMDS, type: TypeMateriel): PersonneId[] =>
-  etat.prevenus[type] ?? []
+export const inscritsAuType = (etat: EtatMDS, type: TypeMateriel): PersonneId[] => etat.prevenus[type] ?? []
 
 export const estInscritAuType = (etat: EtatMDS, type: TypeMateriel, id: PersonneId): boolean =>
   inscritsAuType(etat, type).includes(id)
@@ -174,8 +170,7 @@ export const signalementsOuverts = (etat: EtatMDS): Signalement[] =>
 export const consommablesBas = (etat: EtatMDS): Consommable[] =>
   etat.consommables.filter((c) => c.quantite < c.seuil)
 
-export const sallesARegler = (etat: EtatMDS): Salle[] =>
-  etat.salles.filter((s) => s.presents !== s.attendus)
+export const sallesARegler = (etat: EtatMDS): Salle[] => etat.salles.filter((s) => s.presents !== s.attendus)
 
 // ─── Indicateurs « En ce moment » ────────────────────────────────────────────
 
@@ -282,9 +277,7 @@ export function lignesAFaire(etat: EtatMDS): LigneAFaire[] {
       cle: 'bloques',
       nombre: bloquees.length,
       titre: `${compte(bloquees.length, 'emprunteur')} bloqué${s(bloquees.length)}`,
-      detail: bloquees
-        .map((p) => `${prenom(p)} : ${raisonDeBlocage(etat, p.id) ?? ''}`)
-        .join(' · '),
+      detail: bloquees.map((p) => `${prenom(p)} : ${raisonDeBlocage(etat, p.id) ?? ''}`).join(' · '),
       reserveASandrine: false,
     })
   }
@@ -309,7 +302,9 @@ export function lignesAFaire(etat: EtatMDS): LigneAFaire[] {
       titre: `${compte(ouverts.length, 'signalement')} ouvert${s(ouverts.length)}`,
       detail: ouverts
         .slice(0, 3)
-        .map((sig) => (sig.cible.type === 'salle' ? `Salle ${sig.cible.id}` : materiel(etat, sig.cible.id).nom))
+        .map((sig) =>
+          sig.cible.type === 'salle' ? `Salle ${sig.cible.id}` : materiel(etat, sig.cible.id).nom,
+        )
         .join(', '),
       reserveASandrine: false,
     })

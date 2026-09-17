@@ -182,7 +182,8 @@ function lirePret(brut: unknown, ou: string): Pret {
     id: texte(o['id'], `${ou}.id`),
     materiel: texte(o['materiel'], `${ou}.materiel`),
     responsable: texte(o['responsable'], `${ou}.responsable`),
-    pourClasse: pourClasse === null || pourClasse === undefined ? null : texte(pourClasse, `${ou}.pourClasse`),
+    pourClasse:
+      pourClasse === null || pourClasse === undefined ? null : texte(pourClasse, `${ou}.pourClasse`),
     statut: parmi<StatutPret>(o['statut'], STATUTS_PRET, `${ou}.statut`),
     forfait: nombre(o['forfait'], `${ou}.forfait`),
     ...si(instantOpt(o['demandeLe'], `${ou}.demandeLe`), 'demandeLe'),
@@ -334,7 +335,9 @@ export function analyserSeed(source: unknown): EtatMDS {
       nom: texte(c['nom'], `seed.categories.${cle}.nom`),
       court: texte(c['court'], `seed.categories.${cle}.court`),
       ...si(
-        c['reserveA'] === undefined ? undefined : parmi(c['reserveA'], ROLES, `seed.categories.${cle}.reserveA`),
+        c['reserveA'] === undefined
+          ? undefined
+          : parmi(c['reserveA'], ROLES, `seed.categories.${cle}.reserveA`),
         'reserveA',
       ),
     }

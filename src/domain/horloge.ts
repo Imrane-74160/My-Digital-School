@@ -15,8 +15,18 @@ const JOURS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dim
 const JOURS_COURTS = ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'] as const
 // Abréviations telles qu'elles apparaissent dans le Figma (« lundi 14 sept. »).
 const MOIS_COURTS = [
-  'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin',
-  'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.',
+  'janv.',
+  'févr.',
+  'mars',
+  'avr.',
+  'mai',
+  'juin',
+  'juil.',
+  'août',
+  'sept.',
+  'oct.',
+  'nov.',
+  'déc.',
 ] as const
 
 export type Composantes = {
@@ -61,10 +71,7 @@ export function numeroDeJour(instant: Instant | Jour): number {
   const anneeDansEre = a - ere * 400
   const jourDansAnnee = Math.floor((153 * (mois + (mois > 2 ? -3 : 9)) + 2) / 5) + jour - 1
   const jourDansEre =
-    anneeDansEre * 365 +
-    Math.floor(anneeDansEre / 4) -
-    Math.floor(anneeDansEre / 100) +
-    jourDansAnnee
+    anneeDansEre * 365 + Math.floor(anneeDansEre / 4) - Math.floor(anneeDansEre / 100) + jourDansAnnee
   return ere * 146097 + jourDansEre - 719468
 }
 
@@ -74,7 +81,11 @@ export function jourDepuisNumero(numero: number): Jour {
   const ere = Math.floor(decale / 146097)
   const jourDansEre = decale - ere * 146097
   const anneeDansEre = Math.floor(
-    (jourDansEre - Math.floor(jourDansEre / 1460) + Math.floor(jourDansEre / 36524) - Math.floor(jourDansEre / 146096)) / 365,
+    (jourDansEre -
+      Math.floor(jourDansEre / 1460) +
+      Math.floor(jourDansEre / 36524) -
+      Math.floor(jourDansEre / 146096)) /
+      365,
   )
   const annee = anneeDansEre + ere * 400
   const jourDansAnnee =
@@ -102,8 +113,7 @@ export const apres = (a: Instant, b: Instant) => a > b
 export const memeJour = (a: Instant, b: Instant) => jourDe(a) === jourDe(b)
 
 /** Nombre de jours calendaires entre deux instants (pas de gestion des week-ends : hors périmètre). */
-export const joursEcoules = (depuis: Instant, jusqu: Instant) =>
-  numeroDeJour(jusqu) - numeroDeJour(depuis)
+export const joursEcoules = (depuis: Instant, jusqu: Instant) => numeroDeJour(jusqu) - numeroDeJour(depuis)
 
 export function ajouterJours(instant: Instant, nombre: number): Instant {
   const { heures, minutes } = analyser(instant)

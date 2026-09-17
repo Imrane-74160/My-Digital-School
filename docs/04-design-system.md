@@ -5,6 +5,8 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 
 ## Principes
 - Un seul bouton **Principal** (turquoise) par zone. Orange = **Alerte** (créer un incident). Rose = retard / casse / incident. Orange clair = attention / à valider.
+- **Le libellé des boutons reste en `texte/principal`** (sombre) sur les trois types, turquoise et orange compris : c'est ce que montre le composant `43:101`, pas du blanc.
+- **Token manquant dans l'export** : le halo de survol du bouton **Alerte** est dessiné dans le Figma mais aucun token ne le porte (`--mds-ombre-survol-bouton` n'existe qu'en turquoise). Il est **dérivé** côté projet dans `src/styles/index.css` (`--shadow-survol-bouton-alerte`), à la même géométrie que le halo turquoise et à partir du token `--mds-marque-orange` — aucune valeur en dur. À ajouter à l'export Figma à la prochaine passe.
 - Vignette neutre **blanche** quand la ligne est neutre, **teintée** quand elle demande de l'attention.
 - Cartes back-office : rayon 36, trait bordure 8 %, pas d'ombre. Cartes mobile : rayon 28, fond blanc.
 - Chiffres en Bricolage Grotesque, codes / heures / montants de tableau en JetBrains Mono.
@@ -64,7 +66,7 @@ Construire d'abord ces composants dans `src/design-system/` avec une page `/desi
 
 ## Icônes (Figma → lucide-react)
 École `School` · Cadenas `Lock` · Cadenas ouvert `LockOpen` · Tableau de bord `LayoutDashboard` · Utilisateur validé `UserCheck` · Utilisateurs `Users` · Utilisateur `User` · Image `Image` · Colis `Package` · Échange `ArrowLeftRight` · Reçu `ReceiptText` · Stylo `Pencil` · Porte `DoorOpen` · Import `Upload` · Réglages `SlidersHorizontal` · Retour `Undo2` · Dossier `Folder` · Dossier ouvert `FolderOpen` · Loupe `Search` · Cloche `Bell` · Chevron bas/droit/gauche `ChevronDown/Right/Left` · Liste cochée `ListChecks` · Plus d'options `EllipsisVertical` · Coche `Check` · Croix `X` · Plus `Plus` · Moins `Minus` · Drapeau `Flag` · Horloge `Clock` · Ordinateur portable `Laptop` · Enveloppe `Mail` · Ventilateur `Fan` · Casque audio `Headphones` · Cartes de jeu `GalleryVerticalEnd` · Appareil photo `Camera` · Caméra `Video` · Enregistreur `Radio` · Micro `Mic` · Alerte `TriangleAlert` · Bouclier `Shield` · Pièce de puzzle `Puzzle` · Agrandir `Maximize2` · Historique `History` · Souris `Mouse` · Prise `Plug` · Repère `MapPin` · Imprimante `Printer` · Interdit `Ban` · Lune `Moon` · Portefeuille `Wallet` · Modifier `SquarePen` · Carte SD `HardDrive` · Batterie `Battery` · Étiquette `Tag` · Maison `House` · Grille `LayoutGrid` · Scanner `ScanLine` · Flèche `ArrowUpRight` · Rotation `RotateCcw` · Trépied `Tripod`* · Ampoule `Lightbulb`
-\* vérifier l'équivalent exact dans la version de lucide installée ; à défaut, reprendre le SVG depuis Figma (`get_design_context` sur l'icône).
+\* **Vérifié** : sur les 63 icônes, 62 existent dans `lucide-react` 1.47. Seule **« Trépied » n'existe pas** — son tracé est repris du Figma dans `src/design-system/TrepiedIcone.tsx`. La table nom Figma → composant lucide est **générée depuis ce document** (`src/design-system/icones.ts`) et un test Vitest vérifie que toutes les icônes citées par `data/seed.json` et émises par le moteur résolvent.
 
 ## Logos et images
 - `reference/charte/` : logo MyDigitalSchool (SVG + PNG). Au back-office, le logo est dans la **barre d'en-tête**, à gauche du titre de page (le rail du menu commence sous l'en-tête).

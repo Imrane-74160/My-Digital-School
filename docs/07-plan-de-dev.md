@@ -20,10 +20,18 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - **Fini quand** : tous les tests passent ; les compteurs calculés correspondent aux situations de `docs/05-donnees-demo.md`. ✅
 - **Vérifié** : Sortis 12 · En retard 1 · À valider 4 · Photos 3 · À rembourser 2 (94 €) · Stock bas 1 · Signalements ouverts 4 · Bloqués 1, et le récap de 8h reproduit les 7 lignes du Figma.
 
-## Phase 2 · Design system
-- [ ] Composants de `docs/04-design-system.md` avec toutes leurs variantes et états (survol, appui, focus, désactivé)
-- [ ] Page `/design-system` = galerie, comparée section par section à la page Composants (`40:3`)
+## Phase 2 · Design system — en cours
+- [x] **Icônes** : table nom Figma → `lucide-react` générée depuis `docs/04` (63 icônes). « Trépied » repris du Figma en SVG. Test Vitest : toutes les icônes du seed et du moteur résolvent.
+- [x] **Bouton** (`43:101`) : 24 variantes (Type × Taille × État), géométrie vérifiée au pixel contre le Figma — M 102,5 × 40 (Figma 103 × 40), L 117,1 × 52 (Figma 117 × 52), rayons 20/24, paddings 16/16 et 16/20, gap 8, libellé Inter 500 14/18 et 16/18, halos de survol turquoise et orange.
+- [ ] Bouton icône · Badge de statut · Pastille · Avatar · Pictogramme · Puce de catégorie · Puce de composant
+- [ ] Champ · Case à cocher · Interrupteur · Onglet · Liste déroulante · Infobulle · Lien de navigation · Onglet de navigation mobile
+- [ ] Structure : Barre d'état · Barre de navigation mobile · Menu principal · En-tête de page · En-tête de carte · Cellule d'en-tête · Titre de section
+- [ ] Tableaux : les 8 lignes de tableau + Ligne d'import
+- [ ] Cartes back-office : Indicateur · Action à faire · Ligne de stock · Carte de stock · Règle · Prêt de classe · Ligne de forfait · Carte d'incident · Ligne de réglage · Carte photo de retour · Carte de validation
+- [ ] Cartes mobile : Carte de prêt · Raccourci · Ligne de catalogue · Ligne d'information · Étape · Matériel détecté · Ligne de montant · Case avec libellé · Notification · Action du compte
+- [x] Page `/design-system` = galerie, chaque section portant le lien de son nœud Figma
 - **Fini quand** : chaque section a été comparée en capture avec Figma et les écarts corrigés.
+- **Méthode retenue** : pour chaque composant, `get_design_context` sur son nœud, puis **mesure chiffrée** du rendu (boîte, rayon, padding, gap, police, couleurs calculées) contre les valeurs du Figma — pas une comparaison à l'œil.
 
 ## Phase 3 · App mobile
 - [ ] A1 Connexion · A2 Charte · A3 Accueil (+ états bloqué / soir / vide / à rembourser)

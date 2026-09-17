@@ -25,7 +25,13 @@ const SANS_DROIT: Record<string, Action> = {
   AJOUTER_MATERIEL: {
     type: 'AJOUTER_MATERIEL',
     par: 'ines',
-    donnees: { nom: 'Souris filaire #04', categorie: 'cours', niveau: 2, lieu: 'Bureau de la pédagogie', forfait: 12 },
+    donnees: {
+      nom: 'Souris filaire #04',
+      categorie: 'cours',
+      niveau: 2,
+      lieu: 'Bureau de la pédagogie',
+      forfait: 12,
+    },
   },
   DEBLOQUER: { type: 'DEBLOQUER', par: 'ines', personne: 'yanis' },
   COMPTAGE: { type: 'COMPTAGE', par: 'ines', quantites: { stylos: 25 } },

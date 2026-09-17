@@ -75,6 +75,9 @@
   /* Ombres */
   --shadow-douce: var(--mds-ombre-douce);
   --shadow-survol-bouton: var(--mds-ombre-survol-bouton);
+  /* Le halo de survol du bouton Alerte existe dans le Figma mais n'a pas de token exporté :
+     on le DÉRIVE du token orange, à la même géométrie que le halo turquoise. Aucune valeur en dur. */
+  --shadow-survol-bouton-alerte: 0 6px 16px -4px color-mix(in srgb, var(--mds-marque-orange) 35%, transparent);
   --shadow-elevation: var(--mds-ombre-elevation);
   --shadow-focus-anneau: var(--mds-focus-anneau);
 

@@ -327,9 +327,7 @@ describe('R12 · forfaits, ajustements et paiements réservés à Sandrine', () 
     })
     expect(r.ok).toBe(false)
     expect(r.regle).toBe('R07')
-    expect(r.msg).toBe(
-      'Kit Canon R10 #01 est un kit : modifie le forfait d’un composant, pas celui du kit.',
-    )
+    expect(r.msg).toBe('Kit Canon R10 #01 est un kit : modifie le forfait d’un composant, pas celui du kit.')
     expect(r.etat).toBe(etat)
     expect(sel.forfaitsParType(etat).find((f) => f.type === 'kit-canon-r10')?.forfait).toBe(1130)
   })
@@ -361,7 +359,12 @@ describe('R12 · forfaits, ajustements et paiements réservés à Sandrine', () 
   })
 
   it('enregistre un paiement et lève le blocage d’une perte remboursée', () => {
-    const vendrediSoir = jouer(etat, { type: 'FIN_DE_JOURNEE' }, { type: 'LENDEMAIN' }, { type: 'FIN_DE_JOURNEE' })
+    const vendrediSoir = jouer(
+      etat,
+      { type: 'FIN_DE_JOURNEE' },
+      { type: 'LENDEMAIN' },
+      { type: 'FIN_DE_JOURNEE' },
+    )
     const perte = vendrediSoir.incidents.find((i) => i.type === 'perte')!
     expect(sel.raisonDeBlocage(vendrediSoir, 'yanis')).not.toBeNull()
 
@@ -441,9 +444,7 @@ describe('R15 · rappel de 16h30 aux emprunteurs, récap de 8h à l’équipe', 
   it('envoie le rappel de 16h30 aux personnes qui ont encore un prêt actif', () => {
     const rappel = jouer(etat, { type: 'ALLER_A_16H30' })
     expect(rappel.horloge.maintenant).toBe('2026-09-17T16:30')
-    expect(textesPour(rappel, 'ines')).toContain(
-      '16h30 · Pense à rendre Casque d’anglais #03 avant 18h.',
-    )
+    expect(textesPour(rappel, 'ines')).toContain('16h30 · Pense à rendre Casque d’anglais #03 avant 18h.')
   })
 
   it('n’envoie plus rien quand le rappel est coupé dans les réglages', () => {

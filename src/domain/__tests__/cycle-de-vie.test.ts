@@ -38,7 +38,9 @@ describe('cycle de vie niveau 2', () => {
 
     const controle = jouer(rendu, { type: 'CONTROLER_PHOTO', par: 'lydia', materiel: 'souris-apple-01' })
     expect(sel.compteurs(controle).photos).toBe(3)
-    expect(controle.photosDeRetour.find((p) => p.materiel === 'souris-apple-01' && p.statut === 'conforme')).toBeDefined()
+    expect(
+      controle.photosDeRetour.find((p) => p.materiel === 'souris-apple-01' && p.statut === 'conforme'),
+    ).toBeDefined()
   })
 })
 
@@ -81,15 +83,12 @@ describe('soir et lendemain', () => {
     // Le retour N1 de Tom attend toujours l'équipe : la fin de journée ne l'annule pas.
     expect(sel.retoursAValider(suite)).toHaveLength(1)
     // Tous les emprunteurs qui n'ont rien rendu sont bloqués.
-    expect(sel.personnesBloquees(suite).map((p) => p.id).sort()).toEqual([
-      'diallo',
-      'ines',
-      'lea',
-      'roche',
-      'sarah',
-      'tom',
-      'yanis',
-    ])
+    expect(
+      sel
+        .personnesBloquees(suite)
+        .map((p) => p.id)
+        .sort(),
+    ).toEqual(['diallo', 'ines', 'lea', 'roche', 'sarah', 'tom', 'yanis'])
   })
 
   it('refuse de terminer une journée déjà terminée', () => {

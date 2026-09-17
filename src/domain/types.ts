@@ -189,9 +189,7 @@ export type CategorieSignalement = (typeof CATEGORIES_SIGNALEMENT)[number]
 export const STATUTS_SIGNALEMENT = ['ouvert', 'traite'] as const
 export type StatutSignalement = (typeof STATUTS_SIGNALEMENT)[number]
 
-export type CibleSignalement =
-  | { type: 'materiel'; id: MaterielId }
-  | { type: 'salle'; id: SalleId }
+export type CibleSignalement = { type: 'materiel'; id: MaterielId } | { type: 'salle'; id: SalleId }
 
 export type Signalement = {
   id: SignalementId
@@ -341,8 +339,22 @@ export type EtatMDS = {
 // ─── Règles ──────────────────────────────────────────────────────────────────
 
 export const CODES_REGLE = [
-  'R01', 'R02', 'R03', 'R04', 'R05', 'R06', 'R07', 'R08',
-  'R09', 'R10', 'R11', 'R12', 'R13', 'R14', 'R15', 'R16',
+  'R01',
+  'R02',
+  'R03',
+  'R04',
+  'R05',
+  'R06',
+  'R07',
+  'R08',
+  'R09',
+  'R10',
+  'R11',
+  'R12',
+  'R13',
+  'R14',
+  'R15',
+  'R16',
 ] as const
 export type CodeRegle = (typeof CODES_REGLE)[number]
 

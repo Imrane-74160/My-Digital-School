@@ -117,13 +117,7 @@ function ouvrirIncident(
 function prevenirLesInscrits(b: EtatMDS, unite: Materiel): void {
   const inscrits = b.prevenus[unite.type] ?? []
   if (inscrits.length === 0) return
-  notifier(
-    b,
-    [...inscrits],
-    `${unite.nom} est de retour. Le premier qui scanne le prend.`,
-    'Échange',
-    'R14',
-  )
+  notifier(b, [...inscrits], `${unite.nom} est de retour. Le premier qui scanne le prend.`, 'Échange', 'R14')
   b.prevenus[unite.type] = []
 }
 
@@ -156,13 +150,7 @@ function envoyerLeRappel(b: EtatMDS): number {
     parResponsable.set(pret.responsable, [...deja, sel.materiel(b, pret.materiel).nom])
   }
   for (const [qui, noms] of parResponsable) {
-    notifier(
-      b,
-      [qui],
-      `16h30 · Pense à rendre ${noms.join(', ')} avant 18h.`,
-      'Horloge',
-      'R15',
-    )
+    notifier(b, [qui], `16h30 · Pense à rendre ${noms.join(', ')} avant 18h.`, 'Horloge', 'R15')
   }
   return parResponsable.size
 }
@@ -240,9 +228,7 @@ function appliquer(b: EtatMDS, action: Action): Issue {
         pourClasse: action.pourClasse ?? null,
         statut: unite.niveau === 1 ? 'remise_a_valider' : 'actif',
         forfait,
-        ...(unite.niveau === 1
-          ? { demandeLe: b.horloge.maintenant }
-          : { sortiLe: b.horloge.maintenant }),
+        ...(unite.niveau === 1 ? { demandeLe: b.horloge.maintenant } : { sortiLe: b.horloge.maintenant }),
       }
       b.prets.unshift(pret)
 
@@ -283,10 +269,7 @@ function appliquer(b: EtatMDS, action: Action): Issue {
           'R06',
         )
       }
-      return succes(
-        `${p} emprunte ${unite.nom}${pour} et accepte le forfait de ${euros(forfait)}.`,
-        'R03',
-      )
+      return succes(`${p} emprunte ${unite.nom}${pour} et accepte le forfait de ${euros(forfait)}.`, 'R03')
     }
 
     case 'VALIDER_REMISE': {
@@ -347,13 +330,7 @@ function appliquer(b: EtatMDS, action: Action): Issue {
         pret.declaration = manque ? manque.libelle : 'tout coché'
         if (action.manquant !== undefined) pret.manquant = action.manquant
         unite.statut = 'retour_a_valider'
-        notifier(
-          b,
-          ['equipe'],
-          `Retour à contrôler sur place : ${unite.nom} (${p}).`,
-          'Liste cochée',
-          'R04',
-        )
+        notifier(b, ['equipe'], `Retour à contrôler sur place : ${unite.nom} (${p}).`, 'Liste cochée', 'R04')
         return succes(
           `${p} rapporte ${unite.nom}, ${declaration} et prend la photo. L’équipe contrôle sur place.`,
           'R04',
@@ -437,13 +414,7 @@ function appliquer(b: EtatMDS, action: Action): Issue {
 
       if (!manque) {
         photo.statut = 'conforme'
-        notifier(
-          b,
-          [photo.responsable],
-          `Photo de retour conforme : ${unite.nom}. Merci !`,
-          'Image',
-          'R05',
-        )
+        notifier(b, [photo.responsable], `Photo de retour conforme : ${unite.nom}. Merci !`, 'Image', 'R05')
         return succes(`${p} contrôle la photo de ${responsable} : ${unite.nom} conforme.`, 'R05')
       }
 
@@ -511,15 +482,8 @@ function appliquer(b: EtatMDS, action: Action): Issue {
         statut: 'ouvert',
       })
       const quoi =
-        action.cible.type === 'salle'
-          ? `salle ${action.cible.id}`
-          : sel.materiel(b, action.cible.id).nom
-      notifier(
-        b,
-        ['equipe'],
-        `Signalement de ${p} : ${action.categorie.toLowerCase()} · ${quoi}.`,
-        'Drapeau',
-      )
+        action.cible.type === 'salle' ? `salle ${action.cible.id}` : sel.materiel(b, action.cible.id).nom
+      notifier(b, ['equipe'], `Signalement de ${p} : ${action.categorie.toLowerCase()} · ${quoi}.`, 'Drapeau')
       return succes(`${p} signale « ${action.categorie} » sur ${quoi}. L’équipe est prévenue.`)
     }
 
@@ -737,7 +701,9 @@ function appliquer(b: EtatMDS, action: Action): Issue {
       const ignorees = action.lignes.length - valides.length
       return succes(
         `${p} importe ${valides.length} matériel${valides.length > 1 ? 's' : ''} depuis Calc.${
-          ignorees > 0 ? ` ${ignorees} ligne${ignorees > 1 ? 's' : ''} en erreur ignorée${ignorees > 1 ? 's' : ''}.` : ''
+          ignorees > 0
+            ? ` ${ignorees} ligne${ignorees > 1 ? 's' : ''} en erreur ignorée${ignorees > 1 ? 's' : ''}.`
+            : ''
         }`,
         'R13',
       )
@@ -801,10 +767,14 @@ function appliquer(b: EtatMDS, action: Action): Issue {
         morceaux.push('Tout a été rendu.')
       }
       if (annulees > 0) {
-        morceaux.push(`${annulees} remise${annulees > 1 ? 's' : ''} non validée${annulees > 1 ? 's' : ''} annulée${annulees > 1 ? 's' : ''}.`)
+        morceaux.push(
+          `${annulees} remise${annulees > 1 ? 's' : ''} non validée${annulees > 1 ? 's' : ''} annulée${annulees > 1 ? 's' : ''}.`,
+        )
       }
       if (perdus > 0) {
-        morceaux.push(`${perdus} matériel${perdus > 1 ? 's' : ''} déclaré${perdus > 1 ? 's' : ''} perdu${perdus > 1 ? 's' : ''}.`)
+        morceaux.push(
+          `${perdus} matériel${perdus > 1 ? 's' : ''} déclaré${perdus > 1 ? 's' : ''} perdu${perdus > 1 ? 's' : ''}.`,
+        )
       }
       return succes(morceaux.join(' '), perdus > 0 ? 'R11' : 'R10')
     }

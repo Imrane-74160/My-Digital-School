@@ -49,7 +49,10 @@ describe('chargement de data/seed.json', () => {
 
   it('indexe les inscriptions « Me prévenir » par type et non par unité', () => {
     for (const type of Object.keys(etat.prevenus)) {
-      expect(etat.materiels.some((m) => m.type === type), `type inconnu : ${type}`).toBe(true)
+      expect(
+        etat.materiels.some((m) => m.type === type),
+        `type inconnu : ${type}`,
+      ).toBe(true)
     }
   })
 
