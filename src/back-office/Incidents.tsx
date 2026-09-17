@@ -293,7 +293,8 @@ function ForfaitsParType() {
         titre="Forfaits par type"
         sousTitre="Un changement vaut pour tout le type"
       />
-      <div className="flex flex-col pb-md">
+      {/* Vingt-cinq types : la liste défile dans la carte plutôt que d'étirer la page. */}
+      <div className="flex max-h-[560px] flex-col overflow-y-auto pb-md">
         {selecteurs.forfaitsParType(etat).map(({ type, nom, forfait }) => {
           const premiere = selecteurs.unitesDuType(etat, type)[0]
           const kit = premiere?.composants !== undefined

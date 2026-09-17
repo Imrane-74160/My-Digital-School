@@ -47,3 +47,31 @@ Attends ma validation avant d'écrire du code.
 - Une session Claude Code = une phase ou quelques écrans. Utilise `/clear` entre deux gros blocs : CLAUDE.md et les docs gardent le contexte.
 - Si Claude invente une fonctionnalité, rappelle-lui la section « Ne pas faire » de CLAUDE.md.
 - Si tu modifies le Figma ou une règle, mets à jour le doc concerné **avant** de redemander du code.
+
+---
+
+## Le prototype est construit
+
+Toutes les phases de `docs/07-plan-de-dev.md` sont faites : l'app mobile (A1→A10), le back-office (B1→B12), le panneau de démo, et les neuf parcours de `docs/06-parcours-de-test.md` joués en automatique.
+
+```bash
+npm install
+npm run dev        # http://localhost:5173
+npm run test       # 135 tests Vitest (moteur de règles, seed, horloge, tokens)
+npm run e2e        # 44 tests Playwright (design system, socle, parcours P1→P9)
+npm run build      # build statique déployable (Vercel, Netlify, GitHub Pages)
+```
+
+### Où aller
+| Adresse | Ce qu'on y voit |
+|---|---|
+| `/` | Choix de la surface + QR code pour ouvrir l'app sur un téléphone |
+| `/app` | App mobile (élèves, intervenants) — cadre 390 × 844 sur ordinateur, plein écran sur téléphone |
+| `/admin` | Back-office (équipe, direction) — 1440 × 839, utilisable dès 1280 px |
+| `/cote-a-cote` | Les deux surfaces en même temps, sur le même état |
+| `/design-system` | Galerie des composants, chaque section avec son nœud Figma |
+
+### Piloter la démo
+Bouton **Démo** en bas à gauche, ou touche `D` : changer de persona (app et back-office), avancer l'horloge simulée (16h30, fin de journée, lendemain 8h), **annuler** (`⌘Z` / `Ctrl+Z`), **réinitialiser** (recharge `data/seed.json`).
+
+Chaque action passe par le moteur de règles : un refus affiche un toast avec son code de règle (R01→R16). Aucun serveur, aucune base : l'état vit dans le navigateur, sous une clé versionnée sur la version du seed — changer `meta.version` dans `data/seed.json` remet la démo à zéro.
