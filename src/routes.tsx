@@ -13,7 +13,20 @@ import { Profil } from './app-mobile/Profil'
 import { Rendre } from './app-mobile/Rendre'
 import { Scanner } from './app-mobile/Scanner'
 import { Signaler } from './app-mobile/Signaler'
+import { Consommables } from './back-office/Consommables'
+import { ConnexionBO } from './back-office/Connexion'
+import { ControlePhoto } from './back-office/ControlePhoto'
 import { CoqueBackOffice } from './back-office/CoqueBackOffice'
+import { ECRANS_BO } from './back-office/ecrans'
+import { Emprunteurs } from './back-office/Emprunteurs'
+import { Imports } from './back-office/Imports'
+import { Incidents } from './back-office/Incidents'
+import { MaterielBO } from './back-office/Materiel'
+import { Prets } from './back-office/Prets'
+import { Reglages } from './back-office/Reglages'
+import { SallesBO } from './back-office/Salles'
+import { TableauDeBord } from './back-office/TableauDeBord'
+import { Validations } from './back-office/Validations'
 import { GalerieDesignSystem } from './design-system/GalerieDesignSystem'
 
 /** Une fiche d'écran de `docs/03-ecrans.md` : code, chemin, titre, nœud Figma. */
@@ -33,6 +46,14 @@ export const ECRANS_APP: Fiche[] = [
   { code: 'A10', chemin: 'profil', titre: 'Profil', noeud: '93:942' },
 ]
 
+/** B2 → B12 : les fiches vivent dans `back-office/ecrans.ts`, avec l'ordre du menu. */
+export const ECRANS_BACK_OFFICE: Fiche[] = ECRANS_BO.map(({ code, chemin, titre, noeud }) => ({
+  code,
+  chemin,
+  titre,
+  noeud,
+}))
+
 /** Écran construit pour chaque fiche de l'app mobile. */
 const ECRAN_APP: Record<string, () => React.ReactElement> = {
   A1: Connexion,
@@ -47,38 +68,44 @@ const ECRAN_APP: Record<string, () => React.ReactElement> = {
   A10: Profil,
 }
 
-/** B2 → B12, page Figma « Back-office » (15:2). B1 vit hors de la coque. */
-export const ECRANS_BACK_OFFICE: Fiche[] = [
-  { code: 'B2', chemin: '', titre: 'Tableau de bord', noeud: '8:950' },
-  { code: 'B3', chemin: 'validations', titre: 'Validations sur place', noeud: '19:2' },
-  { code: 'B4', chemin: 'controle-photo', titre: 'Contrôle photo', noeud: '22:2' },
-  { code: 'B5', chemin: 'materiel', titre: 'Matériel', noeud: '24:3' },
-  { code: 'B6', chemin: 'prets', titre: 'Prêts', noeud: '26:2' },
-  { code: 'B7', chemin: 'emprunteurs', titre: 'Emprunteurs', noeud: '83:2266' },
-  { code: 'B8', chemin: 'incidents', titre: 'Incidents & paiements', noeud: '27:2' },
-  { code: 'B9', chemin: 'consommables', titre: 'Consommables', noeud: '84:2451' },
-  { code: 'B10', chemin: 'salles', titre: 'Salles', noeud: '87:2645' },
-  { code: 'B11', chemin: 'imports', titre: 'Imports Calc', noeud: '88:2861' },
-  { code: 'B12', chemin: 'reglages', titre: 'Réglages', noeud: '89:3051' },
-]
-
-const versRoute = ({ code, chemin, titre, noeud }: Fiche) => {
-  const Ecran = ECRAN_APP[code]
-  return {
-    ...(chemin === '' ? { index: true as const } : { path: chemin }),
-    element: Ecran ? <Ecran /> : <EcranEnChantier code={code} titre={titre} noeud={noeud} />,
-  }
+/** Écran construit pour chaque fiche du back-office. */
+const ECRAN_BO: Record<string, () => React.ReactElement> = {
+  B2: TableauDeBord,
+  B3: Validations,
+  B4: ControlePhoto,
+  B5: MaterielBO,
+  B6: Prets,
+  B7: Emprunteurs,
+  B8: Incidents,
+  B9: Consommables,
+  B10: SallesBO,
+  B11: Imports,
+  B12: Reglages,
 }
+
+const versRoute =
+  (ecrans: Record<string, () => React.ReactElement>) =>
+  ({ code, chemin, titre, noeud }: Fiche) => {
+    const Ecran = ecrans[code]
+    return {
+      ...(chemin === '' ? { index: true as const } : { path: chemin }),
+      element: Ecran ? <Ecran /> : <EcranEnChantier code={code} titre={titre} noeud={noeud} />,
+    }
+  }
 
 export const routeur = createBrowserRouter([
   { path: '/', element: <AccueilDemo /> },
   { path: '/design-system', element: <GalerieDesignSystem /> },
-  { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute) },
+  { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute(ECRAN_APP)) },
   {
-    // B1 · Se connecter : hors de la coque (ni menu, ni en-tête de page).
+    // B1 · Se connecter : hors de la coque (ni menu principal, ni en-tête de page).
     path: '/admin/connexion',
-    element: <EcranEnChantier code="B1" titre="Se connecter" noeud="14:950" />,
+    element: <ConnexionBO />,
   },
-  { path: '/admin', element: <CoqueBackOffice />, children: ECRANS_BACK_OFFICE.map(versRoute) },
+  {
+    path: '/admin',
+    element: <CoqueBackOffice />,
+    children: ECRANS_BACK_OFFICE.map(versRoute(ECRAN_BO)),
+  },
   { path: '*', element: <Introuvable /> },
 ])

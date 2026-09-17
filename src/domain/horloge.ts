@@ -28,6 +28,20 @@ const MOIS_COURTS = [
   'nov.',
   'déc.',
 ] as const
+const MOIS_LONGS = [
+  'janvier',
+  'février',
+  'mars',
+  'avril',
+  'mai',
+  'juin',
+  'juillet',
+  'août',
+  'septembre',
+  'octobre',
+  'novembre',
+  'décembre',
+] as const
 
 export type Composantes = {
   annee: number
@@ -176,6 +190,12 @@ export function heureRonde(instant: Instant): string {
 export function jourLong(instant: Instant | Jour): string {
   const { mois, jour } = analyser(jourDe(instant))
   return `${nomDuJour(instant)} ${jour} ${MOIS_COURTS[mois - 1]!}`
+}
+
+/** `2026-09-17` → `septembre`. Titre du panneau « Vérification de {mois} » (B10). */
+export function moisLong(instant: Instant | Jour): string {
+  const { mois } = analyser(jourDe(instant))
+  return MOIS_LONGS[mois - 1]!
 }
 
 const capitaliser = (texte: string) => texte.charAt(0).toUpperCase() + texte.slice(1)
