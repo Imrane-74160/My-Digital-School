@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 1,
+    "version": 2,
     "description": "Jeu de démo « au travail » cohérent avec le Figma validé. Les compteurs se calculent depuis ces données.",
     "source": "Figma lN2EFZzYHfTuAW9agcHstV (Maquette-MDS)"
   },
@@ -342,7 +342,7 @@
       "niveau": 1,
       "lieu": "Armoire du studio",
       "qr": "MDS-LED-01",
-      "statut": "disponible",
+      "statut": "emprunte",
       "forfait": 110
     },
     {
@@ -772,7 +772,6 @@
       "id": "P101",
       "materiel": "pc-02",
       "responsable": "yanis",
-      "emprunteur": "yanis",
       "pourClasse": null,
       "statut": "actif",
       "sortiLe": "2026-09-16T09:40",
@@ -783,7 +782,6 @@
       "id": "P102",
       "materiel": "kit-r10-01",
       "responsable": "ines",
-      "emprunteur": "ines",
       "pourClasse": null,
       "statut": "remise_a_valider",
       "demandeLe": "2026-09-17T10:12",
@@ -793,7 +791,6 @@
       "id": "P103",
       "materiel": "ronin-01",
       "responsable": "diallo",
-      "emprunteur": "diallo",
       "pourClasse": "B3",
       "statut": "remise_a_valider",
       "demandeLe": "2026-09-17T09:58",
@@ -803,7 +800,6 @@
       "id": "P104",
       "materiel": "zoom-h5-01",
       "responsable": "lea",
-      "emprunteur": "lea",
       "pourClasse": null,
       "statut": "remise_a_valider",
       "demandeLe": "2026-09-17T10:14",
@@ -813,7 +809,6 @@
       "id": "P105",
       "materiel": "micro-hf-01",
       "responsable": "tom",
-      "emprunteur": "tom",
       "pourClasse": null,
       "statut": "retour_a_valider",
       "sortiLe": "2026-09-17T08:50",
@@ -826,7 +821,6 @@
       "id": "P106",
       "materiel": "casque-02",
       "responsable": "tom",
-      "emprunteur": "tom",
       "pourClasse": null,
       "statut": "actif",
       "sortiLe": "2026-09-17T09:05",
@@ -836,7 +830,6 @@
       "id": "P107",
       "materiel": "casque-03",
       "responsable": "ines",
-      "emprunteur": "ines",
       "pourClasse": null,
       "statut": "actif",
       "sortiLe": "2026-09-17T09:20",
@@ -846,7 +839,6 @@
       "id": "P108",
       "materiel": "boite-03",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": null,
       "statut": "actif",
       "sortiLe": "2026-09-17T08:05",
@@ -856,17 +848,25 @@
       "id": "P109",
       "materiel": "multi-b-01",
       "responsable": "sarah",
-      "emprunteur": "sarah",
       "pourClasse": null,
       "statut": "actif",
       "sortiLe": "2026-09-17T10:02",
       "forfait": 20
     },
     {
+      "id": "P110",
+      "materiel": "led-01",
+      "responsable": "lea",
+      "pourClasse": null,
+      "statut": "actif",
+      "sortiLe": "2026-09-17T09:30",
+      "forfait": 110,
+      "valideePar": "cyrianne"
+    },
+    {
       "id": "P111",
       "materiel": "souris-01",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": "M1",
       "statut": "actif",
       "sortiLe": "2026-09-17T08:10",
@@ -876,7 +876,6 @@
       "id": "P112",
       "materiel": "souris-02",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": "M1",
       "statut": "actif",
       "sortiLe": "2026-09-17T08:10",
@@ -886,7 +885,6 @@
       "id": "P113",
       "materiel": "souris-03",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": "M1",
       "statut": "actif",
       "sortiLe": "2026-09-17T08:10",
@@ -896,7 +894,6 @@
       "id": "P114",
       "materiel": "casque-05",
       "responsable": "diallo",
-      "emprunteur": "diallo",
       "pourClasse": "B3",
       "statut": "actif",
       "sortiLe": "2026-09-17T08:45",
@@ -906,7 +903,6 @@
       "id": "P115",
       "materiel": "casque-06",
       "responsable": "diallo",
-      "emprunteur": "diallo",
       "pourClasse": "B3",
       "statut": "actif",
       "sortiLe": "2026-09-17T08:45",
@@ -916,7 +912,6 @@
       "id": "P090",
       "materiel": "trepied-01",
       "responsable": "ines",
-      "emprunteur": "ines",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T10:05",
@@ -927,7 +922,6 @@
       "id": "P091",
       "materiel": "multi-a-01",
       "responsable": "ines",
-      "emprunteur": "ines",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T13:00",
@@ -938,7 +932,6 @@
       "id": "P092",
       "materiel": "casque-02",
       "responsable": "lea",
-      "emprunteur": "lea",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T09:10",
@@ -949,7 +942,6 @@
       "id": "P093",
       "materiel": "codenames-01",
       "responsable": "sarah",
-      "emprunteur": "sarah",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T12:30",
@@ -960,7 +952,6 @@
       "id": "P094",
       "materiel": "boite-02",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T08:00",
@@ -971,7 +962,6 @@
       "id": "P095",
       "materiel": "casque-05",
       "responsable": "yanis",
-      "emprunteur": "yanis",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-16T09:00",
@@ -982,7 +972,6 @@
       "id": "P080",
       "materiel": "souris-apple-02",
       "responsable": "sarah",
-      "emprunteur": "sarah",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-14T09:30",
@@ -993,7 +982,6 @@
       "id": "P081",
       "materiel": "casque-01",
       "responsable": "lea",
-      "emprunteur": "lea",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-14T09:15",
@@ -1004,7 +992,6 @@
       "id": "P082",
       "materiel": "sd32-01",
       "responsable": "yanis",
-      "emprunteur": "yanis",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-14T10:00",
@@ -1015,7 +1002,6 @@
       "id": "P083",
       "materiel": "casque-01",
       "responsable": "yanis",
-      "emprunteur": "yanis",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-11T09:00",
@@ -1026,7 +1012,6 @@
       "id": "P084",
       "materiel": "trepied-01",
       "responsable": "yanis",
-      "emprunteur": "yanis",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-08T10:00",
@@ -1037,7 +1022,6 @@
       "id": "P070",
       "materiel": "boite-04",
       "responsable": "roche",
-      "emprunteur": "roche",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-10T08:00",
@@ -1048,7 +1032,6 @@
       "id": "P071",
       "materiel": "kit-r10-01",
       "responsable": "ines",
-      "emprunteur": "ines",
       "pourClasse": null,
       "statut": "rendu",
       "sortiLe": "2026-09-08T09:00",
@@ -1256,7 +1239,7 @@
       ],
       "le": "2026-09-17T09:20",
       "icone": "Coche",
-      "texte": "Remise validée : Casque d’anglais #03 est à rendre ce soir avant 18h.",
+      "texte": "Emprunt confirmé : Casque d’anglais #03 est à rendre ce soir avant 18h.",
       "lue": true,
       "regle": "R05"
     },
@@ -1406,7 +1389,46 @@
     }
   ],
   "reglages": {
-    "charte": "Charte d’utilisation du matériel MyDigitalSchool\n1. Le matériel est prêté pour un usage pédagogique sur le campus.\n2. Tout matériel emprunté est rendu le jour même, avant de quitter l’école, avec une photo prise dans l’app.\n3. Le matériel de niveau 1 (studio, PC) est remis et contrôlé par un membre de l’équipe pédagogique.\n4. En cas de perte ou de casse, le forfait affiché au moment de l’emprunt est dû. Si un composant manque, seul son forfait est dû.\n5. Un matériel non rendu le soir bloque tes emprunts. Au bout de 2 jours, il est déclaré perdu.\n6. Les intervenants qui empruntent « pour leur classe » restent responsables du matériel et font eux-mêmes le retour.\n7. Les photos sont conservées 30 jours après contrôle, l’historique une année scolaire.",
+    "charte": {
+      "titre": "Charte d’utilisation du matériel MyDigitalSchool",
+      "articles": [
+        {
+          "id": "usage",
+          "titre": "Usage",
+          "texte": "Le matériel est prêté pour un usage pédagogique sur le campus."
+        },
+        {
+          "id": "retour",
+          "titre": "Retour",
+          "texte": "Tout matériel emprunté est rendu le jour même, avant de quitter l’école, avec une photo prise dans l’app."
+        },
+        {
+          "id": "niveau1",
+          "titre": "Niveau 1",
+          "texte": "Le matériel de niveau 1 (studio, PC) est remis et contrôlé par un membre de l’équipe pédagogique."
+        },
+        {
+          "id": "forfaits",
+          "titre": "Forfaits",
+          "texte": "En cas de perte ou de casse, le forfait affiché au moment de l’emprunt est dû. Si un composant manque, seul son forfait est dû."
+        },
+        {
+          "id": "blocage",
+          "titre": "Blocage",
+          "texte": "Un matériel non rendu le soir bloque tes emprunts. Au bout de 2 jours, il est déclaré perdu."
+        },
+        {
+          "id": "classes",
+          "titre": "Classes",
+          "texte": "Les intervenants qui empruntent « pour leur classe » restent responsables du matériel et font eux-mêmes le retour."
+        },
+        {
+          "id": "photos",
+          "titre": "Photos",
+          "texte": "Les photos sont conservées 30 jours après contrôle, l’historique une année scolaire."
+        }
+      ]
+    },
     "charteModifieeLe": "2026-09-01T09:00",
     "rappel1630": true,
     "recap8h": true

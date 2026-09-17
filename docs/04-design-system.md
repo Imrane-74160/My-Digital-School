@@ -27,7 +27,7 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 | Bouton icône | Bouton icône (`44:89`) | Icône · Style Doux/Contour/Surface/Plein · État Défaut/Survol/Pressé · 36–56 px |
 | Badges | Badge de statut (`45:89`) | Afficher la pastille · Statut Disponible/En cours/À valider/En retard/Bloqué/Retiré/Payé/Incident (libellé libre) |
 | Badges | Pastille (`45:96`) | Type Niveau (N1/N2)/Classe (B3)/Montant (Forfait 25 €) |
-| Avatar | Avatar (`45:110`) | Initiale · Taille 22/28/32/44/48 · couleur de la personne |
+| Avatar | Avatar (`45:110`) | Initiale · Taille 22/28/32/44/48 **/84** (84 = écran Profil `93:942`, frame propre dans le Figma) · couleur de la personne |
 | Puce de composant | Puce de composant (`45:130`) | Nom · État Vérifié/Neutre/Survol/Manquant |
 | Onglets | Onglet (`46:76`) | Libellé · Compteur · Afficher le compteur · État Actif/Inactif/Survol (piste `surface/bouton-doux`) |
 | Onglets | Liste déroulante (`46:100`) | Valeur · État Défaut/Survol/Ouverte (menu d'options) |
@@ -67,5 +67,5 @@ Construire d'abord ces composants dans `src/design-system/` avec une page `/desi
 \* vérifier l'équivalent exact dans la version de lucide installée ; à défaut, reprendre le SVG depuis Figma (`get_design_context` sur l'icône).
 
 ## Logos et images
-- `reference/charte/` : logo MyDigitalSchool (SVG + PNG). Le logo du back-office est dans le Menu principal.
+- `reference/charte/` : logo MyDigitalSchool (SVG + PNG). Au back-office, le logo est dans la **barre d'en-tête**, à gauche du titre de page (le rail du menu commence sous l'en-tête).
 - Visuels matériel : pas de photos, pictogrammes sur fond rayé (motif `trait/rayure`) comme dans le Figma.
