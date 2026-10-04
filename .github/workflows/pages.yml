@@ -34,13 +34,10 @@ jobs:
           node-version: 22
           cache: npm
 
-      # Active GitHub Pages sur le dépôt si ce n'est pas déjà fait, et fixe la source
-      # sur « GitHub Actions ». Évite d'avoir à le faire à la main dans les réglages.
-      - name: Activer Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
+      # Pages doit être activé une fois dans les réglages du dépôt (Settings → Pages →
+      # Source : GitHub Actions). Le jeton du workflow n'a pas le droit de le créer
+      # lui-même : `configure-pages` avec `enablement` échoue en « Resource not
+      # accessible by integration ». Une fois activé, ce workflow suffit.
       - run: npm ci
 
       - name: Vérifier avant de publier
