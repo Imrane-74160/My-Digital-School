@@ -52,6 +52,8 @@ Attends ma validation avant d'écrire du code.
 
 ## Le prototype est construit
 
+**En ligne : https://imrane-74160.github.io/My-Digital-School/** — redéployé à chaque push sur la branche, après lint et tests.
+
 Toutes les phases de `docs/07-plan-de-dev.md` sont faites : l'app mobile (A1→A10), le back-office (B1→B12), le panneau de démo, et les neuf parcours de `docs/06-parcours-de-test.md` joués en automatique.
 
 ```bash
