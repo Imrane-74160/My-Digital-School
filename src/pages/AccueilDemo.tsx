@@ -40,7 +40,10 @@ const SURFACES: Surface[] = [
 export function AccueilDemo() {
   const etat = useEtat()
   // L'adresse du QR est celle de la fenêtre : elle marche aussi sur un déploiement statique.
-  const adresseApp = `${typeof window === 'undefined' ? '' : window.location.origin}/app`
+  const adresseApp =
+    typeof window === 'undefined'
+      ? '/app'
+      : new URL(`${import.meta.env.BASE_URL}app`, window.location.origin).href
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-[880px] flex-col justify-center gap-3xl p-2xl">

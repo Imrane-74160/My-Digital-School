@@ -94,20 +94,24 @@ const versRoute =
     }
   }
 
-export const routeur = createBrowserRouter([
-  { path: '/', element: <AccueilDemo /> },
-  { path: '/cote-a-cote', element: <CoteACote /> },
-  { path: '/design-system', element: <GalerieDesignSystem /> },
-  { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute(ECRAN_APP)) },
-  {
-    // B1 · Se connecter : hors de la coque (ni menu principal, ni en-tête de page).
-    path: '/admin/connexion',
-    element: <ConnexionBO />,
-  },
-  {
-    path: '/admin',
-    element: <CoqueBackOffice />,
-    children: ECRANS_BACK_OFFICE.map(versRoute(ECRAN_BO)),
-  },
-  { path: '*', element: <Introuvable /> },
-])
+export const routeur = createBrowserRouter(
+  [
+    { path: '/', element: <AccueilDemo /> },
+    { path: '/cote-a-cote', element: <CoteACote /> },
+    { path: '/design-system', element: <GalerieDesignSystem /> },
+    { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute(ECRAN_APP)) },
+    {
+      // B1 · Se connecter : hors de la coque (ni menu principal, ni en-tête de page).
+      path: '/admin/connexion',
+      element: <ConnexionBO />,
+    },
+    {
+      path: '/admin',
+      element: <CoqueBackOffice />,
+      children: ECRANS_BACK_OFFICE.map(versRoute(ECRAN_BO)),
+    },
+    { path: '*', element: <Introuvable /> },
+  ],
+  // Déploiement dans un sous-dossier : toutes les routes vivent sous la base du build.
+  { basename: import.meta.env.BASE_URL },
+)

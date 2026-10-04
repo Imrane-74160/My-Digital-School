@@ -51,7 +51,7 @@ export function CoteACote() {
       <div ref={conteneur} className="flex min-h-0 flex-1 items-start gap-lg">
         <iframe
           title="App mobile"
-          src="/app"
+          src={`${import.meta.env.BASE_URL}app`}
           className="shrink-0 rounded-carte bg-surface-carte shadow-elevation"
           style={{ width: LARGEUR_APP, height: 844 }}
         />
@@ -63,7 +63,7 @@ export function CoteACote() {
         >
           <iframe
             title="Back-office"
-            src="/admin"
+            src={`${import.meta.env.BASE_URL}admin`}
             className="origin-top-left border-0 bg-surface-carte"
             style={{
               width: LARGEUR_BO,
