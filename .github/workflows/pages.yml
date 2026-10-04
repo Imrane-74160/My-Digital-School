@@ -34,6 +34,13 @@ jobs:
           node-version: 22
           cache: npm
 
+      # Active GitHub Pages sur le dépôt si ce n'est pas déjà fait, et fixe la source
+      # sur « GitHub Actions ». Évite d'avoir à le faire à la main dans les réglages.
+      - name: Activer Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - run: npm ci
 
       - name: Vérifier avant de publier
