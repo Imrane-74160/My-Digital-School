@@ -1,8 +1,11 @@
 /**
- * Accès au store depuis les écrans. Les composants ne touchent jamais `dispatch`
- * directement : ils passent par `useExecuter`, qui alimente aussi le toast de démo.
+ * Accès au store depuis les écrans.
+ *
+ * Les écrans d'une surface ne sont rendus qu'une fois la session ouverte : la coque
+ * (`DispositionApp`, `CoqueBackOffice`) redirige vers la connexion sinon. `usePersonne…`
+ * peut donc renvoyer une `Personne` et non `Personne | null`.
  */
-import { selecteurs, type Action, type EtatMDS, type Personne } from '@/domain'
+import { selecteurs, type EtatMDS, type Personne, type PersonneId } from '@/domain'
 import { useMDS } from './useMDS'
 
 /** L'état du domaine. */
@@ -13,22 +16,24 @@ export function useSelecteur<T>(calcul: (etat: EtatMDS) => T): T {
   return useMDS((magasin) => calcul(magasin.etat))
 }
 
-/** Joue une action du domaine et met à jour le toast. */
-export const useExecuter = (): ((
-  action: Action,
-) => ReturnType<typeof useMDS.getState>['executer'] extends (a: Action) => infer R ? R : never) =>
-  useMDS((magasin) => magasin.executer)
+/** La session de l'app : `null` tant que personne n'est connecté. */
+export const useSessionApp = (): PersonneId | null => useMDS((magasin) => magasin.sessionApp)
 
-/** La persona connectée dans l'app mobile. */
+/** La session du back-office. */
+export const useSessionAdmin = (): PersonneId | null => useMDS((magasin) => magasin.sessionAdmin)
+
+/** La personne connectée à l'app. À n'appeler que sous la coque, qui garantit la session. */
 export function usePersonaApp(): Personne {
-  const id = useMDS((magasin) => magasin.personaApp)
+  const id = useSessionApp()
   const etat = useEtat()
+  if (id === null) throw new Error('Aucune session : cet écran doit vivre sous DispositionApp.')
   return selecteurs.personne(etat, id)
 }
 
-/** L'utilisateur connecté au back-office. */
+/** La personne connectée au back-office. */
 export function useUtilisateurBO(): Personne {
-  const id = useMDS((magasin) => magasin.utilisateurBO)
+  const id = useSessionAdmin()
   const etat = useEtat()
+  if (id === null) throw new Error('Aucune session : cet écran doit vivre sous CoqueBackOffice.')
   return selecteurs.personne(etat, id)
 }

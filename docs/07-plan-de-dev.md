@@ -61,3 +61,14 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - [ ] PWA installable (option non retenue : hors Figma, hors règles)
 - **Fini quand** : tout le fichier `docs/06-parcours-de-test.md` passe à la main sur un vrai téléphone + ordinateur.
 - **Vérifié en automatique** : 42 tests Playwright et 135 tests Vitest verts. Le passage à la main sur un vrai téléphone reste à faire par l'équipe : ouvrir `/` sur l'ordinateur et scanner le QR.
+
+## Phase 6 · De la maquette à l'application — fait
+- [x] **Plus de mode démo** : le panneau flottant (persona, horloge, annuler, réinitialiser) est retiré. Ce qu'il permettait passe par la connexion, par l'horloge réelle, ou par la console (`window.__mds`).
+- [x] **Connexion réelle** par identifiant MDS, une session par espace, refus croisé des rôles (R13), déconnexion depuis A10 et depuis le compte du back-office.
+- [x] **Horloge de la machine** : `src/store/horlogeReelle.ts` est le seul point du projet qui lit `Date` ; le domaine reste pur.
+- [x] **Échéances automatiques** : 16h30, 18h et 8h le lendemain s'appliquent seules, et se rattrapent après plusieurs jours d'absence.
+- [x] **Jeu de données recalé** sur la date du jour au premier chargement (`src/domain/ancrage.ts`), écarts relatifs conservés.
+- [x] Bandeau de résultat sans jargon : le code de règle vit en attribut, plus à l'écran.
+- **Fini quand** : les neuf parcours passent sur l'application connectée, sans panneau de démo. ✅
+- **Vérifié** : 144 tests Vitest et 45 tests Playwright verts, horloge figée dans les tests pour qu'ils ne dépendent pas de l'heure de lancement.
+- **Reste hors périmètre** : comptes avec mot de passe, données partagées entre appareils. Les deux demandent un serveur, exclu par le cadre du projet.

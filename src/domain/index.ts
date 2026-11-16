@@ -6,6 +6,7 @@
  * (une règle ESLint le vérifie).
  */
 export type { Action, DonneesNouveauMateriel, TypeAction } from './actions'
+export { recalerSur } from './ancrage'
 export { ACTIONS_PROTEGEES } from './actions'
 export { dispatch } from './engine'
 export type { Resultat } from './engine'

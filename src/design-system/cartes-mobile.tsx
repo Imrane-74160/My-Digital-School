@@ -397,12 +397,15 @@ export function BoutonPrincipalMobile({
   disabled,
   icone,
   type = 'Principal',
+  soumet = false,
 }: {
   libelle: string
   onClick?: () => void
   disabled?: boolean
   icone?: NomIcone
   type?: 'Principal' | 'Secondaire' | 'Alerte'
+  /** Soumet le formulaire qui l'entoure. */
+  soumet?: boolean
 }) {
   return (
     <Bouton
@@ -410,6 +413,7 @@ export function BoutonPrincipalMobile({
       type={type}
       taille="L"
       pleineLargeur
+      soumet={soumet}
       {...(icone === undefined ? {} : { icone })}
       {...(onClick === undefined ? {} : { onClick })}
       {...(disabled === undefined ? {} : { disabled })}

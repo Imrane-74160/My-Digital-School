@@ -1,9 +1,10 @@
+import type { Page } from '@playwright/test'
+import { expect, test } from './aides'
 /**
  * Fidélité du design system : chaque valeur attendue est celle relevée sur la page
  * « Composants » du Figma (`get_design_context` sur le nœud cité). Ces tests figent
  * la géométrie et les couleurs pour que personne ne les fasse dériver sans le voir.
  */
-import { expect, test, type Page } from '@playwright/test'
 
 type Mesures = {
   w: number

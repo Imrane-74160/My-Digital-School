@@ -1,7 +1,14 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from 'vitest'
-import { chargerSeed, selecteurs as sel } from '@/domain'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { chargerSeed, horloge, selecteurs as sel } from '@/domain'
 import { CLE_PERSISTANCE, useMDS } from '../useMDS'
+
+/**
+ * Le store lit l'heure de la machine : les tests la figent pour rester déterministes.
+ * 10:15 est l'heure d'ancrage du seed — le recalage doit donc tomber pile dessus.
+ */
+const MAINTENANT = new Date(2027, 2, 9, 10, 15, 0)
+const AUJOURDHUI = '2027-03-09'
 
 const emprunt = {
   type: 'EMPRUNTER',
@@ -10,102 +17,141 @@ const emprunt = {
   forfaitAccepte: true,
 } as const
 
+/** Avance l'horloge de la machine, puis laisse le store rattraper les échéances. */
+function allerA(heures: number, minutes: number, joursPlusTard = 0) {
+  const quand = new Date(MAINTENANT)
+  quand.setDate(quand.getDate() + joursPlusTard)
+  quand.setHours(heures, minutes, 0, 0)
+  vi.setSystemTime(quand)
+  useMDS.getState().synchroniser()
+}
+
 beforeEach(() => {
+  vi.useFakeTimers()
+  vi.setSystemTime(MAINTENANT)
   localStorage.clear()
   useMDS.getState().reinitialiser()
 })
 
+afterEach(() => {
+  vi.useRealTimers()
+})
+
 describe('clé de persistance', () => {
-  it('inclut la version du seed : un seed modifié réinitialise la démo', () => {
+  it('inclut la version du seed : un seed modifié repart d’un état propre', () => {
     expect(CLE_PERSISTANCE).toBe(`prets-mds/v${chargerSeed().version}`)
     expect(CLE_PERSISTANCE).toMatch(/^prets-mds\/v\d+$/)
   })
 })
 
+describe('recalage sur la date du jour', () => {
+  it('ramène la situation du seed à aujourd’hui, écarts compris', () => {
+    const etat = useMDS.getState().etat
+    expect(etat.horloge.maintenant).toBe(`${AUJOURDHUI}T10:15`)
+    // Les compteurs du seed sont inchangés : seul le calendrier a bougé.
+    expect(sel.compteurs(etat).sortis).toBe(12)
+    expect(sel.compteurs(etat).enRetard).toBe(1)
+    // Le prêt en retard reste sorti la veille.
+    const retard = sel.pretsEnRetard(etat)[0]!
+    expect(horloge.jourDe(retard.sortiLe!)).toBe('2027-03-08')
+  })
+})
+
 describe('exécution des actions', () => {
-  it('joue une action et met à jour le toast', () => {
+  it('joue une action et expose son message', () => {
     const resultat = useMDS.getState().executer(emprunt)
     expect(resultat.ok).toBe(true)
-    expect(useMDS.getState().dernierResultat?.ok).toBe(true)
     expect(useMDS.getState().dernierResultat?.msg).toContain('emprunte Souris Apple #01')
     expect(sel.pretsEnCoursDe(useMDS.getState().etat, 'ines')).toHaveLength(3)
   })
 
-  it('garde l’état intact sur un refus, et n’ajoute rien à l’historique', () => {
+  it('garde l’état intact sur un refus, avec le code de la règle', () => {
     const avant = useMDS.getState().etat
     const resultat = useMDS.getState().executer({ ...emprunt, forfaitAccepte: false })
     expect(resultat.ok).toBe(false)
     expect(useMDS.getState().etat).toBe(avant)
-    expect(useMDS.getState().peutAnnuler()).toBe(false)
     expect(useMDS.getState().dernierResultat?.regle).toBe('R03')
   })
 })
 
-describe('annulation', () => {
-  it('restaure l’état exact d’avant la dernière action', () => {
-    const avant = useMDS.getState().etat
-    useMDS.getState().executer(emprunt)
-    expect(useMDS.getState().etat).not.toBe(avant)
+describe('connexion', () => {
+  it('accepte l’identifiant seul comme l’adresse complète', () => {
+    expect(useMDS.getState().connecter('app', 'ines.martin').ok).toBe(true)
+    expect(useMDS.getState().sessionApp).toBe('ines')
 
-    expect(useMDS.getState().annuler()).toBe(true)
-    expect(useMDS.getState().etat).toBe(avant)
-    expect(useMDS.getState().peutAnnuler()).toBe(false)
+    useMDS.getState().deconnecter('app')
+    expect(useMDS.getState().connecter('app', 'Ines.Martin@my-digital-school.org').ok).toBe(true)
+    expect(useMDS.getState().sessionApp).toBe('ines')
   })
 
-  it('annule aussi un changement d’horloge', () => {
-    const avant = useMDS.getState().etat
-    useMDS.getState().executer({ type: 'FIN_DE_JOURNEE' })
-    expect(useMDS.getState().etat.horloge.maintenant).toBe('2026-09-17T18:00')
-
-    useMDS.getState().annuler()
-    expect(useMDS.getState().etat.horloge.maintenant).toBe('2026-09-17T10:15')
-    expect(useMDS.getState().etat).toBe(avant)
+  it('refuse un identifiant inconnu', () => {
+    const resultat = useMDS.getState().connecter('app', 'personne.inconnue')
+    expect(resultat.ok).toBe(false)
+    expect(resultat.msg).toContain('Aucun compte')
+    expect(useMDS.getState().sessionApp).toBeNull()
   })
 
-  it('remonte plusieurs actions d’affilée', () => {
-    const depart = useMDS.getState().etat
-    useMDS.getState().executer(emprunt)
-    useMDS.getState().executer({ type: 'ALLER_A_16H30' })
-    useMDS.getState().executer({ type: 'FIN_DE_JOURNEE' })
+  it('tient les deux espaces séparés : chaque rôle a le sien (R13)', () => {
+    expect(useMDS.getState().connecter('app', 'lydia').ok).toBe(false)
+    expect(useMDS.getState().connecter('admin', 'ines.martin').ok).toBe(false)
 
-    expect(useMDS.getState().annuler()).toBe(true)
-    expect(useMDS.getState().annuler()).toBe(true)
-    expect(useMDS.getState().annuler()).toBe(true)
-    expect(useMDS.getState().etat).toBe(depart)
-    expect(useMDS.getState().annuler()).toBe(false)
+    expect(useMDS.getState().connecter('admin', 'lydia').ok).toBe(true)
+    expect(useMDS.getState().connecter('app', 'ines.martin').ok).toBe(true)
+    // Les deux sessions coexistent dans le même navigateur.
+    expect(useMDS.getState().sessionApp).toBe('ines')
+    expect(useMDS.getState().sessionAdmin).toBe('lydia')
+  })
+
+  it('déconnecte une surface sans toucher à l’autre', () => {
+    useMDS.getState().connecter('app', 'ines.martin')
+    useMDS.getState().connecter('admin', 'lydia')
+
+    useMDS.getState().deconnecter('app')
+    expect(useMDS.getState().sessionApp).toBeNull()
+    expect(useMDS.getState().sessionAdmin).toBe('lydia')
   })
 })
 
-describe('réinitialisation et personas', () => {
-  it('recharge le seed et vide l’historique', () => {
-    useMDS.getState().executer(emprunt)
-    useMDS.getState().choisirPersonaApp('yanis')
-
-    useMDS.getState().reinitialiser()
-    expect(useMDS.getState().personaApp).toBe('ines')
-    expect(useMDS.getState().utilisateurBO).toBe('lydia')
-    expect(useMDS.getState().peutAnnuler()).toBe(false)
-    expect(sel.compteurs(useMDS.getState().etat).sortis).toBe(12)
+describe('échéances automatiques', () => {
+  it('envoie le rappel quand 16h30 est franchi (R15)', () => {
+    allerA(16, 45)
+    const etat = useMDS.getState().etat
+    expect(etat.horloge.maintenant).toBe(`${AUJOURDHUI}T16:45`)
+    expect(etat.notifications.some((n) => n.texte.includes('Pense à rendre'))).toBe(true)
   })
 
-  it('change de persona sans toucher au domaine', () => {
+  it('applique le blocage de 18h sans intervention (R10)', () => {
+    expect(sel.raisonDeBlocage(useMDS.getState().etat, 'ines')).toBeNull()
+    allerA(18, 30)
+    expect(sel.raisonDeBlocage(useMDS.getState().etat, 'ines')).not.toBeNull()
+  })
+
+  it('rattrape toutes les échéances d’un coup au retour le lendemain', () => {
+    allerA(9, 0, 1)
+    const etat = useMDS.getState().etat
+    expect(etat.horloge.maintenant).toBe('2027-03-10T09:00')
+    // La journée de la veille a été close, et le récap du matin est daté d’aujourd’hui.
+    expect(etat.recap?.le).toBe('2027-03-10T08:00')
+    expect(etat.notifications.some((n) => n.texte.includes('Pense à rendre'))).toBe(true)
+  })
+
+  it('ne rejoue rien quand rien n’a été franchi', () => {
     const avant = useMDS.getState().etat
-    useMDS.getState().choisirPersonaApp('diallo')
-    useMDS.getState().choisirUtilisateurBO('sandrine')
-    expect(useMDS.getState().personaApp).toBe('diallo')
-    expect(useMDS.getState().utilisateurBO).toBe('sandrine')
-    expect(useMDS.getState().etat).toBe(avant)
+    allerA(11, 0)
+    expect(useMDS.getState().etat.horloge.maintenant).toBe(`${AUJOURDHUI}T11:00`)
+    expect(useMDS.getState().etat.notifications).toHaveLength(avant.notifications.length)
   })
 })
 
 describe('persistance', () => {
-  it('écrit dans localStorage sous la clé versionnée, sans l’historique ni le toast', () => {
+  it('écrit l’état et les deux sessions, rien d’autre', () => {
+    useMDS.getState().connecter('app', 'ines.martin')
     useMDS.getState().executer(emprunt)
 
     const brut = localStorage.getItem(CLE_PERSISTANCE)
     expect(brut).not.toBeNull()
     const enregistre = JSON.parse(brut!) as { state: Record<string, unknown> }
-    expect(Object.keys(enregistre.state).sort()).toEqual(['etat', 'personaApp', 'utilisateurBO'])
+    expect(Object.keys(enregistre.state).sort()).toEqual(['etat', 'sessionAdmin', 'sessionApp'])
   })
 
   it('retrouve l’état après une réhydratation, comme le ferait un autre onglet', async () => {

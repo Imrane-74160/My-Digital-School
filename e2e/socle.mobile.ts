@@ -1,32 +1,49 @@
-import { expect, test } from '@playwright/test'
+import { expect, seConnecter, test } from './aides'
 
 // Projet « mobile » : viewport 390 × 844, la taille exacte de la maquette Figma.
 
-test.describe('Accueil de la démo · /', () => {
-  test('affiche le produit et ses trois surfaces', async ({ page }) => {
+test.describe('Entrée dans l’app · /', () => {
+  test('mène à la connexion tant que personne n’est connecté', async ({ page }) => {
     await page.goto('/')
     await expect(page).toHaveTitle('Prêts MDS')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Prêts MDS')
-    await expect(page.getByRole('link', { name: /App mobile/ })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Back-office/ })).toBeVisible()
-    await expect(page.getByText('Côte à côte')).toBeVisible()
+    await expect(page).toHaveURL(/\/app\/connexion$/)
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Emprunte le matériel')
+    await expect(page.getByLabel('Identifiant MDS')).toBeVisible()
+  })
+
+  test('refuse un identifiant inconnu et un compte de l’équipe', async ({ page }) => {
+    await page.goto('/app/connexion')
+    await page.getByLabel('Identifiant MDS').fill('personne.inconnue')
+    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await expect(page.getByText('Aucun compte ne correspond')).toBeVisible()
+
+    // R13 : l'équipe a son propre espace.
+    await page.getByLabel('Identifiant MDS').fill('lydia')
+    await page.getByRole('button', { name: 'Se connecter' }).click()
+    await expect(page.getByText(/réservé aux élèves et aux intervenants/)).toBeVisible()
   })
 
   test('applique les couleurs de la charte depuis les tokens Figma', async ({ page }) => {
-    await page.goto('/')
-    // Turquoise de marque : #2DB8C5. Si le câblage Tailwind ↔ tokens casse, ce test tombe.
-    const turquoise = await page
-      .locator('svg.text-marque-turquoise')
-      .first()
-      .evaluate((noeud) => getComputedStyle(noeud).color)
-    expect(turquoise).toBe('rgb(45, 184, 197)')
+    await page.goto('/app/connexion')
+    // Turquoise de marque : #2DB8C5, porté par le bouton principal une fois actif.
+    // Si le câblage Tailwind ↔ tokens casse, ce test tombe.
+    await page.getByLabel('Identifiant MDS').fill('ines.martin')
+    // Le bouton passe de désactivé à actif en 120 ms : on attend la fin de la transition.
+    await expect
+      .poll(() =>
+        page
+          .getByRole('button', { name: 'Se connecter' })
+          .evaluate((noeud) => getComputedStyle(noeud).backgroundColor),
+      )
+      .toBe('rgb(45, 184, 197)')
 
     const fond = await page.evaluate(() => getComputedStyle(document.body).backgroundImage)
     expect(fond).toContain('linear-gradient')
   })
 
   test('charge réellement les trois polices de la charte', async ({ page }) => {
-    await page.goto('/')
+    // La galerie porte les trois familles côte à côte : c'est là qu'on les vérifie.
+    await page.goto('/design-system')
     await page.evaluate(() => document.fonts.ready.then(() => true))
 
     // On vérifie le statut des FontFace, pas `document.fonts.check()` : celui-ci renvoie false
@@ -53,7 +70,7 @@ test.describe('Accueil de la démo · /', () => {
 
 test.describe('App mobile · /app', () => {
   test('occupe tout l’écran sous 500 px et ne défile jamais horizontalement', async ({ page }) => {
-    await page.goto('/app')
+    await seConnecter(page, 'ines')
     const cadre = page.getByTestId('cadre-telephone')
     await expect(cadre).toBeVisible()
 
@@ -67,6 +84,7 @@ test.describe('App mobile · /app', () => {
   })
 
   test('répond sur les dix écrans A1 → A10', async ({ page }) => {
+    await seConnecter(page, 'ines')
     const chemins = [
       '/app',
       '/app/connexion',
@@ -81,23 +99,19 @@ test.describe('App mobile · /app', () => {
     ]
     for (const chemin of chemins) {
       await page.goto(chemin)
+      // Connecté, l'écran de connexion renvoie à l'accueil : son titre est celui de A3.
       await expect(page.getByRole('heading', { level: 1 }), chemin).toBeVisible()
       await expect(page.getByTestId('cadre-telephone'), chemin).toBeVisible()
     }
   })
 
-  test('masque la barre de navigation sur les cinq écrans plein écran du Figma', async ({ page }) => {
+  test('masque la barre de navigation sur les écrans plein écran du Figma', async ({ page }) => {
+    await seConnecter(page, 'ines')
     for (const chemin of ['/app', '/app/materiel', '/app/alertes', '/app/profil']) {
       await page.goto(chemin)
       await expect(page.getByTestId('zone-navigation'), chemin).toBeVisible()
     }
-    for (const chemin of [
-      '/app/connexion',
-      '/app/charte',
-      '/app/rendre/casque-03',
-      '/app/scanner',
-      '/app/signaler',
-    ]) {
+    for (const chemin of ['/app/charte', '/app/rendre/casque-03', '/app/scanner', '/app/signaler']) {
       await page.goto(chemin)
       await expect(page.getByTestId('zone-navigation'), chemin).toHaveCount(0)
     }

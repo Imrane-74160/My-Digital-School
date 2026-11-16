@@ -1,6 +1,6 @@
 {
   "meta": {
-    "version": 2,
+    "version": 3,
     "description": "Jeu de démo « au travail » cohérent avec le Figma validé. Les compteurs se calculent depuis ces données.",
     "source": "Figma lN2EFZzYHfTuAW9agcHstV (Maquette-MDS)"
   },
@@ -137,6 +137,7 @@
       "nom": "Cyrianne",
       "role": "equipe",
       "couleur": "#C8558A",
+      "email": "cyrianne@my-digital-school.org",
       "droits": "Valider, contrôler, gérer le matériel"
     },
     {
@@ -144,6 +145,7 @@
       "nom": "Lydia",
       "role": "equipe",
       "couleur": "#D06A32",
+      "email": "lydia@my-digital-school.org",
       "droits": "Valider, contrôler, gérer le matériel"
     },
     {
@@ -151,6 +153,7 @@
       "nom": "Sandrine",
       "role": "direction",
       "couleur": "#3C3C3B",
+      "email": "sandrine@my-digital-school.org",
       "droits": "Tout, plus forfaits, paiements et charte"
     }
   ],

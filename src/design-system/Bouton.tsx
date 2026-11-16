@@ -14,6 +14,8 @@ type Props = {
   enfantIcone?: ReactNode | undefined
   /** Occupe toute la largeur disponible : c'est le cas des boutons d'action mobile. */
   pleineLargeur?: boolean | undefined
+  /** Soumet le formulaire qui l'entoure, pour que la touche « OK » du clavier marche. */
+  soumet?: boolean | undefined
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type' | 'className' | 'children'>
 
 /** Géométrie relevée sur le Figma : M = 40 px, L = 52 px. */
@@ -57,6 +59,7 @@ export function Bouton({
   icone,
   enfantIcone,
   pleineLargeur = false,
+  soumet = false,
   disabled = false,
   ...reste
 }: Props) {
@@ -64,7 +67,7 @@ export function Bouton({
 
   return (
     <button
-      type="button"
+      type={soumet ? 'submit' : 'button'}
       disabled={disabled}
       className={[
         'inline-flex shrink-0 items-center justify-center gap-sm',

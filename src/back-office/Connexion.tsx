@@ -1,22 +1,35 @@
 /**
  * B1 · Se connecter — `/admin/connexion` — nœud Figma `14:950`.
  *
- * Hors de la coque commune : ni menu principal, ni en-tête de page. Une carte
- * blanche centrée sur le fond dégradé, le visuel d'étudiant à droite, le logo
- * dans la carte au-dessus du titre. Aucun champ : la connexion est déléguée au
- * compte choisi dans le panneau de démo.
+ * Hors de la coque commune : ni menu principal, ni en-tête de page. Une carte blanche
+ * centrée sur le fond dégradé, le visuel à droite, le logo dans la carte au-dessus du
+ * titre. L'accès est réservé à l'équipe pédagogique et à la direction (R13).
  */
-import { Link } from 'react-router'
-import { Avatar, Bouton, Icone, initialeDe, VisuelMateriel } from '@/design-system'
-import { useUtilisateurBO } from '@/store/hooks'
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
+import { Bouton, Champ, Encart, Icone, VisuelMateriel } from '@/design-system'
+import { useMDS } from '@/store/useMDS'
 
 export function ConnexionBO() {
-  const utilisateur = useUtilisateurBO()
+  const navigate = useNavigate()
+  const connecter = useMDS((magasin) => magasin.connecter)
+  const [identifiant, setIdentifiant] = useState('')
+  const [erreur, setErreur] = useState<string | null>(null)
+
+  const soumettre = (evenement: FormEvent) => {
+    evenement.preventDefault()
+    const resultat = connecter('admin', identifiant)
+    if (!resultat.ok) {
+      setErreur(resultat.msg)
+      return
+    }
+    void navigate('/admin')
+  }
 
   return (
     <main className="flex min-h-dvh items-center justify-center p-2xl">
       <section className="flex w-full max-w-[1040px] overflow-hidden rounded-carte bg-surface-carte ring-1 ring-trait-bordure">
-        <div className="flex min-w-0 flex-1 flex-col gap-xl p-3xl">
+        <form onSubmit={soumettre} className="flex min-w-0 flex-1 flex-col gap-xl p-3xl">
           <p className="mds-texte-corps-fort text-marque-anthracite">MyDigitalSchool</p>
 
           <div className="flex flex-col gap-sm">
@@ -26,28 +39,44 @@ export function ConnexionBO() {
             </p>
           </div>
 
-          <div className="flex items-center gap-md rounded-vignette bg-surface-champ px-lg py-md">
-            <Avatar
-              initiale={initialeDe(utilisateur.nom)}
-              taille={44}
-              couleur={utilisateur.couleur}
-              titre={utilisateur.nom}
+          <label className="flex flex-col gap-sm">
+            <span className="mds-texte-petit-fort text-texte-secondaire">Identifiant MDS</span>
+            <Champ
+              etiquette="Identifiant MDS"
+              valeur={identifiant}
+              onChange={(valeur) => {
+                setIdentifiant(valeur)
+                setErreur(null)
+              }}
+              placeholder="prenom"
+              icone="Utilisateur"
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
             />
-            <div className="flex min-w-0 flex-1 flex-col">
-              <p className="mds-texte-corps-fort text-texte-principal">{utilisateur.nom}</p>
-              <p className="mds-texte-petit text-texte-secondaire">{utilisateur.email ?? 'Compte MDS'}</p>
-            </div>
-          </div>
+          </label>
 
-          <Link to="/admin" className="self-start">
-            <Bouton libelle="Se connecter avec mon admin" taille="L" icone="Bouclier" />
-          </Link>
+          {erreur !== null && (
+            <Encart icone="Alerte" ton="rose" className="max-w-[420px]">
+              {erreur}
+            </Encart>
+          )}
+
+          <span className="self-start">
+            <Bouton
+              libelle="Se connecter"
+              taille="L"
+              icone="Bouclier"
+              soumet
+              disabled={identifiant.trim() === ''}
+            />
+          </span>
 
           <p className="mds-texte-petit flex items-center gap-sm text-texte-tertiaire">
             <Icone nom="Cadenas" taille="sm" />
             Connexion sécurisée MyDigitalSchool
           </p>
-        </div>
+        </form>
 
         <div className="w-[420px] shrink-0 self-stretch p-xl">
           <VisuelMateriel icone="Utilisateur" hauteur={420} className="h-full" />

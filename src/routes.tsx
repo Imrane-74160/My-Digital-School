@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router'
-import { AccueilDemo } from './pages/AccueilDemo'
+import { Navigate } from 'react-router'
 import { CoteACote } from './pages/CoteACote'
-import { EcranEnChantier } from './pages/EcranEnChantier'
 import { Introuvable } from './pages/Introuvable'
 import { Accueil } from './app-mobile/Accueil'
 import { Alertes } from './app-mobile/Alertes'
@@ -86,17 +85,19 @@ const ECRAN_BO: Record<string, () => React.ReactElement> = {
 
 const versRoute =
   (ecrans: Record<string, () => React.ReactElement>) =>
-  ({ code, chemin, titre, noeud }: Fiche) => {
+  ({ code, chemin }: Fiche) => {
     const Ecran = ecrans[code]
+    if (!Ecran) throw new Error(`Écran ${code} absent du routeur.`)
     return {
       ...(chemin === '' ? { index: true as const } : { path: chemin }),
-      element: Ecran ? <Ecran /> : <EcranEnChantier code={code} titre={titre} noeud={noeud} />,
+      element: <Ecran />,
     }
   }
 
 export const routeur = createBrowserRouter(
   [
-    { path: '/', element: <AccueilDemo /> },
+    // L'adresse racine mène à l'app : c'est le produit, le back-office a la sienne.
+    { path: '/', element: <Navigate to="/app" replace /> },
     { path: '/cote-a-cote', element: <CoteACote /> },
     { path: '/design-system', element: <GalerieDesignSystem /> },
     { path: '/app', element: <DispositionApp />, children: ECRANS_APP.map(versRoute(ECRAN_APP)) },

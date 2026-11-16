@@ -1,7 +1,8 @@
 # Prêts MDS — mémoire projet pour Claude Code
 
 Application de prêt de matériel du campus MyDigitalSchool : une **app mobile** (élèves, intervenants) et un **back-office** (équipe pédagogique, direction).
-Ce dépôt construit un **prototype complet et testable** : toutes les fonctionnalités marchent, mais **sans serveur ni base de données**. Les données vivent dans le navigateur (état local persistant) et partent d'un jeu de démo.
+Ce dépôt construit une **application complète et testable** : toutes les fonctionnalités marchent, mais **sans serveur ni base de données**. Les données vivent dans le navigateur (état local persistant) et partent d'un jeu de démo **recalé sur la date du jour**.
+On s'y connecte pour de vrai, avec son identifiant MDS, et chaque espace a sa session : `/app` pour les élèves et les intervenants, `/admin` pour l'équipe et la direction. L'horloge est celle de la machine — les échéances de 16h30, 18h et 8h se déclenchent seules.
 
 ## Sources de vérité (dans cet ordre)
 1. **Figma** « Maquette-MDS » : https://www.figma.com/design/lN2EFZzYHfTuAW9agcHstV/Maquette-MDS (fichier `lN2EFZzYHfTuAW9agcHstV`) : écrans, composants, textes, couleurs, images.
@@ -30,9 +31,9 @@ src/
   design-system/ # composants = composants Figma (mêmes noms, mêmes variantes)
   app-mobile/    # écrans /app/*
   back-office/   # écrans /admin/*
-  demo/          # panneau de démo (persona, horloge, annuler, réinitialiser, toast résultat)
+  ui/            # éléments hors écran : bandeau de résultat d'action
 ```
-- `domain/` n'importe **jamais** React, le DOM ou le store.
+- `domain/` n'importe **jamais** React, le DOM ou le store — ni `Date` : seul `store/horlogeReelle.ts` lit l'heure de la machine.
 - Chaque action utilisateur passe par `dispatch`. Un refus renvoie un message + code de règle, affiché dans un toast.
 
 ## Conventions

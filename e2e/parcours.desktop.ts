@@ -1,49 +1,32 @@
-import { expect, test, type Page } from '@playwright/test'
+import {
+  expect,
+  test,
+  attendreAccepte,
+  attendreRefus,
+  bandeau as toast,
+  changerDeCompte,
+  echeance,
+  enBureau,
+  enMobile,
+  MOBILE,
+  seConnecter,
+  seConnecterAdmin,
+} from './aides'
 
 /**
  * Les neuf parcours d'acceptation de `docs/06-parcours-de-test.md`, joués de bout en
- * bout sur le prototype construit. Chaque test part d'un contexte neuf : le seed est
- * donc rechargé, comme après « Réinitialiser la démo ».
+ * bout sur l'application réelle : on s'y connecte comme un utilisateur, il n'y a plus
+ * de panneau de démo.
  *
  * Un parcours traverse les deux surfaces : on bascule le viewport avec `enMobile` /
  * `enBureau` plutôt que de couper le parcours en deux fichiers.
  */
 
-const MOBILE = { width: 390, height: 844 }
-const BUREAU = { width: 1440, height: 839 }
-
-const enMobile = (page: Page) => page.setViewportSize(MOBILE)
-const enBureau = (page: Page) => page.setViewportSize(BUREAU)
-
-/** Change la persona de l'app (ou l'utilisateur du back-office) depuis le panneau de démo. */
-async function choisir(page: Page, nom: string) {
-  await page.getByTestId('bouton-demo').click()
-  await page.getByRole('button', { name: nom, exact: true }).click()
-  await page.getByRole('button', { name: 'Fermer le panneau de démo' }).click()
-}
-
-/** Joue un bouton de l'horloge simulée. */
-async function horloge(page: Page, libelle: string | RegExp) {
-  await page.getByTestId('bouton-demo').click()
-  await page.getByRole('button', { name: libelle }).click()
-  await page.getByRole('button', { name: 'Fermer le panneau de démo' }).click()
-}
-
-const toast = (page: Page) => page.getByTestId('toast')
-
-async function attendreAccepte(page: Page) {
-  await expect(toast(page)).toHaveAttribute('data-resultat', 'accepte')
-}
-
-async function attendreRefus(page: Page, regle: string) {
-  await expect(toast(page)).toHaveAttribute('data-resultat', 'refuse')
-  await expect(toast(page)).toContainText(regle)
-}
-
 // ─── P1 · Emprunt et retour en libre-service (R02 R03 R05) ───────────────────
 
 test('P1 · emprunt puis retour en libre-service, contrôlé au back-office', async ({ page }) => {
   await enMobile(page)
+  await seConnecter(page, 'ines')
   await page.goto('/app/materiel')
 
   await page
@@ -78,6 +61,7 @@ test('P1 · emprunt puis retour en libre-service, contrôlé au back-office', as
 
   // Back-office : la photo attend son contrôle, puis part dans « Contrôlées récemment ».
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/controle-photo')
   const carte = page.locator('article').filter({ hasText: 'Souris Apple #01' }).first()
   await expect(carte).toBeVisible()
@@ -90,6 +74,7 @@ test('P1 · emprunt puis retour en libre-service, contrôlé au back-office', as
 
 test('P2 · un composant manquant vaut son forfait, pas celui du kit', async ({ page }) => {
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/validations')
 
   const remise = page.locator('article').filter({ hasText: 'Kit Canon R10 #01' }).first()
@@ -98,6 +83,7 @@ test('P2 · un composant manquant vaut son forfait, pas celui du kit', async ({ 
 
   // App Inès : le kit est chez elle, elle le rend en décochant une batterie.
   await enMobile(page)
+  await seConnecter(page, 'ines')
   await page.goto('/app')
   await expect(page.getByText('Kit Canon R10 #01')).toBeVisible()
   await page.getByRole('link', { name: 'Rendre' }).first().click()
@@ -109,6 +95,7 @@ test('P2 · un composant manquant vaut son forfait, pas celui du kit', async ({ 
 
   // Back-office : la puce passe en « Manquant » et l'incident vaut 45 €, jamais 1 130 €.
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/validations')
   const retour = page.locator('article').filter({ hasText: 'Kit Canon R10 #01' }).first()
   await retour.getByRole('button', { name: 'Batterie LP-E17 (2/2)' }).click()
@@ -116,7 +103,7 @@ test('P2 · un composant manquant vaut son forfait, pas celui du kit', async ({ 
   await retour.getByRole('button', { name: /Créer l’incident · 45 €/ }).click()
   await attendreAccepte(page)
   await expect(toast(page)).toContainText('45 €')
-  await expect(toast(page)).toContainText('R07')
+  await expect(toast(page)).toHaveAttribute('data-regle', 'R07')
 
   await page.goto('/admin/incidents')
   const incident = page.locator('article').filter({ hasText: 'Kit Canon R10 #01' }).first()
@@ -128,6 +115,7 @@ test('P2 · un composant manquant vaut son forfait, pas celui du kit', async ({ 
 
 test('P3 · l’incident va au dernier responsable, pas au nouvel emprunteur', async ({ page }) => {
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/controle-photo')
 
   const carte = page.locator('article').filter({ hasText: 'Casque d’anglais #02' }).first()
@@ -138,7 +126,7 @@ test('P3 · l’incident va au dernier responsable, pas au nouvel emprunteur', a
   await attendreAccepte(page)
   // R06 : c'est Léa qui doit, Tom garde son prêt.
   await expect(toast(page)).toContainText('Léa')
-  await expect(toast(page)).toContainText('R06')
+  await expect(toast(page)).toHaveAttribute('data-regle', 'R06')
 
   await page.goto('/admin/prets')
   await expect(page.getByRole('table', { name: 'Prêts' })).toContainText('Tom Leroy')
@@ -148,8 +136,7 @@ test('P3 · l’incident va au dernier responsable, pas au nouvel emprunteur', a
 
 test('P4 · « Pour ma classe » est réservé aux intervenants, qui restent responsables', async ({ page }) => {
   await enMobile(page)
-  await page.goto('/app')
-  await choisir(page, 'Mme Roche')
+  await seConnecter(page, 'roche')
 
   await page.goto('/app/materiel')
   await page
@@ -166,6 +153,7 @@ test('P4 · « Pour ma classe » est réservé aux intervenants, qui restent res
 
   // Le back-office montre l'intervenante comme responsable du prêt de sa classe.
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/prets')
   const ligne = page.getByRole('row').filter({ hasText: 'Jeu Dixit' }).first()
   await expect(ligne).toContainText('Mme Roche')
@@ -173,7 +161,7 @@ test('P4 · « Pour ma classe » est réservé aux intervenants, qui restent res
 
   // Une élève ne voit ni la catégorie réservée, ni le contrôle « Pour ma classe ».
   await enMobile(page)
-  await choisir(page, 'Inès')
+  await changerDeCompte(page, 'ines')
   await page.goto('/app/materiel')
   await expect(page.getByText('Boîtes intervenant')).toHaveCount(0)
   await page
@@ -192,14 +180,14 @@ test('P4 · « Pour ma classe » est réservé aux intervenants, qui restent res
 
 test('P5 · rappel de 16h30, blocage à 18h, déblocage du jour et perte à J+2', async ({ page }) => {
   await enMobile(page)
-  await page.goto('/app')
+  await seConnecter(page, 'ines')
 
-  await horloge(page, 'Aller à 16h30')
+  await echeance(page, 'ALLER_A_16H30')
   await page.goto('/app/alertes')
   await expect(page.getByText(/Pense à rendre/).first()).toBeVisible()
 
   // 18h : le casque #03 d'Inès n'est pas rendu, elle est bloquée (R10).
-  await horloge(page, /Fin de journée/)
+  await echeance(page, 'FIN_DE_JOURNEE')
   await page.goto('/app')
   await expect(page.getByText('Emprunts bloqués')).toBeVisible()
 
@@ -213,15 +201,16 @@ test('P5 · rappel de 16h30, blocage à 18h, déblocage du jour et perte à J+2'
 
   // Déblocage par l'équipe : pour la journée seulement (R16).
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/emprunteurs')
   await page.getByRole('row').filter({ hasText: 'Inès Martin' }).click()
   await page.getByRole('button', { name: 'Débloquer pour la journée' }).click()
   await attendreAccepte(page)
-  await expect(toast(page)).toContainText('R16')
+  await expect(toast(page)).toHaveAttribute('data-regle', 'R16')
 
   // Lendemain puis fin de journée : le PC de prêt de Yanis, sorti mercredi, est perdu (R11).
-  await horloge(page, /Lendemain/)
-  await horloge(page, /Fin de journée/)
+  await echeance(page, 'LENDEMAIN')
+  await echeance(page, 'FIN_DE_JOURNEE')
   await page.goto('/admin/incidents')
   const perte = page.locator('article').filter({ hasText: 'PC de prêt #02' }).first()
   await expect(perte).toContainText('450 €')
@@ -232,32 +221,32 @@ test('P5 · rappel de 16h30, blocage à 18h, déblocage du jour et perte à J+2'
 
 test('P6 · tous les inscrits d’un type sont prévenus au retour', async ({ page }) => {
   await enMobile(page)
-  await page.goto('/app')
+  await seConnecter(page, 'lea')
 
-  for (const prenom of ['Léa', 'Sarah']) {
-    await choisir(page, prenom)
+  for (const compte of ['lea', 'sarah'] as const) {
+    await changerDeCompte(page, compte)
     await page.goto('/app/materiel')
     await page.getByRole('button', { name: /Me prévenir pour Casque d’anglais/ }).click()
     await attendreAccepte(page)
-    await expect(toast(page)).toContainText('R14')
+    await expect(toast(page)).toHaveAttribute('data-regle', 'R14')
   }
 
   // Tom rend le casque #02 : les deux inscrites reçoivent la notification.
-  await choisir(page, 'Tom')
+  await changerDeCompte(page, 'tom')
   await page.goto('/app')
   await page.getByRole('link', { name: 'Rendre' }).first().click()
   await page.getByTestId('prendre-la-photo').click()
   await page.getByRole('button', { name: 'Valider le retour' }).click()
   await attendreAccepte(page)
 
-  for (const prenom of ['Léa', 'Sarah']) {
-    await choisir(page, prenom)
+  for (const compte of ['lea', 'sarah'] as const) {
+    await changerDeCompte(page, compte)
     await page.goto('/app/alertes')
     await expect(page.getByText(/Le premier qui scanne le prend/).first()).toBeVisible()
   }
 
   // Sarah emprunte la première : Léa n'est plus inscrite et revoit « Indisponible ».
-  await choisir(page, 'Sarah')
+  await changerDeCompte(page, 'sarah')
   await page.goto('/app/materiel')
   await page
     .getByRole('link', { name: /Casque d’anglais/ })
@@ -269,7 +258,7 @@ test('P6 · tous les inscrits d’un type sont prévenus au retour', async ({ pa
   await feuille.getByRole('button', { name: 'Emprunter' }).click()
   await attendreAccepte(page)
 
-  await choisir(page, 'Léa')
+  await changerDeCompte(page, 'lea')
   await page.goto('/app/materiel')
   await expect(page.getByRole('button', { name: /Me prévenir pour Casque d’anglais/ })).toBeVisible()
 })
@@ -278,6 +267,7 @@ test('P6 · tous les inscrits d’un type sont prévenus au retour', async ({ pa
 
 test('P7 · forfaits, ajustements et paiements sont réservés à la direction', async ({ page }) => {
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/incidents')
 
   // Lydia (équipe) : le moteur refuse, le toast nomme R12.
@@ -287,7 +277,8 @@ test('P7 · forfaits, ajustements et paiements sont réservés à la direction',
     .click()
   await attendreRefus(page, 'R12')
 
-  await choisir(page, 'Sandrine')
+  await seConnecterAdmin(page, 'sandrine')
+  await page.goto('/admin/incidents')
   const carte = page.locator('article').filter({ hasText: 'Sarah Nguyen' }).first()
 
   // Une hausse est refusée, une baisse acceptée.
@@ -334,6 +325,7 @@ test('P7 · forfaits, ajustements et paiements sont réservés à la direction',
   await attendreAccepte(page)
 
   await enMobile(page)
+  await seConnecter(page, 'ines')
   await page.goto('/app/charte')
   await expect(page.getByText(/sur les heures d’ouverture/)).toBeVisible()
 })
@@ -342,8 +334,7 @@ test('P7 · forfaits, ajustements et paiements sont réservés à la direction',
 
 test('P8 · première connexion, charte obligatoire, puis signalement d’une salle', async ({ page }) => {
   await enMobile(page)
-  await page.goto('/app')
-  await choisir(page, 'Noah')
+  await seConnecter(page, 'noah')
 
   await page.goto('/app/charte')
   const continuer = page.getByRole('button', { name: /Continuer/ })
@@ -362,6 +353,7 @@ test('P8 · première connexion, charte obligatoire, puis signalement d’une sa
   await attendreAccepte(page)
 
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin')
   const table = page.getByRole('table', { name: 'Signalements' })
   await expect(table).toContainText('Salle 103')
@@ -372,7 +364,7 @@ test('P8 · première connexion, charte obligatoire, puis signalement d’une sa
   await attendreAccepte(page)
 
   await enMobile(page)
-  await choisir(page, 'Noah')
+  await changerDeCompte(page, 'noah')
   await page.goto('/app/alertes')
   await expect(page.getByText(/signalement/).first()).toBeVisible()
 })
@@ -381,6 +373,7 @@ test('P8 · première connexion, charte obligatoire, puis signalement d’une sa
 
 test('P9 · comptage, salles, imports, inventaire et réglages', async ({ page }) => {
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
 
   // Consommables : un seul bouton global, la carte repasse « OK ».
   await page.goto('/admin/consommables')
@@ -432,37 +425,29 @@ test('P9 · comptage, salles, imports, inventaire et réglages', async ({ page }
 
 // ─── Transversal ────────────────────────────────────────────────────────────
 
-test('Transversal · annuler, réinitialiser et synchronisation entre onglets', async ({ page }) => {
+test('Transversal · se déconnecter ferme une surface sans toucher à l’autre', async ({ page }) => {
   await enBureau(page)
-  await page.goto('/admin/validations')
+  await seConnecterAdmin(page, 'lydia')
+  await seConnecter(page, 'ines')
 
-  const avant = await page.getByRole('tab', { name: /Tout/ }).textContent()
-  await page
-    .locator('article')
-    .filter({ hasText: 'Kit Canon R10 #01' })
-    .first()
-    .getByRole('button', { name: 'Valider la remise' })
-    .click()
-  await attendreAccepte(page)
-  await expect(page.getByRole('tab', { name: /Tout/ })).not.toHaveText(avant ?? '')
-
-  // ⌘Z / Ctrl+Z rejoue l'état précédent, changement d'horloge inclus.
-  await page.keyboard.press('Control+z')
-  await expect(page.getByRole('tab', { name: /Tout/ })).toHaveText(avant ?? '')
-
-  await horloge(page, /Fin de journée/)
-  await page.keyboard.press('Control+z')
   await page.goto('/admin')
-  await expect(page.getByText(/mis à jour à 10:15/)).toBeVisible()
+  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await expect(page).toHaveURL(/\/admin\/connexion$/)
 
-  // Réinitialiser restaure le seed.
-  await page.getByTestId('bouton-demo').click()
-  await page.getByRole('button', { name: 'Réinitialiser la démo' }).click()
-  await expect(page.getByText(/3 remises et 1 retour à valider au bureau/)).toBeVisible()
+  // L'app reste ouverte : les deux sessions sont indépendantes.
+  await enMobile(page)
+  await page.goto('/app')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Bonjour Inès')
+
+  await page.goto('/app/profil')
+  await page.getByRole('button', { name: 'Se déconnecter' }).click()
+  await expect(page).toHaveURL(/\/app\/connexion$/)
 })
 
 test('Transversal · deux onglets restent synchronisés sans rechargement', async ({ page, context }) => {
   await enBureau(page)
+  await seConnecter(page, 'ines')
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin/validations')
 
   const mobile = await context.newPage()
@@ -507,6 +492,7 @@ test('Transversal · aucun défilement horizontal à 390 px sur les dix écrans 
 
 test('Transversal · le back-office se parcourt au clavier', async ({ page }) => {
   await enBureau(page)
+  await seConnecterAdmin(page, 'lydia')
   await page.goto('/admin')
 
   // L'en-tête vient avant le rail dans le DOM, comme au Figma : on parcourt jusqu'au menu.

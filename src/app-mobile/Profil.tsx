@@ -7,11 +7,13 @@ import { useNavigate } from 'react-router'
 import { horloge, selecteurs } from '@/domain'
 import { ActionDuCompte, Avatar, initialeDe, LigneDInformation, Pastille } from '@/design-system'
 import { useEtat, usePersonaApp } from '@/store/hooks'
+import { useMDS } from '@/store/useMDS'
 
 export function Profil() {
   const navigate = useNavigate()
   const etat = useEtat()
   const persona = usePersonaApp()
+  const deconnecter = useMDS((magasin) => magasin.deconnecter)
 
   const role = persona.role === 'intervenant' ? 'Intervenant' : 'Élève'
   const classes = persona.classes?.join(', ') ?? persona.classe ?? ''
@@ -54,7 +56,10 @@ export function Profil() {
           icone="Interdit"
           libelle="Se déconnecter"
           danger
-          onClick={() => void navigate('/app/connexion')}
+          onClick={() => {
+            deconnecter('app')
+            void navigate('/app/connexion', { replace: true })
+          }}
         />
       </div>
     </div>

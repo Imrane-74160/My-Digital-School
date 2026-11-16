@@ -1,7 +1,7 @@
-import { Outlet, useLocation } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router'
 import { horloge } from '@/domain'
 import { BarreDeNavigationMobile, BarreDEtat } from '@/design-system'
-import { useEtat, usePersonaApp } from '@/store/hooks'
+import { useEtat, usePersonaApp, useSessionApp } from '@/store/hooks'
 import { CadreTelephone } from './CadreTelephone'
 
 /**
@@ -17,17 +17,47 @@ function afficheBarreDeNavigation(chemin: string): boolean {
 
 export function DispositionApp() {
   const { pathname } = useLocation()
+  const session = useSessionApp()
+  const etat = useEtat()
+
+  // Sans session, un seul écran est accessible : la connexion.
+  if (session === null) {
+    return (
+      <CadreTelephone>
+        <BarreDEtat heure={horloge.heure(etat.horloge.maintenant)} />
+        <main className="flex-1 overflow-y-auto">
+          {pathname === '/app/connexion' ? <Outlet /> : <Navigate to="/app/connexion" replace />}
+        </main>
+      </CadreTelephone>
+    )
+  }
+
+  return <AppConnectee chemin={pathname} />
+}
+
+/** La coque de l'app une fois la session ouverte : barre d'état, écran, navigation. */
+function AppConnectee({ chemin }: { chemin: string }) {
   const etat = useEtat()
   const persona = usePersonaApp()
-  const avecBarre = afficheBarreDeNavigation(pathname)
-
+  const avecBarre = afficheBarreDeNavigation(chemin)
   const nonLues = etat.notifications.filter((n) => n.pour.includes(persona.id) && !n.lue).length
+
+  // La charte s'accepte à la première connexion, avant tout le reste (R03).
+  const doitAccepterLaCharte = persona.charteAcceptee === null && chemin !== '/app/charte'
+  // Déjà connecté : l'écran de connexion n'a plus lieu d'être.
+  const dejaConnecte = chemin === '/app/connexion'
 
   return (
     <CadreTelephone>
       <BarreDEtat heure={horloge.heure(etat.horloge.maintenant)} />
       <main className="flex-1 overflow-y-auto">
-        <Outlet />
+        {doitAccepterLaCharte ? (
+          <Navigate to="/app/charte" replace />
+        ) : dejaConnecte ? (
+          <Navigate to="/app" replace />
+        ) : (
+          <Outlet />
+        )}
       </main>
       {avecBarre && (
         <div

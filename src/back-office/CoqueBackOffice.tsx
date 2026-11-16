@@ -4,16 +4,27 @@
  * Barre d'en-tête en haut (logo MyDigitalSchool à gauche du titre de page), puis
  * le rail sombre du Menu principal sous l'en-tête et la zone de contenu à droite.
  * Sur le Tableau de bord : ni retour, ni fil d'Ariane.
+ *
+ * Sans session ouverte, la coque ne rend rien : elle renvoie vers B1 (R13).
  */
-import { Outlet, useLocation } from 'react-router'
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router'
 import { selecteurs } from '@/domain'
-import { Avatar, EnTeteDePage, initialeDe, LienDeNavigation } from '@/design-system'
+import { Avatar, BoutonIcone, EnTeteDePage, initialeDe, LienDeNavigation } from '@/design-system'
 import { ECRANS_BO, ficheDuChemin } from './ecrans'
-import { useUtilisateurBO } from '@/store/hooks'
+import { useSessionAdmin, useUtilisateurBO } from '@/store/hooks'
+import { useMDS } from '@/store/useMDS'
 
 export function CoqueBackOffice() {
+  const session = useSessionAdmin()
+  if (session === null) return <Navigate to="/admin/connexion" replace />
+  return <BackOfficeConnecte />
+}
+
+function BackOfficeConnecte() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const utilisateur = useUtilisateurBO()
+  const deconnecter = useMDS((magasin) => magasin.deconnecter)
   const fiche = ficheDuChemin(pathname)
   const tableauDeBord = fiche.chemin === ''
 
@@ -36,6 +47,14 @@ export function CoqueBackOffice() {
                 {selecteurs.estDirection(utilisateur.role) ? 'Direction' : 'Équipe'}
               </span>
             </span>
+            <BoutonIcone
+              icone="Interdit"
+              titre="Se déconnecter"
+              onClick={() => {
+                deconnecter('admin')
+                void navigate('/admin/connexion', { replace: true })
+              }}
+            />
           </span>
         }
       />

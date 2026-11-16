@@ -1,6 +1,8 @@
 /**
- * Toast de résultat : après chaque action, il affiche Accepté ou Refusé, le message
- * du moteur et le code de la règle (R01…), comme le demande `docs/03-ecrans.md`.
+ * Bandeau de résultat : après chaque action, le message du moteur de règles.
+ *
+ * Un refus porte un code de règle (R01…), utile en test et en relecture mais sans
+ * intérêt pour l'utilisateur : il est posé en attribut `data-regle`, pas à l'écran.
  */
 import { useEffect } from 'react'
 import { Icone } from '@/design-system'
@@ -8,7 +10,7 @@ import { useMDS } from '@/store/useMDS'
 
 const DUREE_AFFICHAGE = 6000
 
-export function Toast() {
+export function Bandeau() {
   const resultat = useMDS((magasin) => magasin.dernierResultat)
   const effacer = useMDS((magasin) => magasin.effacerResultat)
 
@@ -26,7 +28,8 @@ export function Toast() {
       aria-live="polite"
       data-testid="toast"
       data-resultat={resultat.ok ? 'accepte' : 'refuse'}
-      className="fixed inset-x-lg bottom-lg z-40 mx-auto flex max-w-[520px] items-start gap-md rounded-carte bg-surface-carte p-lg shadow-elevation ring-1 ring-trait-bordure sm:left-auto sm:right-lg"
+      data-regle={resultat.regle ?? ''}
+      className="fixed inset-x-lg bottom-lg z-40 mx-auto flex max-w-[520px] items-start gap-md rounded-carte bg-surface-carte p-lg shadow-elevation ring-1 ring-trait-bordure sm:right-lg sm:left-auto"
     >
       <span
         className={[
@@ -40,10 +43,7 @@ export function Toast() {
       </span>
 
       <div className="flex min-w-0 flex-1 flex-col gap-xs">
-        <p className="mds-texte-petit-fort text-texte-tertiaire">
-          {resultat.ok ? 'Accepté' : 'Refusé'}
-          {resultat.regle && <span className="mds-mono-micro"> · {resultat.regle}</span>}
-        </p>
+        {!resultat.ok && <p className="mds-texte-petit-fort text-marque-rose-fonce">Action impossible</p>}
         <p className="mds-texte-corps text-texte-principal">{resultat.msg}</p>
       </div>
 

@@ -12,8 +12,10 @@ Elle est **masquée sur 5 écrans** (plein écran dans le Figma) : A1 Connexion,
 Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titre se lit dans le Figma).
 
 ### A1 · Connexion — `91:711` — `/app/connexion`
-- Logo, visuel (image exportée du Figma), accroche, bouton « Se connecter avec mon compte école », mention sécurisée.
-- Clic → connecte la persona choisie dans le panneau démo (Inès par défaut) → Charte si jamais acceptée, sinon Accueil.
+- Logo, visuel, accroche, **champ « Identifiant MDS »**, bouton « Se connecter », mention sécurisée.
+- **Arbitrage (A1)** : le Figma montre un bouton unique de connexion déléguée. Sans serveur d'authentification, le prototype demande l'identifiant de l'école (`prenom.nom`, ou l'adresse complète) et ouvre la session correspondante. Pas de mot de passe : un contrôle fictif ne protégerait rien et ferait croire le contraire.
+- Identifiant inconnu → « Aucun compte ne correspond à cet identifiant. » · Compte de l'équipe → renvoyé vers l'espace de gestion (R13).
+- Connexion réussie → Charte si elle n'a jamais été acceptée, sinon Accueil. Tant qu'aucune session n'est ouverte, **tous** les écrans de `/app` ramènent ici.
 
 ### A2 · Charte — `91:838` — `/app/charte`
 - En-tête titre + sous-titre, puis **7 articles** : `reglages.charte.articles` = `[{ id, titre, texte }]`, rendus en numéro (pastille) + **titre court** + texte. Titres : Usage, Retour, Niveau 1, Forfaits, Blocage, Classes, Photos.
@@ -79,12 +81,12 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 ## B. Back-office (1440 × 839) — page Figma `15:2`
 Coque commune : **Menu principal** (11 liens, infobulle au survol, lien actif = page courante) + **En-tête de page** (titre, fil d'Ariane, retour → Tableau de bord ; boutons Rechercher / Filtres / Notifications ; compte). Sur le Tableau de bord : pas de retour ni de fil d'Ariane.
 Le **logo MyDigitalSchool est dans la barre d'en-tête**, à gauche du titre de page ; le rail sombre du menu commence sous l'en-tête (et non l'inverse, contrairement à ce qu'indiquait `docs/04`).
-Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en Sandrine (direction) ou Cyrianne.
+Chaque espace a **sa propre session** : on peut être connecté comme élève sur `/app` et comme membre de l'équipe sur `/admin` dans le même navigateur, sans que l'un voie l'autre. La déconnexion est dans le bloc du compte, en haut à droite.
 
 ### B1 · Se connecter — `14:950` — `/admin/connexion`
 - **Hors de la coque commune** (confirmé au Figma) : ni menu principal, ni en-tête de page, ni fil d'Ariane. Une seule carte blanche centrée sur le fond dégradé, avec le visuel d'étudiant à droite ; le logo est **dans la carte**, au-dessus du titre.
-- Textes du Figma : titre « Bon retour parmi nous », sous-titre « Connecte-toi avec ton compte MyDigitalSchool pour gérer les prêts », bouton « Se connecter avec mon admin », mention « Connexion sécurisée MyDigitalSchool ».
-- Aucun champ de saisie : la connexion est déléguée au compte. Clic → Tableau de bord avec l'utilisateur choisi dans le panneau démo.
+- Textes du Figma : titre « Bon retour parmi nous », sous-titre « Connecte-toi avec ton compte MyDigitalSchool pour gérer les prêts », mention « Connexion sécurisée MyDigitalSchool ».
+- **Même arbitrage qu'en A1** : un champ « Identifiant MDS » remplace le bouton de connexion déléguée. Un compte d'élève y est refusé (R13). Connexion réussie → Tableau de bord.
 
 ### B2 · Tableau de bord — `8:950` — `/admin`
 - **À faire maintenant** (Action à faire) : remises à valider → Validations ; photos à contrôler → Contrôle photo ; emprunteur bloqué « Voir » → Emprunteurs (fiche ouverte) ; paiements « Réservé à Sandrine » → Incidents ; signalements « Traiter » → Incidents onglet Signalements. Une ligne n'apparaît que si son compteur > 0.
@@ -172,11 +174,13 @@ Utilisateur par défaut : Lydia (équipe). Le panneau démo permet de passer en 
 - Rôles et accès (statique depuis `personnes`) : une ligne par personne d'équipe avec sa description de droits et un badge « Équipe » ou « Direction ».
 
 ---
-## C. Panneau de démo (hors Figma, discret)
-Bouton flottant « Démo » (coin bas-gauche, touche `D`) ouvrant un panneau :
-- **Surface** : App mobile / Back-office / Côte à côte (`/cote-a-cote`). **Arbitrage** : les deux surfaces vivent dans deux cadres du même document, chacune avec son propre store ; la synchronisation passe par l'événement `storage`, exactement comme entre deux onglets. Le panneau de démo reste celui de la page parente (sinon il apparaîtrait trois fois), et le back-office est mis à l'échelle plutôt que tronqué sous 1280 px.
-- **Persona app** : Inès, Tom, Léa, Yanis, Sarah, Noah (1re connexion), M. Diallo, Mme Roche. **Utilisateur BO** : Lydia, Cyrianne, Sandrine.
-- **Horloge** : heure courante, « 16h30 », « Fin de journée », « Lendemain 8h ».
-- **Annuler** (⌘Z, pile d'historique) · **Réinitialiser la démo** (recharge `seed.json`).
-- **Toast résultat** après chaque action : Accepté/Refusé, message, code règle (R01…). Les notifications destinées à la persona app s'affichent aussi en bannière dans le téléphone.
-- Page `/` : choix App mobile / Back-office / Côte à côte + QR code vers `/app` pour ouvrir sur téléphone.
+## C. Connexion, horloge et échéances (hors Figma)
+L'application n'a pas de mode démo : on s'y connecte, et le temps est celui de la machine.
+
+- **Sessions** : une par surface (A1 et B1). Chaque rôle n'a accès qu'à la sienne (R13). Déconnexion depuis A10 Profil et depuis le bloc du compte du back-office.
+- **Horloge réelle** : `horloge.maintenant` suit l'heure du navigateur, remise à l'heure toutes les 30 secondes et au retour sur l'onglet. Le domaine reste pur — seul `src/store/horlogeReelle.ts` lit `Date`.
+- **Échéances automatiques** : au passage de 16h30, de 18h et de 8h le lendemain, l'application applique seule le rappel (R15), la clôture de journée (R10, R11) et le récap du matin (R15), y compris en rattrapant plusieurs jours d'absence d'un coup. Ce sont des événements de fond : ils n'affichent pas de bandeau.
+- **Jeu de données recalé** : au premier chargement, la situation du seed (ancrée au 17 septembre 2026) est décalée en bloc sur la date du jour, écarts conservés — un prêt « sorti ce matin à 9:20 » le reste, le retard de la veille reste de la veille. Voir `src/domain/ancrage.ts`.
+- **Bandeau de résultat** : après chaque action, le message du moteur. Un refus affiche « Action impossible » et le message ; le code de règle (R01…) vit en attribut `data-regle`, pour les tests et la relecture, pas à l'écran.
+- **Poignée de service** : `window.__mds` donne accès au store depuis la console du navigateur — `__mds.getState().executer({ type: 'FIN_DE_JOURNEE' })` pour rejouer une échéance en démonstration, `__mds.getState().reinitialiser()` pour repartir du jeu de données initial. C'est aussi ce qu'utilisent les tests de bout en bout, l'interface ne permettant plus d'avancer le temps.
+- Page `/` : redirige vers `/app`. Le mode **côte à côte** reste accessible à `/cote-a-cote` (les deux surfaces, même état) et la galerie du design system à `/design-system`.
