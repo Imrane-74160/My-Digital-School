@@ -25,7 +25,7 @@ import {
   VisuelMateriel,
   type Colonne,
 } from '@/design-system'
-import { iconeDe } from './aides'
+import { iconeDe, teinteDe } from './aides'
 import { useEtat, useUtilisateurBO } from '@/store/hooks'
 import { useMDS } from '@/store/useMDS'
 
@@ -82,7 +82,7 @@ export function ControlePhoto() {
                         reempruntePar: selecteurs.prenom(selecteurs.personne(etat, photo.reempruntePar)),
                       })}
                   visuel={
-                    <VisuelMateriel icone={iconeDe(materiel)} hauteur={200}>
+                    <VisuelMateriel icone={iconeDe(materiel)} teinte={teinteDe(materiel)} hauteur={200}>
                       <span className="mds-mono-micro absolute bottom-md left-md rounded-pastille bg-surface-carte px-[7px] py-[2px] text-texte-secondaire">
                         {photo.fichier ?? 'photo.jpg'} · {horloge.quand(photo.prisLe, maintenant)}
                       </span>

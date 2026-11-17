@@ -118,7 +118,7 @@ export function Rendre() {
         <Etape numero={2} titre="Prends une photo" />
         <div className="px-lg">
           {photoPrise ? (
-            <VisuelMateriel icone={iconeDe(materiel)} hauteur={176}>
+            <VisuelMateriel icone={iconeDe(materiel)} teinte={teinteDe(materiel)} hauteur={176}>
               <span className="absolute top-md left-md">
                 <BadgeDeStatut statut="Disponible" libelle="Photo prise" />
               </span>

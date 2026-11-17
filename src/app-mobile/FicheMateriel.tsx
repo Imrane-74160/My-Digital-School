@@ -22,7 +22,7 @@ import {
   PuceDeCategorie,
   VisuelMateriel,
 } from '@/design-system'
-import { badgeDeType, iconeDe } from './aides'
+import { badgeDeType, iconeDe, teinteDe } from './aides'
 import { useEtat, usePersonaApp } from '@/store/hooks'
 import { useMDS } from '@/store/useMDS'
 
@@ -72,7 +72,7 @@ export function FicheMateriel() {
       </p>
 
       <div className="flex flex-1 flex-col gap-lg px-lg pb-2xl">
-        <VisuelMateriel icone={iconeDe(materiel)} hauteur={190} />
+        <VisuelMateriel icone={iconeDe(materiel)} teinte={teinteDe(materiel)} hauteur={190} />
 
         <div className="flex flex-col gap-sm">
           <h1 className="mds-titre-ecran-mobile text-texte-principal">{materiel.nom}</h1>

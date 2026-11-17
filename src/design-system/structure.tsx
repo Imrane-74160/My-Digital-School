@@ -10,6 +10,7 @@ import { BoutonIcone } from './BoutonIcone'
 import { Icone } from './Icone'
 import { LogoMDS } from './LogoMDS'
 import type { NomIcone } from './icones'
+import type { TeintePictogramme } from './variantes'
 
 // ─── Carte ───────────────────────────────────────────────────────────────────
 
@@ -180,43 +181,78 @@ export function EnTeteDePage({
 
 // ─── Visuel de matériel ──────────────────────────────────────────────────────
 
+/** Fond et trait du visuel, par teinte de catégorie. Tout vient des tokens. */
+const TEINTES_VISUEL: Record<TeintePictogramme, { halo: string; trait: string }> = {
+  Turquoise: { halo: 'var(--mds-marque-turquoise)', trait: 'var(--mds-marque-turquoise-fonce)' },
+  Bleu: { halo: 'var(--mds-marque-bleu)', trait: 'var(--mds-marque-bleu-fonce)' },
+  Orange: { halo: 'var(--mds-marque-orange)', trait: 'var(--mds-marque-orange-fonce)' },
+  Rose: { halo: 'var(--mds-marque-rose)', trait: 'var(--mds-marque-rose-fonce)' },
+  Neutre: { halo: 'var(--mds-trait-fort)', trait: 'var(--mds-texte-principal)' },
+  Blanc: { halo: 'var(--mds-trait-fort)', trait: 'var(--mds-texte-principal)' },
+  Contour: { halo: 'var(--mds-trait-fort)', trait: 'var(--mds-texte-principal)' },
+}
+
 /**
  * Visuel d'un matériel : pictogramme sur fond rayé, comme le prévoit `docs/04`
  * (« pas de photos, pictogrammes sur fond rayé »). Sert aussi de photo simulée.
+ *
+ * Le fond prend la teinte de la catégorie : un halo dégradé, les rayures de la charte
+ * par-dessus, et le pictogramme au premier plan. Les photos de matériel n'existent pas
+ * dans le Figma ; ce visuel est le système prévu pour les remplacer, pas un bouche-trou.
  */
 export function VisuelMateriel({
   icone,
   hauteur = 190,
+  teinte = 'Turquoise',
   children,
   className,
 }: {
   icone: NomIcone
   hauteur?: number
+  /** Teinte de la catégorie du matériel. */
+  teinte?: TeintePictogramme
   /** Badges ou boutons superposés au visuel. */
   children?: ReactNode
   className?: string
 }) {
+  const { halo, trait } = TEINTES_VISUEL[teinte]
+  const picto = Math.round(hauteur * 0.42)
+
   return (
     <div
-      className={`relative flex items-center justify-center overflow-hidden rounded-carte-mobile ${className ?? ''}`}
+      className={`relative flex items-center justify-center overflow-hidden rounded-carte-mobile bg-surface-champ ${className ?? ''}`}
       style={{ height: hauteur }}
     >
-      {/* Motif de rayures construit sur le token trait/rayure : aucune couleur en dur. */}
+      {/* Halo de la catégorie, posé en haut à gauche comme une lumière d'atelier. */}
+      <span
+        aria-hidden
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(120% 110% at 22% 12%, color-mix(in srgb, ${halo} 34%, transparent) 0%, transparent 62%)`,
+        }}
+      />
+      {/* Rayures de la charte, discrètes : elles donnent la matière sans manger le sujet. */}
       <span
         aria-hidden
         className="absolute inset-0"
         style={{
           backgroundImage:
             'repeating-linear-gradient(135deg, var(--mds-trait-rayure) 0 1.5px, transparent 1.5px 12px)',
-          opacity: 0.55,
+          opacity: 0.4,
         }}
       />
+      {/* Cercle d'assise : le pictogramme ne flotte pas dans le vide. */}
       <span
         aria-hidden
-        className="relative inline-flex items-center justify-center rounded-carte-mobile bg-surface-carte text-texte-principal"
-        style={{ width: hauteur / 2, height: hauteur / 2 }}
-      >
-        <Icone nom={icone} pixels={Math.round(hauteur / 4)} />
+        className="absolute rounded-rond"
+        style={{
+          width: picto * 1.9,
+          height: picto * 1.9,
+          backgroundImage: `radial-gradient(circle, color-mix(in srgb, ${halo} 22%, transparent) 0%, transparent 70%)`,
+        }}
+      />
+      <span aria-hidden className="relative" style={{ color: trait }}>
+        <Icone nom={icone} pixels={picto} />
       </span>
       {children}
     </div>
