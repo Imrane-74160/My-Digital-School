@@ -1,13 +1,14 @@
 /**
  * B1 · Se connecter — `/admin/connexion` — nœud Figma `14:950`.
  *
- * Hors de la coque commune : ni menu principal, ni en-tête de page. Une carte blanche
- * centrée sur le fond dégradé, le visuel à droite, le logo dans la carte au-dessus du
- * titre. L'accès est réservé à l'équipe pédagogique et à la direction (R13).
+ * Hors de la coque commune : ni menu principal, ni en-tête de page. La photo de la
+ * charte occupe tout l'écran, et la carte blanche est centrée dessus, logo en haut.
+ * L'accès est réservé à l'équipe pédagogique et à la direction (R13).
  */
 import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
-import { Bouton, Champ, Encart, Icone, VisuelMateriel } from '@/design-system'
+import { Bouton, Champ, Encart, Icone, LogoMDS } from '@/design-system'
+import photo from '@/assets/photo-connexion-admin.jpg'
 import { useMDS } from '@/store/useMDS'
 
 export function ConnexionBO() {
@@ -27,61 +28,60 @@ export function ConnexionBO() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center p-2xl">
-      <section className="flex w-full max-w-[1040px] overflow-hidden rounded-carte bg-surface-carte ring-1 ring-trait-bordure">
-        <form onSubmit={soumettre} className="flex min-w-0 flex-1 flex-col gap-xl p-3xl">
-          <p className="mds-texte-corps-fort text-marque-anthracite">MyDigitalSchool</p>
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden p-2xl">
+      <img src={photo} alt="" aria-hidden className="absolute inset-0 size-full object-cover" />
 
-          <div className="flex flex-col gap-sm">
-            <h1 className="mds-titre-page text-texte-principal">Bon retour parmi nous</h1>
-            <p className="mds-texte-corps text-texte-secondaire">
-              Connecte-toi avec ton compte MyDigitalSchool pour gérer les prêts
-            </p>
-          </div>
+      <form
+        onSubmit={soumettre}
+        className="relative flex w-full max-w-[520px] flex-col items-center gap-lg rounded-carte bg-surface-carte p-3xl shadow-elevation"
+      >
+        <LogoMDS hauteur={52} />
 
-          <label className="flex flex-col gap-sm">
-            <span className="mds-texte-petit-fort text-texte-secondaire">Identifiant MDS</span>
-            <Champ
-              etiquette="Identifiant MDS"
-              valeur={identifiant}
-              onChange={(valeur) => {
-                setIdentifiant(valeur)
-                setErreur(null)
-              }}
-              placeholder="prenom"
-              icone="Utilisateur"
-              autoComplete="username"
-              autoCapitalize="none"
-              spellCheck={false}
-            />
-          </label>
-
-          {erreur !== null && (
-            <Encart icone="Alerte" ton="rose" className="max-w-[420px]">
-              {erreur}
-            </Encart>
-          )}
-
-          <span className="self-start">
-            <Bouton
-              libelle="Se connecter"
-              taille="L"
-              icone="Bouclier"
-              soumet
-              disabled={identifiant.trim() === ''}
-            />
-          </span>
-
-          <p className="mds-texte-petit flex items-center gap-sm text-texte-tertiaire">
-            <Icone nom="Cadenas" taille="sm" />
-            Connexion sécurisée MyDigitalSchool
+        <div className="flex flex-col items-center gap-xs text-center">
+          <h1 className="mds-titre-page text-texte-principal">Bon retour parmi nous</h1>
+          <p className="mds-texte-petit text-texte-secondaire">
+            Connecte-toi avec ton compte MyDigitalSchool pour gérer les prêts
           </p>
-        </form>
-
-        <div className="w-[420px] shrink-0 self-stretch p-xl">
-          <VisuelMateriel icone="Utilisateur" hauteur={420} className="h-full" />
         </div>
-      </section>
+
+        <label className="flex w-full flex-col gap-sm">
+          <span className="mds-texte-petit-fort text-texte-secondaire">Identifiant MDS</span>
+          <Champ
+            etiquette="Identifiant MDS"
+            valeur={identifiant}
+            onChange={(valeur) => {
+              setIdentifiant(valeur)
+              setErreur(null)
+            }}
+            placeholder="prenom"
+            icone="Utilisateur"
+            pleineLargeur
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+          />
+        </label>
+
+        {erreur !== null && (
+          <Encart icone="Alerte" ton="rose" className="w-full">
+            {erreur}
+          </Encart>
+        )}
+
+        <Bouton
+          libelle="Se connecter avec mon admin"
+          taille="L"
+          icone="Bouclier"
+          soumet
+          pleineLargeur
+          disabled={identifiant.trim() === ''}
+        />
+
+        <p className="mds-texte-petit flex items-center gap-sm text-texte-tertiaire">
+          <Icone nom="Cadenas" taille="sm" />
+          Connexion sécurisée MyDigitalSchool
+        </p>
+      </form>
     </main>
   )
 }

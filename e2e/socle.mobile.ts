@@ -129,3 +129,52 @@ test.describe('Routes restantes', () => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page introuvable')
   })
 })
+
+test.describe('Hauteur réelle d’un téléphone', () => {
+  // La maquette fait 844 px de haut ; un téléphone réel, barre d'adresse comprise, en
+  // offre plutôt 600 à 700. Le contenu doit tenir dans l'écran, pas déborder dessous.
+  const HAUTEURS = [664, 600]
+
+  test('aucun écran ne pousse son contenu hors de l’écran', async ({ page }) => {
+    await seConnecter(page, 'ines')
+    const chemins = [
+      '/app',
+      '/app/materiel',
+      '/app/materiel/souris-apple-01',
+      '/app/rendre/casque-03',
+      '/app/scanner',
+      '/app/signaler',
+      '/app/alertes',
+      '/app/profil',
+    ]
+
+    for (const hauteur of HAUTEURS) {
+      await page.setViewportSize({ width: 390, height: hauteur })
+      for (const chemin of [...chemins, '/app/charte']) {
+        await page.goto(chemin)
+        const deborde = await page.evaluate(
+          () => document.documentElement.scrollHeight > document.documentElement.clientHeight + 1,
+        )
+        expect(deborde, `${chemin} déborde sous l’écran à ${hauteur} px`).toBe(false)
+      }
+    }
+  })
+
+  test('la connexion garde son bouton à l’écran, quelle que soit la hauteur', async ({ page }) => {
+    for (const hauteur of HAUTEURS) {
+      await page.setViewportSize({ width: 390, height: hauteur })
+      await page.goto('/app/connexion')
+      const bouton = await page.getByRole('button', { name: /Se connecter/ }).boundingBox()
+      expect(bouton, `bouton introuvable à ${hauteur} px`).not.toBeNull()
+      expect(
+        (bouton?.y ?? 0) + (bouton?.height ?? 0),
+        `le bouton passe sous l’écran à ${hauteur} px`,
+      ).toBeLessThanOrEqual(hauteur)
+
+      // La photo se réduit au lieu de pousser le reste : les visages restent visibles.
+      const photo = await page.locator('img[alt^="Deux étudiants"]').boundingBox()
+      expect(photo?.height ?? 0).toBeGreaterThanOrEqual(150)
+      expect(photo?.height ?? 0).toBeLessThanOrEqual(380)
+    }
+  })
+})

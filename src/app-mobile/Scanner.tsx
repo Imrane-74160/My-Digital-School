@@ -7,6 +7,7 @@
  */
 import { horloge, selecteurs } from '@/domain'
 import { EnTeteEcranMobile, Icone, MaterielDetecte } from '@/design-system'
+import qr from '@/assets/qr-scanner.png'
 import { iconeDe, teinteDe } from './aides'
 import { useEtat, usePersonaApp } from '@/store/hooks'
 
@@ -46,6 +47,13 @@ export function Scanner() {
 
       <div className="flex flex-1 items-center justify-center px-lg">
         <div className="relative flex size-[240px] items-center justify-center">
+          {/* Le QR du Figma (`92:823`), flouté : c'est une cible de scan simulée. */}
+          <img
+            src={qr}
+            alt=""
+            aria-hidden
+            className="absolute size-[120px] rounded-vignette opacity-90 blur-[0.6px]"
+          />
           {/* Quatre coins et la ligne de lecture, comme le viseur du Figma. */}
           {(
             [

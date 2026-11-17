@@ -8,6 +8,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { BoutonIcone } from './BoutonIcone'
 import { Icone } from './Icone'
+import { LogoMDS } from './LogoMDS'
 import type { NomIcone } from './icones'
 
 // ─── Carte ───────────────────────────────────────────────────────────────────
@@ -150,7 +151,7 @@ export function EnTeteDePage({
 }) {
   return (
     <header data-testid="en-tete-back-office" className="flex items-center gap-lg px-lg py-md">
-      <span className="mds-texte-corps-fort shrink-0 text-marque-anthracite">MyDigitalSchool</span>
+      <LogoMDS hauteur={34} className="shrink-0" />
 
       {retour && (
         <Link to={retour} aria-label="Retour au tableau de bord" className="shrink-0">
