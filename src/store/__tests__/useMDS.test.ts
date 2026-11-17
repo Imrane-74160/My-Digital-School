@@ -143,15 +143,38 @@ describe('échéances automatiques', () => {
   })
 })
 
+describe('disposition du tableau de bord', () => {
+  it('garde une disposition par compte, normalisée à l’enregistrement', () => {
+    useMDS.getState().definirDisposition('lydia', { principale: ['recap'], cote: [], masquees: [] } as never)
+
+    const lydia = useMDS.getState().dispositions['lydia']!
+    expect(lydia.principale[0]).toBe('recap')
+    // Les cartes absentes de l'enregistrement reviennent, jamais perdues.
+    expect([...lydia.principale, ...lydia.cote, ...lydia.masquees]).toHaveLength(6)
+    // Le rangement de Lydia ne touche pas celui de Sandrine.
+    expect(useMDS.getState().dispositions['sandrine']).toBeUndefined()
+  })
+
+  it('ignore un compte inconnu', () => {
+    useMDS.getState().definirDisposition('fantome', { principale: [], cote: [], masquees: [] } as never)
+    expect(useMDS.getState().dispositions['fantome']).toBeUndefined()
+  })
+})
+
 describe('persistance', () => {
-  it('écrit l’état et les deux sessions, rien d’autre', () => {
+  it('écrit l’état, les deux sessions et les dispositions, rien d’autre', () => {
     useMDS.getState().connecter('app', 'ines.martin')
     useMDS.getState().executer(emprunt)
 
     const brut = localStorage.getItem(CLE_PERSISTANCE)
     expect(brut).not.toBeNull()
     const enregistre = JSON.parse(brut!) as { state: Record<string, unknown> }
-    expect(Object.keys(enregistre.state).sort()).toEqual(['etat', 'sessionAdmin', 'sessionApp'])
+    expect(Object.keys(enregistre.state).sort()).toEqual([
+      'dispositions',
+      'etat',
+      'sessionAdmin',
+      'sessionApp',
+    ])
   })
 
   it('retrouve l’état après une réhydratation, comme le ferait un autre onglet', async () => {

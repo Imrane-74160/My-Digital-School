@@ -24,7 +24,13 @@ const TONS_INDICATEUR: Record<TonIndicateur, string> = {
   Attention: 'bg-marque-orange-clair text-marque-orange-fonce',
 }
 
-/** Une tuile de la carte « En ce moment » : une valeur et son libellé. */
+/**
+ * Une tuile de la carte « En ce moment » : une valeur et son libellé.
+ *
+ * À zéro, rien ne demande l'attention : la tuile s'efface au lieu de peser autant
+ * qu'un chiffre qui compte. L'ordre des tuiles, lui, ne bouge pas — on vient y lire
+ * l'état du campus toujours à la même place.
+ */
 export function Indicateur({
   valeur,
   libelle,
@@ -34,13 +40,15 @@ export function Indicateur({
   libelle: string
   ton?: TonIndicateur
 }) {
+  const vide = valeur === 0
   return (
     <div
       className={`flex flex-col gap-xs rounded-vignette px-lg py-md ${TONS_INDICATEUR[ton]}`}
       data-ton={ton}
+      data-vide={vide ? 'oui' : 'non'}
     >
-      <span className="mds-chiffre-l">{valeur}</span>
-      <span className="mds-texte-petit">{libelle}</span>
+      <span className={`mds-chiffre-l ${vide ? 'text-texte-tertiaire' : ''}`}>{valeur}</span>
+      <span className={`mds-texte-petit ${vide ? 'text-texte-tertiaire' : ''}`}>{libelle}</span>
     </div>
   )
 }
@@ -52,29 +60,51 @@ export function Indicateur({
  * un bouton Secondaire, ou la mention verrouillée « Réservé à Sandrine » (R12).
  */
 export function ActionAFaire({
+  cle,
   icone,
   teinte = 'Neutre',
   titre,
   detail,
+  raison,
   libelleAction,
   onAction,
   principale = false,
   reserveASandrine = false,
 }: {
+  /** Identifiant de la ligne, posé en `data-ligne` : c'est par lui qu'un test lit l'ordre. */
+  cle?: string
   icone: NomIcone
   teinte?: TeintePictogramme
   titre: string
   detail: string
+  /** Pourquoi cette ligne passe avant les autres. Affiché sur la ligne de tête. */
+  raison?: string
   libelleAction: string
   onAction: () => void
   principale?: boolean
   reserveASandrine?: boolean
 }) {
   return (
-    <div className="flex items-center gap-md border-b border-trait-bordure px-xl py-md last:border-b-0">
-      <Pictogramme icone={icone} teinte={teinte} taille={40} />
+    <div
+      data-ligne={cle}
+      className={[
+        'flex items-center gap-md border-b border-trait-bordure px-xl py-md last:border-b-0',
+        principale ? 'bg-surface-champ' : '',
+      ].join(' ')}
+    >
+      <Pictogramme icone={icone} teinte={teinte} taille={principale ? 44 : 40} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <p className="mds-texte-corps-fort truncate text-texte-principal">{titre}</p>
+        {principale && raison !== undefined && (
+          <p className="mds-mono-micro truncate text-texte-tertiaire">À traiter en premier · {raison}</p>
+        )}
+        <p
+          className={[
+            'truncate text-texte-principal',
+            principale ? 'mds-titre-carte' : 'mds-texte-corps-fort',
+          ].join(' ')}
+        >
+          {titre}
+        </p>
         <p className="mds-texte-petit truncate text-texte-secondaire">{detail}</p>
       </div>
       {reserveASandrine ? (

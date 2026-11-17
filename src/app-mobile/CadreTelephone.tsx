@@ -10,6 +10,9 @@ import type { ReactNode } from 'react'
  * de défiler à l'intérieur de l'écran. Avec `min-h-dvh`, le cadre s'allongeait sous le
  * contenu et la zone d'action passait hors de l'écran sur un téléphone réel, dont la
  * hauteur utile est plus courte que les 844 px de la maquette.
+ *
+ * En plein écran, le cadre réserve la zone sûre du bas (barre d'accueil des iPhone
+ * récents) : sans elle, la barre de navigation flottante tombe sous le geste système.
  */
 export function CadreTelephone({ children }: { children: ReactNode }) {
   return (
@@ -18,6 +21,7 @@ export function CadreTelephone({ children }: { children: ReactNode }) {
         data-testid="cadre-telephone"
         className="
           relative flex h-dvh w-full flex-col overflow-hidden
+          pb-[env(safe-area-inset-bottom)] min-[500px]:pb-0
           min-[500px]:h-[844px] min-[500px]:min-h-[844px] min-[500px]:w-[390px]
           min-[500px]:rounded-carte min-[500px]:shadow-elevation
           min-[500px]:ring-1 min-[500px]:ring-trait-bordure

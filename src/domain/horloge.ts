@@ -129,6 +129,18 @@ export const memeJour = (a: Instant, b: Instant) => jourDe(a) === jourDe(b)
 /** Nombre de jours calendaires entre deux instants (pas de gestion des week-ends : hors périmètre). */
 export const joursEcoules = (depuis: Instant, jusqu: Instant) => numeroDeJour(jusqu) - numeroDeJour(depuis)
 
+/**
+ * Minutes écoulées entre deux instants, négatif si `jusqu` précède `depuis`.
+ * Sert à mesurer une attente : depuis quand quelqu'un patiente au bureau, combien
+ * de temps il reste avant une échéance.
+ */
+export function minutesEntre(depuis: Instant, jusqu: Instant): number {
+  const debut = analyser(depuis)
+  const fin = analyser(jusqu)
+  const jours = numeroDeJour(jusqu) - numeroDeJour(depuis)
+  return jours * 24 * 60 + (fin.heures * 60 + fin.minutes) - (debut.heures * 60 + debut.minutes)
+}
+
 export function ajouterJours(instant: Instant, nombre: number): Instant {
   const { heures, minutes } = analyser(instant)
   const nouveauJour = jourDepuisNumero(numeroDeJour(instant) + nombre)
@@ -137,6 +149,24 @@ export function ajouterJours(instant: Instant, nombre: number): Instant {
 
 /** Même jour, à l'heure demandée. `aHeure('2026-09-17T10:15', '18:00')` → `2026-09-17T18:00`. */
 export const aHeure = (instant: Instant, heure: Heure): Instant => `${jourDe(instant)}T${heure}`
+
+/**
+ * Le temps qu'il reste, en toutes lettres : « dans 7 h 45 », « dans 20 min »,
+ * « c'est passé ». Plus parlant qu'une heure fixe quand l'échéance approche.
+ */
+export function dansCombien(instant: Instant, maintenant: Instant): string {
+  const minutes = minutesEntre(maintenant, instant)
+  if (minutes <= 0) return 'c’est passé'
+  if (minutes < 60) return `dans ${minutes} min`
+  const heures = Math.floor(minutes / 60)
+  const reste = minutes % 60
+  if (heures >= 24) return `dans ${Math.round(heures / 24)} j`
+  return reste === 0 ? `dans ${heures} h` : `dans ${heures} h ${deuxChiffres(reste)}`
+}
+
+/** « 18:00 » → « 18h », « 16:30 » → « 16h30 » : l'heure d'une règle, dans une phrase. */
+export const heureCourte = (heure: Heure): string =>
+  heure.endsWith(':00') ? `${heure.slice(0, 2)}h` : heure.replace(':', 'h')
 
 export const minutesDeLHeure = (heure: Heure): number => {
   const [h, m] = heure.split(':')

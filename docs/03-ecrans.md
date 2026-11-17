@@ -11,6 +11,11 @@ Barre de navigation (5 onglets) : Accueil `/app` · Matériel `/app/materiel` ·
 Elle est **masquée sur 5 écrans** (plein écran dans le Figma) : A1 Connexion, A2 Charte, A6 Rendre, A7 Scanner, A8 Signaler.
 Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titre se lit dans le Figma).
 
+**Confort sur un vrai téléphone** (hors Figma, qui ne dessine qu'un écran de 844 px) :
+- Le cadre réserve la **zone sûre du bas** (`env(safe-area-inset-bottom)`) : sans elle, la barre de navigation flottante tombe sous le geste système des iPhone récents.
+- Le **bandeau de résultat** se pose **au-dessus** de la barre de navigation (114 px du bas), au lieu de la recouvrir. Il monte depuis le bas, `role="status"` + `aria-live="polite"` : le message est lu sans voler le focus, et l'animation est coupée par `prefers-reduced-motion`.
+- Le défilement de l'écran est **contenu** (`overscroll-y-contain`) : le rebond ne tire plus la page entière.
+
 ### A1 · Connexion — `91:711` — `/app/connexion`
 - Logo, visuel, accroche, **champ « Identifiant MDS »**, bouton « Se connecter », mention sécurisée.
 - **Arbitrage (A1)** : le Figma montre un bouton unique de connexion déléguée. Sans serveur d'authentification, le prototype demande l'identifiant de l'école (`prenom.nom`, ou l'adresse complète) et ouvre la session correspondante. Pas de mot de passe : un contrôle fictif ne protégerait rien et ferait croire le contraire.
@@ -30,9 +35,15 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
   - `En cours` : bouton Rendre → Rendre.
   - `Demande envoyée` (N1) : message « Présente-toi à … : l'équipe vérifie le kit avec toi. »
   - ◐ `Retour en vérification` (N1 rendu, en attente équipe) · ◐ `En retard`.
-- Raccourcis : Voir le matériel → Matériel ; Signaler → Signaler.
+- Raccourcis : raccourci contextuel ; Signaler → Signaler.
 - ◐ Bloqué : la carte du haut devient rose « Emprunts bloqués · {matériel} non rendu. Rapporte-le au bureau de la pédagogie. »
 - ◐ Soir : « Bureau fermé · réouverture demain à 8h ». ◐ Aucun prêt : « Aucun prêt en cours ». ◐ Section « À rembourser : {montant} · {motif} » si incident dû.
+
+**Arbitrage UX (A3-a) — « Mes prêts » groupé.** Le Figma liste les prêts à plat. À l'usage, un prêt qui doit repartir ce soir ne se lit pas comme un prêt qui attend un geste de l'équipe : la liste est donc coupée en **deux groupes calculés** (`selecteurs.pretsGroupesDe`), « **À rendre avant 18h** » (les retards en tête) puis « **En attente de l'équipe** », chacun avec son compteur. Un groupe vide n'existe pas. Les cartes, elles, ne changent pas.
+
+**Arbitrage UX (A3-b) — raccourci contextuel.** Le Figma propose « Voir le matériel » et « Signaler ». Le premier doublonne l'onglet Matériel de la barre de navigation : il est remplacé par un raccourci **déduit de l'état** — « **Rendre maintenant · Avant 18h** » vers le retour du prêt le plus pressé quand il y en a un, « **Emprunter · Scanne un QR** » sinon.
+
+**Arbitrage UX (A3-c) — compte à rebours.** La carte anthracite affichait « Rappel à 16:30 ». Elle affiche maintenant « **Fermeture dans {durée} · rappel à {heure}** », déduit de l'heure de fermeture : à 17h, savoir qu'il reste une heure vaut mieux que relire l'horaire.
 
 ### A4 · Matériel — `29:2` — `/app/materiel`
 - Recherche (nom), puces catégories (Tout, Studio, Informatique, Cours, Jeux ; + Boîtes pour les intervenants), bouton scanner → Scanner.
@@ -46,12 +57,16 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 
 **Arbitrage (A4)** : une ligne « **Chez toi** » ou « **Ta demande** » mène à la fiche de **l'exemplaire de la persona** (c'est de là qu'elle le rend) et n'affiche plus la cloche « Me prévenir » — on ne s'inscrit pas sur un type qu'on détient déjà. La cloche ne reste que sur « Indisponible ».
 
+**Arbitrage UX (A4-b) — emprunt direct.** Quand une unité du type est **libre et le bureau ouvert**, la ligne porte un bouton rond turquoise (44 px, icône Colis) qui ouvre **directement la feuille du forfait** (`/app/materiel/:id?emprunter`). Le texte de la ligne, lui, mène toujours à la fiche. La ligne cesse alors d'être un lien enveloppant — deux liens imbriqués n'existent pas — et devient un conteneur à deux destinations.
+
 ### A5 · Fiche + feuille Emprunter — `30:2` — `/app/materiel/:itemId`
 - Fiche : bouton retour, **fil d'Ariane** (en-tête mobile), visuel, nom, badges (dispo, « N1 · remise par l'équipe »), puis bloc Informations à **2 lignes seulement** : « Où le trouver » et « Retour ». Le forfait n'apparaît **que dans la feuille Emprunter** (Figma `30:2`).
 - CTA contextuel : Disponible → ouvre la **feuille Emprunter** · Chez toi → « Rendre ce matériel » · Demande envoyée → message · Indisponible → « Me prévenir à son retour » · Retiré → « Momentanément retiré du prêt » · Soir → « Bureau fermé » (désactivé).
 - Feuille (voile + feuille qui monte 320 ms) : forfait total et par composant (**Ligne de montant** Sombre), case d'acceptation obligatoire, consigne N1/N2, CTA « Demander la remise » (N1) / « Emprunter » (N2).
 - Intervenant : ◐ contrôle segmenté « Pour moi / Pour ma classe » + classes (`classes`) + aide « Tu seras responsable du matériel et seul à pouvoir le rendre. »
 - ▶ EMPRUNTER `{ item, pourClasse?, forfaitAccepte }` → ferme la feuille, retour Accueil, toast résultat. Le CTA reste désactivé tant que la case n'est pas cochée ; un appel sans `forfaitAccepte` ou sans charte acceptée est refusé R03.
+
+**Arbitrage UX (A5-b) — `?emprunter`.** Arriver sur la fiche avec le paramètre `?emprunter` ouvre la feuille **d'emblée** : c'est ce que font le scanner (A7) et le catalogue (A4) quand le matériel est libre. Le parcours passe de cinq gestes à trois, **sans sauter la case du forfait**, qui reste obligatoire (R03). Le paramètre n'a aucun effet si les conditions du bouton « Emprunter » ne sont pas réunies (matériel chez quelqu'un, indisponible, retiré, bureau fermé).
 
 ### A6 · Rendre — `31:2` — `/app/rendre/:itemId`
 - Carte du matériel, Étape 1 « Vérifie le contenu » (kit : une ligne par composant cochable ; sinon « Tout le contenu est là » + « Rien n'est abîmé »), lien « Un souci ? Signaler un problème » → Signaler.
@@ -62,7 +77,7 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 ### A7 · Scanner — `92:757` — `/app/scanner`
 - Plein écran (pas de barre de navigation), bouton Fermer. Viseur animé (ligne de lecture, QR code d'exemple repris du Figma), consigne.
 - Feuille « À proximité », **3 lignes maximum**, dans cet ordre : d'abord les **prêts ouverts de la persona** (badges « Chez toi » / « Demandé » / « Vérification »), puis les **matériels disponibles du bureau** pour compléter. Le compteur du titre = le nombre de lignes affichées.
-- Ligne « Chez toi » → Rendre ; toutes les autres → Fiche. Fermer → retour arrière.
+- Ligne « Chez toi » → Rendre ; ligne « **Disponible** » → Fiche **avec `?emprunter`** (la feuille du forfait s'ouvre tout de suite : scanner, c'est déjà vouloir emprunter) ; les autres → Fiche. Fermer → retour arrière.
 
 ### A8 · Signaler — `92:874` — `/app/signaler`
 - « Sur quoi ? » (liste : mes prêts, salles, autres matériels), « Quel problème ? » (Panne, Casse, Manquant, Déplacé, Autre — une puce active), détails facultatifs, photo facultative.
@@ -98,6 +113,31 @@ Chaque espace a **sa propre session** : on peut être connecté comme élève su
 - **Prêts en retard** : sous-titre « Non rendus avant 18h », carte par prêt en retard (échéances « Hier 18h Bloqué », « Ven. 18h Perdu · forfait »), ▶ DEBLOQUER, et la note de bas de carte « Le blocage se lève dès le retour. Un déblocage manuel ne vaut que pour la journée. »
 - **Récap de 8h** : sous-titre « Envoyé ce matin à l'équipe », bloc mono au **format Figma** (voir « Récap de 8h » dans `docs/02`), puis la ligne des destinataires (avatars + « Cyrianne, Lydia, Sandrine »). C'est un **instantané stocké**, pas un calcul en direct : il ne bouge qu'à ▶ LENDEMAIN.
 - **Signalements ouverts** : sous-titre « Envoyés depuis l'app », colonnes **Signalement / Par / Quand / Photo** (la colonne Photo affiche une icône image quand `photo: true`, rien sinon), filtre Ouverts/Traités, ▶ TRAITER_SIGNALEMENT (bouton ✓). Lignes de salle → Salles.
+
+**Arbitrage UX (B2-a) — urgence calculée.** Le Figma fige l'ordre des lignes de « À faire maintenant ». Il est désormais **calculé** (`selecteurs.lignesAFaire`), parce qu'un PC à 450 € qui bascule en perte ne peut pas s'afficher sous trois remises de routine. Chaque ligne vaut ce qu'on perd à ne pas la traiter tout de suite, en points — un euro en jeu vaut un point, le reste se compare à de l'argent :
+
+| Ligne | Urgence |
+| --- | --- |
+| Paiements | montant total dû |
+| Emprunteurs bloqués | 120 par personne + le forfait de chaque retard, pondéré par ce qu'il reste avant la perte de J+2 (R11) |
+| Validations | 40 par personne en file + 2 par minute de la plus longue attente (plafonnée à 4 h : au-delà, la personne est repartie) |
+| Photos | 25 par photo + 1 par heure d'attente de la plus ancienne (plafonnée à 48 h) |
+| Signalements | 15 par signalement, 25 s'il porte une photo |
+
+- L'en-tête de la carte le dit : « {n} actions · **par urgence** · mis à jour à {HH:MM} ».
+- La ligne de tête est **appuyée** (fond `surface/champ`, titre en Titre de carte, pictogramme 44) et porte son motif : « **À traiter en premier · {raison}** », une phrase déduite du calcul (« 1 personne bloquée et 152 € qui basculent en perte », « 4 personnes au bureau, la plus ancienne depuis 1 h 20 »).
+- **Ce qu'on ne peut pas faire passe après** : une ligne verrouillée par R12 (les paiements, côté équipe) descend en fin de liste chez Cyrianne et Lydia, et reprend sa place au classement chez Sandrine. Même urgence, place différente : l'ordre dépend de qui regarde.
+
+**Arbitrage UX (B2-b) — indicateurs à zéro.** Les six tuiles de « En ce moment » gardent **l'ordre du Figma** — on vient y lire l'état du campus toujours à la même place —, mais une tuile à **0** passe en `texte/tertiaire` : rien à zéro ne demande l'attention.
+
+**Arbitrage UX (B2-c) — disposition personnalisable.** Le tableau de bord se range par compte, en deux temps :
+
+1. **Un défaut par rôle.** L'équipe pédagogique vient chercher ce qu'il y a à faire : colonne principale « À faire maintenant · En ce moment · Prêts en retard · Signalements », colonne latérale « Consommables · Récap de 8h » (l'ordre du Figma). La direction vient prendre la température avant d'agir : « **En ce moment** » passe en tête et le **Récap de 8h** remonte en haut de la colonne latérale.
+2. **Puis ajustable.** Le bouton « **Personnaliser** » ouvre le mode rangement : chaque carte prend une poignée (glisser-déposer) **et** quatre boutons — monter, descendre, changer de colonne, masquer. Le clavier suffit : les boutons portent leur intitulé complet (« Descendre À faire maintenant »). Les cartes masquées reviennent d'un clic depuis la barre « Cartes masquées », et « **Rétablir le défaut** » n'apparaît qu'une fois quelque chose déplacé. « Terminer » referme le mode et l'écran redevient exactement celui du Figma.
+
+La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, et survit au rechargement : ce n'est pas de l'état métier, aucune règle n'en dépend. Une disposition stockée est normalisée à la lecture comme à l'écriture — une carte ajoutée depuis la dernière visite reprend la place que son rôle lui donne, une clé inconnue disparaît, rien n'est jamais perdu ni dupliqué.
+
+**Arbitrage (B2-d) — le tableau des signalements** passe en bas de la **colonne principale** (largeur `1fr` au lieu de la pleine largeur du Figma) : c'est la condition pour que toutes les cartes soient déplaçables dans le même jeu de deux colonnes.
 
 ### B3 · Validations sur place — `19:2` — `/admin/validations`
 - Onglets Tout / Remises / Retours, chacun avec son compteur (sur le seed initial : Tout **4**, Remises 3, Retours 1).

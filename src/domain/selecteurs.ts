@@ -66,6 +66,40 @@ export const pretsEnCoursDe = (etat: EtatMDS, id: PersonneId): Pret[] => {
     .sort((a, b) => rang(a) - rang(b))
 }
 
+/**
+ * « Mes prêts » rangés par ce qu'ils demandent, et non à plat : d'abord ce qui doit
+ * repartir ce soir (les retards en tête), ensuite ce qui attend un geste de l'équipe.
+ * Un groupe vide n'existe pas.
+ */
+export type GroupeDePrets = {
+  cle: 'a_rendre' | 'en_attente'
+  titre: string
+  prets: Pret[]
+}
+
+export function pretsGroupesDe(etat: EtatMDS, id: PersonneId): GroupeDePrets[] {
+  const ouverts = pretsDe(etat, id).filter(estOuvert)
+
+  const aRendre = ouverts
+    .filter((pret) => pret.statut === 'actif')
+    // Un retard passe devant : c'est lui qui bloque les emprunts (R10).
+    .sort((a, b) => Number(estEnRetard(etat, b)) - Number(estEnRetard(etat, a)))
+  const enAttente = ouverts.filter((pret) => pret.statut !== 'actif')
+
+  const groupes: GroupeDePrets[] = []
+  if (aRendre.length > 0) {
+    groupes.push({
+      cle: 'a_rendre',
+      titre: `À rendre avant ${h.heureCourte(etat.horloge.bureau.fermeture)}`,
+      prets: aRendre,
+    })
+  }
+  if (enAttente.length > 0) {
+    groupes.push({ cle: 'en_attente', titre: 'En attente de l’équipe', prets: enAttente })
+  }
+  return groupes
+}
+
 export const historiqueDe = (etat: EtatMDS, id: PersonneId): Pret[] =>
   pretsDe(etat, id)
     .filter((p) => !estOuvert(p))
@@ -230,14 +264,88 @@ function enumerer(elements: string[]): string {
 
 // ─── Carte « À faire maintenant » ────────────────────────────────────────────
 
+export type CleLigneAFaire = 'validations' | 'photos' | 'bloques' | 'paiements' | 'signalements'
+
 export type LigneAFaire = {
-  cle: 'validations' | 'photos' | 'bloques' | 'paiements' | 'signalements'
+  cle: CleLigneAFaire
   nombre: number
   titre: string
   detail: string
   /** Vrai pour les paiements : bouton verrouillé côté équipe (R12). */
   reserveASandrine: boolean
+  /**
+   * Ce qu'on perd à ne pas traiter cette ligne tout de suite, en points (cf. `POIDS`).
+   * C'est lui qui ordonne la carte : rien n'est figé, tout se recalcule depuis l'état.
+   */
+  urgence: number
+  /** Pourquoi cette ligne passe avant les autres. Une phrase, déduite du calcul. */
+  pourquoi: string
 }
+
+// ─── Urgence calculée ────────────────────────────────────────────────────────
+
+/**
+ * Poids de l'urgence, en points. Le barème est volontairement lisible : un euro en
+ * jeu vaut un point, et les autres facteurs se comparent à de l'argent.
+ *
+ * - `euro` : l'argent dû ou en sursis compte point pour point.
+ * - `blocage` : une personne qui ne peut plus emprunter perd sa journée de travail.
+ * - `attente…` : quelqu'un debout au bureau, de plus en plus longtemps.
+ * - `controle…` : une photo non contrôlée laisse un doute sur du matériel déjà reparti.
+ * - `signalement…` : utile à traiter, jamais bloquant.
+ */
+const POIDS = {
+  euro: 1,
+  blocage: 120,
+  attenteParPersonne: 40,
+  attenteParMinute: 2,
+  controleParPhoto: 25,
+  controleParHeure: 1,
+  signalement: 15,
+  signalementAvecPhoto: 25,
+} as const
+
+/** Au-delà de 4 h d'attente, la personne est repartie : le compteur plafonne. */
+const ATTENTE_MAXIMUM = 4 * 60
+
+/** Fenêtre de la règle R11 : de la sortie à la déclaration de perte, 2 jours. */
+const FENETRE_DE_PERTE = 48
+
+/** Depuis combien de minutes ce prêt attend un geste de l'équipe. */
+function minutesDAttente(etat: EtatMDS, pret: Pret): number {
+  const depuis = pret.statut === 'remise_a_valider' ? pret.demandeLe : pret.retourDeclareLe
+  if (depuis === undefined) return 0
+  return Math.max(0, h.minutesEntre(depuis, etat.horloge.maintenant))
+}
+
+/**
+ * L'argent que ce retard fera basculer en perte (R11) : le forfait, pondéré par ce
+ * qu'il reste à courir avant l'échéance de J+2. À six heures de l'échéance, un PC à
+ * 450 € pèse déjà presque son forfait entier.
+ */
+function argentEnSursis(etat: EtatMDS, pret: Pret): number {
+  const echeance = echeanceDePerte(etat, pret)
+  if (echeance === null) return 0
+  const heuresRestantes = h.minutesEntre(etat.horloge.maintenant, echeance) / 60
+  const avancement = Math.min(1, Math.max(0, 1 - heuresRestantes / FENETRE_DE_PERTE))
+  return Math.round(pret.forfait * avancement)
+}
+
+/** L'attente la plus longue de la file, plafonnée. */
+function attenteLaPlusLongue(etat: EtatMDS, prets: Pret[]): number {
+  const attentes = prets.map((pret) => minutesDAttente(etat, pret))
+  return Math.min(ATTENTE_MAXIMUM, Math.max(0, ...attentes))
+}
+
+/** « 1 h 20 », « 25 min » : une durée d'attente lisible dans une phrase. */
+function duree(minutes: number): string {
+  if (minutes < 60) return `${minutes} min`
+  const heures = Math.floor(minutes / 60)
+  const reste = minutes % 60
+  return reste === 0 ? `${heures} h` : `${heures} h ${deuxChiffres(reste)}`
+}
+
+const deuxChiffres = (nombre: number) => String(nombre).padStart(2, '0')
 
 /**
  * Détail de la ligne « validations », tel qu'arbitré :
@@ -255,45 +363,77 @@ function detailDesRemises(etat: EtatMDS, remises: Pret[]): string {
     .join(' · ')
 }
 
-/** Les lignes de la carte « À faire maintenant » : une ligne seulement si son compteur > 0. */
-export function lignesAFaire(etat: EtatMDS): LigneAFaire[] {
+/**
+ * Les lignes de la carte « À faire maintenant » : une ligne seulement si son compteur
+ * est non nul, ordonnées par urgence décroissante — jamais dans un ordre figé.
+ *
+ * `pour` est le rôle de la personne qui regarde : une ligne sur laquelle elle n'a pas
+ * la main (les paiements, réservés à la direction par R12) passe en fin de liste, parce
+ * qu'elle ne peut rien en faire maintenant.
+ */
+export function lignesAFaire(etat: EtatMDS, pour?: Role): LigneAFaire[] {
   const lignes: LigneAFaire[] = []
 
   const remises = remisesAValider(etat)
   const retours = retoursAValider(etat)
   if (remises.length + retours.length > 0) {
+    const enFile = [...remises, ...retours]
+    const attente = attenteLaPlusLongue(etat, enFile)
     const moities = [
       remises.length > 0 ? compte(remises.length, 'remise') : null,
       retours.length > 0 ? compte(retours.length, 'retour') : null,
     ].filter((x): x is string => x !== null)
     lignes.push({
       cle: 'validations',
-      nombre: remises.length + retours.length,
+      nombre: enFile.length,
       titre: `${moities.join(' et ')} à valider au bureau`,
       detail: detailDesRemises(etat, remises),
       reserveASandrine: false,
+      urgence: enFile.length * POIDS.attenteParPersonne + attente * POIDS.attenteParMinute,
+      pourquoi:
+        attente === 0
+          ? `${compte(enFile.length, 'personne')} au bureau`
+          : `${compte(enFile.length, 'personne')} au bureau, la plus ancienne depuis ${duree(attente)}`,
     })
   }
 
   const photos = photosAControler(etat)
   if (photos.length > 0) {
+    const plusAncienne = photos.reduce((a, b) => (a.prisLe < b.prisLe ? a : b))
+    const heuresDAttente = Math.max(
+      0,
+      Math.round(h.minutesEntre(plusAncienne.prisLe, etat.horloge.maintenant) / 60),
+    )
     lignes.push({
       cle: 'photos',
       nombre: photos.length,
       titre: `${compte(photos.length, 'photo')} de retour à contrôler`,
       detail: 'Niveau 2 · le matériel peut déjà être réemprunté',
       reserveASandrine: false,
+      urgence:
+        photos.length * POIDS.controleParPhoto +
+        Math.min(FENETRE_DE_PERTE, heuresDAttente) * POIDS.controleParHeure,
+      pourquoi:
+        heuresDAttente === 0
+          ? 'Contrôle de niveau 2, sans urgence'
+          : `La plus ancienne attend depuis ${duree(heuresDAttente * 60)}`,
     })
   }
 
   const bloquees = personnesBloquees(etat)
   if (bloquees.length > 0) {
+    const sursis = pretsEnRetard(etat).reduce((somme, pret) => somme + argentEnSursis(etat, pret), 0)
     lignes.push({
       cle: 'bloques',
       nombre: bloquees.length,
       titre: `${compte(bloquees.length, 'emprunteur')} bloqué${s(bloquees.length)}`,
       detail: bloquees.map((p) => `${prenom(p)} : ${raisonDeBlocage(etat, p.id) ?? ''}`).join(' · '),
       reserveASandrine: false,
+      urgence: bloquees.length * POIDS.blocage + sursis * POIDS.euro,
+      pourquoi:
+        sursis === 0
+          ? `${compte(bloquees.length, 'personne')} ne peut plus emprunter`
+          : `${compte(bloquees.length, 'personne')} bloquée${s(bloquees.length)} et ${euros(sursis)} qui basculent en perte`,
     })
   }
 
@@ -306,6 +446,8 @@ export function lignesAFaire(etat: EtatMDS): LigneAFaire[] {
       titre: `${compte(paiements.length, 'paiement')} à enregistrer · ${euros(montant)}`,
       detail: 'Forfaits dus au bureau',
       reserveASandrine: true,
+      urgence: montant * POIDS.euro,
+      pourquoi: `${euros(montant)} dus à l’école`,
     })
   }
 
@@ -322,10 +464,21 @@ export function lignesAFaire(etat: EtatMDS): LigneAFaire[] {
         )
         .join(', '),
       reserveASandrine: false,
+      urgence: ouverts.reduce(
+        (somme, sig) => somme + (sig.photo ? POIDS.signalementAvecPhoto : POIDS.signalement),
+        0,
+      ),
+      pourquoi: 'Envoyés depuis l’app, à qualifier',
     })
   }
 
-  return lignes
+  // Les lignes verrouillées pour qui regarde passent après : le geste est ailleurs (R12).
+  const verrouillee = (ligne: LigneAFaire) =>
+    ligne.reserveASandrine && pour !== undefined && !estDirection(pour) ? 1 : 0
+
+  return lignes.sort(
+    (a, b) => verrouillee(a) - verrouillee(b) || b.urgence - a.urgence || a.cle.localeCompare(b.cle),
+  )
 }
 
 // ─── Récap de 8h ─────────────────────────────────────────────────────────────

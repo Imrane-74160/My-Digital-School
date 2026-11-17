@@ -234,9 +234,11 @@ test('Puce de catégorie 61:132 · active en anthracite', async ({ page }) => {
   await expect(studio).toHaveAttribute('aria-pressed', 'true')
 })
 
-test('les 63 icônes du design system se rendent toutes', async ({ page }) => {
+test('les 67 icônes du design system se rendent toutes', async ({ page }) => {
   const icones = page.locator(`${section('40:3')} li svg`)
-  await expect(icones).toHaveCount(63)
+  // 63 du Figma + 4 pour la personnalisation du tableau de bord (chevron haut,
+  // poignée, œil, œil barré) : arbitrage noté dans docs/03-ecrans.md.
+  await expect(icones).toHaveCount(67)
   // Toutes au trait 1,5 et à la couleur héritée.
   const traits = await icones.evaluateAll((noeuds) => noeuds.map((n) => n.getAttribute('stroke-width')))
   expect(new Set(traits)).toEqual(new Set(['1.5']))

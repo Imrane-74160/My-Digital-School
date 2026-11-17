@@ -25,7 +25,7 @@ export function DispositionApp() {
     return (
       <CadreTelephone>
         <BarreDEtat heure={horloge.heure(etat.horloge.maintenant)} />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto overscroll-y-contain">
           {pathname === '/app/connexion' ? <Outlet /> : <Navigate to="/app/connexion" replace />}
         </main>
       </CadreTelephone>
@@ -50,7 +50,8 @@ function AppConnectee({ chemin }: { chemin: string }) {
   return (
     <CadreTelephone>
       <BarreDEtat heure={horloge.heure(etat.horloge.maintenant)} />
-      <main className="flex-1 overflow-y-auto">
+      {/* `overscroll-y-contain` : le rebond du défilement ne tire plus la page entière. */}
+      <main className="flex-1 overflow-y-auto overscroll-y-contain">
         {doitAccepterLaCharte ? (
           <Navigate to="/app/charte" replace />
         ) : dejaConnecte ? (

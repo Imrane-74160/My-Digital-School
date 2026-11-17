@@ -145,18 +145,23 @@ describe('indicateurs « En ce moment » sur le seed initial', () => {
 
   it('compose la carte « À faire maintenant » comme arbitré', () => {
     const lignes = sel.lignesAFaire(etat)
-    expect(lignes.map((l) => l.cle)).toEqual([
-      'validations',
-      'photos',
+    // Les cinq lignes sont là ; leur ORDRE, lui, se calcule (cf. `urgence.test.ts`).
+    expect([...lignes.map((l) => l.cle)].sort()).toEqual([
       'bloques',
       'paiements',
+      'photos',
       'signalements',
+      'validations',
     ])
-    expect(lignes[0]!.titre).toBe('3 remises et 1 retour à valider au bureau')
+
+    const validations = lignes.find((l) => l.cle === 'validations')!
+    expect(validations.titre).toBe('3 remises et 1 retour à valider au bureau')
     // 3 personnes en attente : on énumère les prénoms plutôt que les matériels.
-    expect(lignes[0]!.detail).toBe('Inès, M. Diallo et Léa attendent au bureau')
-    expect(lignes[3]!.titre).toBe('2 paiements à enregistrer · 94 €')
-    expect(lignes[3]!.reserveASandrine).toBe(true)
+    expect(validations.detail).toBe('Inès, M. Diallo et Léa attendent au bureau')
+
+    const paiements = lignes.find((l) => l.cle === 'paiements')!
+    expect(paiements.titre).toBe('2 paiements à enregistrer · 94 €')
+    expect(paiements.reserveASandrine).toBe(true)
   })
 
   it('donne un forfait unique par type de matériel', () => {

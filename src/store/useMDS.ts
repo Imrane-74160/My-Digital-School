@@ -14,6 +14,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Action, CodeRegle, EtatMDS, Notification, PersonneId, Resultat } from '@/domain'
 import { chargerSeed, dispatch, horloge, recalerSur, selecteurs, VERSION_SEED } from '@/domain'
+import { normaliser as normaliserDisposition, type Disposition } from './disposition'
 import { maintenantReel } from './horlogeReelle'
 
 /** Clé de persistance : change avec la version du seed. */
@@ -47,6 +48,11 @@ type Magasin = {
   /** Personne connectée au back-office. */
   sessionAdmin: PersonneId | null
   dernierResultat: DernierResultat | null
+  /**
+   * Disposition du tableau de bord, par compte : chaque membre de l'équipe range ses
+   * cartes comme il veut. Préférence d'affichage, pas de l'état métier.
+   */
+  dispositions: Record<PersonneId, Disposition>
 
   /** Joue une action du domaine. Un refus ne change pas l'état. */
   executer: (action: Action) => Resultat
@@ -62,6 +68,8 @@ type Magasin = {
    * ouverture du lendemain à 8h (R10, R11, R15, R16).
    */
   synchroniser: () => void
+  /** Enregistre la disposition du tableau de bord de ce compte. */
+  definirDisposition: (id: PersonneId, disposition: Disposition) => void
   /** Repart du jeu de données initial. Hors interface : filet de secours. */
   reinitialiser: () => void
 }
@@ -72,6 +80,7 @@ const depart = () => ({
   sessionApp: null,
   sessionAdmin: null,
   dernierResultat: null,
+  dispositions: {},
 })
 
 /** Les rôles admis sur chaque surface (R13). */
@@ -180,13 +189,26 @@ export const useMDS = create<Magasin>()(
         set({ etat: { ...etat, horloge: { ...etat.horloge, maintenant: reel } } })
       },
 
+      definirDisposition: (id, disposition) => {
+        const { etat, dispositions } = get()
+        const role = etat.personnes.find((personne) => personne.id === id)?.role
+        if (role === undefined) return
+        // Normalisée à l'enregistrement : le stockage ne garde jamais une liste bancale.
+        set({ dispositions: { ...dispositions, [id]: normaliserDisposition(disposition, role) } })
+      },
+
       reinitialiser: () => set(depart()),
     }),
     {
       name: CLE_PERSISTANCE,
       storage: createJSONStorage(() => localStorage),
       // Le dernier message ne survit pas à un rechargement : il n'a de sens que sur le moment.
-      partialize: ({ etat, sessionApp, sessionAdmin }) => ({ etat, sessionApp, sessionAdmin }),
+      partialize: ({ etat, sessionApp, sessionAdmin, dispositions }) => ({
+        etat,
+        sessionApp,
+        sessionAdmin,
+        dispositions,
+      }),
     },
   ),
 )

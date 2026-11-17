@@ -5,9 +5,14 @@
  * trouver, retour — le forfait vit dans la feuille). CTA contextuel selon l'état.
  * Feuille : forfait total et par composant, case d'acceptation obligatoire (R03),
  * contrôle « Pour moi / Pour ma classe » pour un intervenant (R09).
+ *
+ * Raccourci d'emprunt (noté dans `docs/03-ecrans.md`) : arriver ici avec `?emprunter`
+ * ouvre la feuille d'emblée. C'est ce que font le scanner et le catalogue quand le
+ * matériel est libre — on passe de cinq gestes à trois, sans sauter la case du forfait,
+ * qui reste obligatoire (R03).
  */
 import { useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { euros, forfaitMateriel, horloge, selecteurs } from '@/domain'
 import {
   BadgeDeStatut,
@@ -28,12 +33,14 @@ import { useMDS } from '@/store/useMDS'
 
 export function FicheMateriel() {
   const { itemId } = useParams()
+  const [parametres] = useSearchParams()
   const navigate = useNavigate()
   const etat = useEtat()
   const persona = usePersonaApp()
   const executer = useMDS((magasin) => magasin.executer)
 
-  const [feuilleOuverte, setFeuilleOuverte] = useState(false)
+  // `?emprunter` : on vient de scanner ou du catalogue, la feuille s'ouvre tout de suite.
+  const [feuilleOuverte, setFeuilleOuverte] = useState(() => parametres.has('emprunter'))
   const [forfaitAccepte, setForfaitAccepte] = useState(false)
   const [pourClasse, setPourClasse] = useState<string | null>(null)
 
@@ -48,6 +55,8 @@ export function FicheMateriel() {
   const badge = badgeDeType(etat, materiel.type, persona.id)
   const bureauOuvert = horloge.estBureauOuvert(etat.horloge)
   const estIntervenant = persona.role === 'intervenant'
+  /** Les conditions du bouton « Emprunter » : la feuille ne s'ouvre pas sans elles. */
+  const peutEmprunter = !chezMoi && materiel.statut === 'disponible' && bureauOuvert
 
   const emprunter = () => {
     const resultat = executer({
@@ -129,7 +138,7 @@ export function FicheMateriel() {
         )}
       </div>
 
-      {feuilleOuverte && (
+      {feuilleOuverte && peutEmprunter && (
         <>
           <button
             type="button"

@@ -103,7 +103,12 @@ export function Raccourci({
 
 /**
  * Une ligne du catalogue mobile : un TYPE de matériel, son badge et son mode de remise.
- * Action « Détail » (chevron) ou « Me prévenir » (cloche), selon la disponibilité.
+ * Action « Détail » (chevron), « Emprunter » (colis) ou « Me prévenir » (cloche),
+ * selon la disponibilité.
+ *
+ * Avec `emprunter`, la ligne porte deux destinations : le texte mène à la fiche, le
+ * bouton rond ouvre directement la feuille du forfait. Dans ce cas la ligne n'est plus
+ * un lien enveloppant — deux liens imbriqués n'existent pas.
  */
 export function LigneDeCatalogue({
   icone,
@@ -113,6 +118,8 @@ export function LigneDeCatalogue({
   libelleStatut,
   modeDeRemise,
   vers,
+  emprunter,
+  libelleEmprunter = 'Emprunter',
   onPrevenir,
   inscrit = false,
 }: {
@@ -124,6 +131,9 @@ export function LigneDeCatalogue({
   modeDeRemise: string
   /** Adresse de la fiche. Absent = le type n'a aucune unité disponible. */
   vers?: string
+  /** Adresse d'emprunt direct (la fiche avec `?emprunter`), quand une unité est libre. */
+  emprunter?: string
+  libelleEmprunter?: string
   /** Inscription « Me prévenir ». Affiche la cloche à la place du chevron. */
   onPrevenir?: () => void
   inscrit?: boolean
@@ -140,6 +150,28 @@ export function LigneDeCatalogue({
       </span>
     </>
   )
+
+  if (vers && emprunter) {
+    return (
+      <div className="flex items-center gap-md rounded-carte-mobile p-md">
+        <Link
+          to={vers}
+          aria-label={`Fiche de ${nom}`}
+          className="flex min-w-0 flex-1 items-center gap-md transition-opacity duration-appui ease-sortie active:opacity-70"
+        >
+          {contenu}
+        </Link>
+        <Link
+          to={emprunter}
+          aria-label={`${libelleEmprunter} ${nom}`}
+          title={`${libelleEmprunter} ${nom}`}
+          className="inline-flex size-[44px] shrink-0 items-center justify-center rounded-rond bg-marque-turquoise text-texte-principal transition-transform duration-appui ease-sortie active:scale-95"
+        >
+          <Icone nom="Colis" taille="xl" />
+        </Link>
+      </div>
+    )
+  }
 
   if (vers) {
     return (

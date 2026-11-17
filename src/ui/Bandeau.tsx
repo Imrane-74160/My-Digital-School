@@ -3,6 +3,9 @@
  *
  * Un refus porte un code de règle (R01…), utile en test et en relecture mais sans
  * intérêt pour l'utilisateur : il est posé en attribut `data-regle`, pas à l'écran.
+ *
+ * `role="status"` + `aria-live="polite"` : le message est lu sans voler le focus. Il
+ * monte depuis le bas, animation coupée par `prefers-reduced-motion`.
  */
 import { useEffect } from 'react'
 import { Icone } from '@/design-system'
@@ -29,7 +32,15 @@ export function Bandeau() {
       data-testid="toast"
       data-resultat={resultat.ok ? 'accepte' : 'refuse'}
       data-regle={resultat.regle ?? ''}
-      className="fixed inset-x-lg bottom-lg z-40 mx-auto flex max-w-[520px] items-start gap-md rounded-carte bg-surface-carte p-lg shadow-elevation ring-1 ring-trait-bordure sm:right-lg sm:left-auto"
+      className={[
+        'fixed inset-x-lg z-40 mx-auto flex max-w-[520px] items-start gap-md',
+        'rounded-carte bg-surface-carte p-lg shadow-elevation ring-1 ring-trait-bordure',
+        // Sur téléphone, le bandeau passe AU-DESSUS de la barre de navigation flottante
+        // (102 px de zone + la marge) : posé à `bottom-lg` il la recouvrait.
+        'bottom-[114px] min-[500px]:bottom-lg',
+        'sm:right-lg sm:left-auto',
+      ].join(' ')}
+      style={{ animation: 'monter var(--mds-duree-base) var(--mds-easing-sortie)' }}
     >
       <span
         className={[

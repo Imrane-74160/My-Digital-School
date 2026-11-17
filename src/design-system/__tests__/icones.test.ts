@@ -22,8 +22,10 @@ const ICONES_DU_MOTEUR = [
 ]
 
 describe('table des icônes', () => {
-  it('couvre les 63 icônes du design system', () => {
-    expect(NOMS_ICONES).toHaveLength(63)
+  it('couvre les 67 icônes du design system', () => {
+    // 63 icônes du Figma, plus les 4 de la personnalisation du tableau de bord
+    // (chevron haut, poignée, œil, œil barré) : arbitrage noté dans docs/03-ecrans.md.
+    expect(NOMS_ICONES).toHaveLength(67)
   })
 
   it('fournit « Trépied », absent de lucide, reprise du Figma', () => {

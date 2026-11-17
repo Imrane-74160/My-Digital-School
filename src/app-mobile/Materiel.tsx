@@ -3,10 +3,14 @@
  *
  * Recherche, puces de catégorie, puis une section par catégorie du seed (les vides
  * masquées) avec une ligne par TYPE de matériel. « Me prévenir » s'inscrit sur le type.
+ *
+ * Raccourci d'emprunt (noté dans `docs/03-ecrans.md`) : quand une unité est libre et le
+ * bureau ouvert, la ligne porte un bouton qui ouvre directement la feuille du forfait,
+ * sans passer par la fiche. Le texte, lui, mène toujours à la fiche.
  */
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { selecteurs } from '@/domain'
+import { horloge, selecteurs } from '@/domain'
 import { Champ, EtatVide, Icone, LigneDeCatalogue, PuceDeCategorie, TitreDeSection } from '@/design-system'
 import { badgeDeType, iconeDe, modeDeRemise, sectionsDuCatalogue, teinteDe } from './aides'
 import { useEtat, usePersonaApp } from '@/store/hooks'
@@ -19,6 +23,7 @@ export function Materiel() {
   const [recherche, setRecherche] = useState('')
   const [categorie, setCategorie] = useState('tout')
 
+  const bureauOuvert = horloge.estBureauOuvert(etat.horloge)
   const sections = sectionsDuCatalogue(etat, persona.role)
   const puces = [
     { cle: 'tout', court: 'Tout' },
@@ -92,7 +97,17 @@ export function Materiel() {
                     libelleStatut={badge.libelle}
                     modeDeRemise={modeDeRemise(premiere)}
                     {...(badge.unite
-                      ? { vers: `/app/materiel/${badge.unite.id}` }
+                      ? {
+                          vers: `/app/materiel/${badge.unite.id}`,
+                          // Emprunt direct seulement si l'unité est vraiment libre.
+                          ...(badge.statut === 'Disponible' && bureauOuvert
+                            ? {
+                                emprunter: `/app/materiel/${badge.unite.id}?emprunter`,
+                                libelleEmprunter:
+                                  premiere.niveau === 1 ? 'Demander la remise de' : 'Emprunter',
+                              }
+                            : {}),
+                        }
                       : {
                           onPrevenir: () =>
                             executer({ type: 'PREVENEZ_MOI', par: persona.id, typeMateriel: type }),

@@ -50,7 +50,21 @@ Chaque parcours part de la démo réinitialisée. À automatiser avec Playwright
 4. Matériel : ajouter un matériel ; retirer du prêt puis remettre en service ; imprimer l'étiquette.
 5. Réglages : couper le rappel de 16h30 → « 16h30 » ne notifie plus.
 
+## P10 · Hiérarchie et personnalisation du tableau de bord
+1. BO Lydia → Tableau de bord : « À faire maintenant » est trié **par urgence**, la ligne de tête est appuyée et porte « À traiter en premier · {raison} ». La ligne « Réservé à Sandrine » est **en dernier**.
+2. BO Sandrine : la même ligne de paiement **remonte** au classement et n'est plus verrouillée.
+3. Lydia → « Personnaliser » → descendre « À faire maintenant », masquer « Récap de 8h » → « Terminer » → recharger : la disposition tient. Cyrianne retrouve la sienne, intacte.
+4. « Rétablir le défaut » ne s'affiche qu'après un déplacement, et remet l'écran du Figma.
+5. Tout le mode rangement se pilote **au clavier** (flèches de monter/descendre, changement de colonne, masquage).
+
+## P11 · Emprunt raccourci et accueil mobile
+1. App Inès → Matériel : une ligne disponible porte un bouton rond « Emprunter » (≥ 44 px) qui ouvre **directement** la feuille du forfait. Le texte de la ligne mène toujours à la fiche.
+2. La case du forfait reste obligatoire : le CTA est inerte tant qu'elle n'est pas cochée (R03).
+3. App Sarah → Scanner : une ligne « Disponible » ouvre la feuille d'emblée. Un matériel non libre ignore le raccourci.
+4. Accueil : « Mes prêts » montre « À rendre avant 18h » puis « En attente de l'équipe », avec leurs compteurs ; le raccourci est « Rendre maintenant » quand il y a un prêt actif, « Emprunter » sinon.
+5. Déclencher une action : le bandeau se pose **au-dessus** de la barre de navigation, jamais dessus.
+
 ## Transversal
-- ⌘Z annule la dernière action (y compris un changement d'horloge). « Réinitialiser » restaure le seed.
+- Se déconnecter d'un espace ne touche pas à l'autre ; les échéances de 16h30, 18h et 8h s'appliquent seules.
 - Deux onglets (app + BO) restent synchronisés sans rechargement.
 - Aucun défilement horizontal à 390 px ; navigation clavier complète dans le back-office ; contraste AA.

@@ -496,8 +496,10 @@ test('Transversal · le back-office se parcourt au clavier', async ({ page }) =>
   await page.goto('/admin')
 
   // L'en-tête vient avant le rail dans le DOM, comme au Figma : on parcourt jusqu'au menu.
+  // On attend que l'écran soit peint, sinon la première tabulation part dans le vide.
+  await expect(page.getByTestId('grille-tableau-de-bord')).toBeVisible()
   const etiquettes: (string | null)[] = []
-  for (let pas = 0; pas < 6; pas += 1) {
+  for (let pas = 0; pas < 10; pas += 1) {
     await page.keyboard.press('Tab')
     etiquettes.push(await page.evaluate(() => document.activeElement?.getAttribute('aria-label') ?? null))
   }

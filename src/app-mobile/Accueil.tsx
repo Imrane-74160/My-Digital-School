@@ -4,7 +4,16 @@
  * En-tête, carte « À rendre ce soir », « Mes prêts », raccourcis.
  * États dérivés construits avec les composants existants : bloqué (carte rose),
  * bureau fermé le soir, aucun prêt en cours, et le rappel d'un incident dû.
+ *
+ * Deux ajustements d'UX par rapport au Figma, notés dans `docs/03-ecrans.md` :
+ * - « Mes prêts » est **groupé** par ce que chaque prêt demande (`pretsGroupesDe`) au
+ *   lieu d'une liste à plat : un prêt à rendre avant 18h ne se lit pas comme un prêt
+ *   en attente de l'équipe, et un retard passe devant.
+ * - Le premier raccourci est **contextuel** : il mène au retour du prêt le plus pressé
+ *   quand il y en a un, sinon au scanner. L'ancien « Voir le matériel » doublonnait
+ *   avec la barre de navigation.
  */
+import { Fragment } from 'react'
 import { Link } from 'react-router'
 import { euros, horloge, selecteurs } from '@/domain'
 import {
@@ -27,8 +36,12 @@ export function Accueil() {
   const etat = useEtat()
   const persona = usePersonaApp()
 
-  const prets = selecteurs.pretsEnCoursDe(etat, persona.id)
-  const aRendreCeSoir = prets.filter((pret) => pret.statut === 'actif').length
+  const groupes = selecteurs.pretsGroupesDe(etat, persona.id)
+  const prets = groupes.flatMap((groupe) => groupe.prets)
+  const aRendre = groupes.find((groupe) => groupe.cle === 'a_rendre')?.prets ?? []
+  const aRendreCeSoir = aRendre.length
+  // Le retour le plus pressé : le premier du groupe, retards en tête.
+  const leplusPresse = aRendre[0]
   const raisonDeBlocage = selecteurs.raisonDeBlocage(etat, persona.id)
   const bureauOuvert = horloge.estBureauOuvert(etat.horloge)
   const nonLues = etat.notifications.filter((n) => n.pour.includes(persona.id) && !n.lue).length
@@ -112,7 +125,13 @@ export function Accueil() {
             </div>
             <div className="flex items-center justify-between">
               <span className="mds-texte-petit text-texte-inverse/70">
-                Rappel à {etat.horloge.rappel.replace(':', ':')}
+                {/* Le temps qu'il reste, déduit de l'heure de fermeture : plus parlant qu'un rappel fixe. */}
+                Fermeture{' '}
+                {horloge.dansCombien(
+                  horloge.aHeure(etat.horloge.maintenant, etat.horloge.bureau.fermeture),
+                  etat.horloge.maintenant,
+                )}{' '}
+                · rappel à {horloge.heureCourte(etat.horloge.rappel)}
               </span>
               <span className="mds-texte-petit text-marque-turquoise">Avec une photo</span>
             </div>
@@ -131,50 +150,71 @@ export function Accueil() {
 
       <section>
         <TitreDeSection titre="Mes prêts" lien="/app/alertes?onglet=historique" libelleLien="Historique" />
-        <div className="flex flex-col gap-md px-lg">
-          {prets.length === 0 ? (
+        {prets.length === 0 ? (
+          <div className="px-lg">
             <EtatVide icone="Colis" titre="Aucun prêt en cours" detail="Scanne un QR pour emprunter." />
-          ) : (
-            prets.map((pret) => {
-              const materiel = selecteurs.materiel(etat, pret.materiel)
-              const badge = badgeDePret(etat, pret)
-              return (
-                <CarteDePret
-                  key={pret.id}
-                  icone={iconeDe(materiel)}
-                  teinte={teinteDe(materiel)}
-                  nom={materiel.nom}
-                  detail={badge.libelle}
-                  statut={badge.statut}
-                  alerte={badge.alerte}
-                  action={
-                    pret.statut === 'actif' ? (
-                      <Link to={`/app/rendre/${materiel.id}`} className="shrink-0">
-                        <Bouton libelle="Rendre" />
-                      </Link>
-                    ) : undefined
-                  }
-                  consigne={
-                    pret.statut === 'remise_a_valider' ? (
-                      <Encart icone="Repère" ton="orange">
-                        Présente-toi {selecteurs.auLieu(materiel.lieu)} : l’équipe vérifie le matériel avec
-                        toi.
-                      </Encart>
-                    ) : pret.statut === 'retour_a_valider' ? (
-                      <Encart icone="Liste cochée" ton="orange">
-                        L’équipe contrôle le retour sur place.
-                      </Encart>
-                    ) : undefined
-                  }
-                />
-              )
-            })
-          )}
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-md px-lg">
+            {groupes.map((groupe) => (
+              <Fragment key={groupe.cle}>
+                {/* Un sous-titre par groupe : ce qui part ce soir ne se lit pas comme
+                    ce qui attend l'équipe. Le groupe vide n'existe pas. */}
+                <div className="flex items-baseline justify-between gap-md pt-xs">
+                  <h3 className="mds-texte-petit-fort text-texte-secondaire">{groupe.titre}</h3>
+                  <span className="mds-mono-code text-texte-tertiaire">{groupe.prets.length}</span>
+                </div>
+                {groupe.prets.map((pret) => {
+                  const materiel = selecteurs.materiel(etat, pret.materiel)
+                  const badge = badgeDePret(etat, pret)
+                  return (
+                    <CarteDePret
+                      key={pret.id}
+                      icone={iconeDe(materiel)}
+                      teinte={teinteDe(materiel)}
+                      nom={materiel.nom}
+                      detail={badge.libelle}
+                      statut={badge.statut}
+                      alerte={badge.alerte}
+                      action={
+                        pret.statut === 'actif' ? (
+                          <Link to={`/app/rendre/${materiel.id}`} className="shrink-0">
+                            <Bouton libelle="Rendre" />
+                          </Link>
+                        ) : undefined
+                      }
+                      consigne={
+                        pret.statut === 'remise_a_valider' ? (
+                          <Encart icone="Repère" ton="orange">
+                            Présente-toi {selecteurs.auLieu(materiel.lieu)} : l’équipe vérifie le matériel
+                            avec toi.
+                          </Encart>
+                        ) : pret.statut === 'retour_a_valider' ? (
+                          <Encart icone="Liste cochée" ton="orange">
+                            L’équipe contrôle le retour sur place.
+                          </Encart>
+                        ) : undefined
+                      }
+                    />
+                  )
+                })}
+              </Fragment>
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="flex gap-md px-lg">
-        <Raccourci vers="/app/materiel" icone="Grille" titre="Voir le matériel" detail="En temps réel" />
+        {leplusPresse === undefined ? (
+          <Raccourci vers="/app/scanner" icone="Scanner" titre="Emprunter" detail="Scanne un QR" />
+        ) : (
+          <Raccourci
+            vers={`/app/rendre/${leplusPresse.materiel}`}
+            icone="Échange"
+            titre="Rendre maintenant"
+            detail={`Avant ${horloge.heureCourte(etat.horloge.bureau.fermeture)}`}
+          />
+        )}
         <Raccourci vers="/app/signaler" icone="Drapeau" titre="Signaler" detail="Panne, casse, salle…" />
       </div>
     </div>

@@ -36,7 +36,8 @@ export function Scanner() {
       materiel,
       statut: 'Disponible' as const,
       libelle: 'Disponible',
-      vers: `/app/materiel/${materiel.id}`,
+      // Scanner, c'est déjà vouloir emprunter : la feuille du forfait s'ouvre d'emblée.
+      vers: `/app/materiel/${materiel.id}?emprunter`,
     }))
 
   const lignes = [...ouverts, ...duBureau].slice(0, MAXIMUM_LIGNES)

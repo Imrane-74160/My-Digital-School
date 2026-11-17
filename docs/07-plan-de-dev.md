@@ -72,3 +72,14 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - **Fini quand** : les neuf parcours passent sur l'application connectée, sans panneau de démo. ✅
 - **Vérifié** : 144 tests Vitest et 45 tests Playwright verts, horloge figée dans les tests pour qu'ils ne dépendent pas de l'heure de lancement.
 - **Reste hors périmètre** : comptes avec mot de passe, données partagées entre appareils. Les deux demandent un serveur, exclu par le cadre du projet.
+
+## Phase 7 · Hiérarchie et personnalisation — fait
+- [x] **Urgence calculée** (B2-a) : l'ordre de « À faire maintenant » se déduit de l'état — argent en jeu, personnes empêchées, attente au bureau, contrôles différés, signalements. La ligne de tête est appuyée et porte son motif.
+- [x] **L'ordre dépend de qui regarde** : une ligne verrouillée par R12 descend en fin de liste côté équipe, reprend sa place côté direction.
+- [x] **Indicateurs à zéro atténués** (B2-b), ordre des six tuiles inchangé.
+- [x] **Tableau de bord personnalisable** (B2-c) : un défaut par rôle, puis glisser-déposer **et** boutons (monter, descendre, changer de colonne, masquer), clavier compris. Une disposition par compte, persistée, normalisée à chaque lecture.
+- [x] **Emprunt raccourci** (A4-b, A5-b, A7) : du scanner ou du catalogue, la feuille du forfait s'ouvre d'emblée — cinq gestes deviennent trois, sans sauter la case du forfait (R03).
+- [x] **Accueil lisible** (A3-a/b/c) : « Mes prêts » groupé par ce que chaque prêt demande, raccourci contextuel au lieu d'un doublon de la navigation, compte à rebours jusqu'à la fermeture.
+- [x] **Confort mobile** : zone sûre du bas, bandeau posé au-dessus de la barre de navigation, défilement contenu.
+- **Fini quand** : les neuf parcours restent verts et les nouveaux comportements sont couverts par des tests. ✅
+- **Vérifié** : 171 tests Vitest et 62 tests Playwright verts, dont `e2e/personnalisation.desktop.ts` (7) et `e2e/ux.mobile.ts` (8).
