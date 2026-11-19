@@ -6,7 +6,8 @@ On s'y connecte pour de vrai, avec son identifiant MDS, et chaque espace a sa se
 
 ## Sources de vérité (dans cet ordre)
 1. **Figma** « Maquette-MDS » : https://www.figma.com/design/lN2EFZzYHfTuAW9agcHstV/Maquette-MDS (fichier `lN2EFZzYHfTuAW9agcHstV`) : écrans, composants, textes, couleurs, images.
-   Repères par identifiant de nœud (les noms de pages et de frames peuvent évoluer) : Design system `40:2` · Composants `40:3` · Back-office `15:2` · App mobile `15:3`. Chaque écran a son identifiant dans `docs/03-ecrans.md`.
+   Repères par identifiant de nœud (les noms de pages et de frames peuvent évoluer) : Design system `40:2` · Composants `40:3` · Back-office `15:2` · App mobile `15:3` · v2 — Livré `2042:505`. Chaque écran a son identifiant dans `docs/03-ecrans.md`.
+   **Back-office et App mobile sont la maquette d'origine et restent intactes.** Les écrans réellement livrés après la passe UX vivent sur **v2 — Livré**, annotés. Trois pages 📘 Guide (Fondations, Composants, Ajouter un écran) documentent le système pour un designer : voir `docs/04-design-system.md`.
    **Le Figma est la version la plus récente** : s'il diffère d'une description des docs (image, texte, mise en page), suivre le Figma. Les images (photos, QR code…) s'exportent depuis Figma via le MCP et vont dans `src/assets/`.
 2. **Règles métier** : `docs/02-regles-metier.md` (R01–R16, statuts, droits, temps). En cas de doute, la règle gagne sur l'écran.
 3. **Écrans et interactions** : `docs/03-ecrans.md` (route, nœud Figma, contenu, actions, états à dériver).

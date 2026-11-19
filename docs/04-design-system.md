@@ -3,6 +3,21 @@
 Fichier Figma `lN2EFZzYHfTuAW9agcHstV` : page **Design system** (`40:2`, couleurs, typo, rayons, ombres, mouvement) et page **Composants** (`40:3`, sections documentées, chaque composant avec sa description).
 Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte MyDigitalSchool : turquoise + anthracite, accents orange/rose/bleu, Bricolage Grotesque + Inter + JetBrains Mono.
 
+## Les pages du fichier Figma
+Dans l'ordre où elles se lisent :
+
+| Page | À quoi elle sert |
+|---|---|
+| **Design system** (`40:2`) · **Composants** (`40:3`) | La bibliothèque : variables, styles, composants. C'est là qu'on prend une instance. |
+| **Back-office** (`15:2`) · **App mobile** (`15:3`) | La maquette d'origine. **Intacte** : elle sert de point de comparaison, on n'y écrase rien. |
+| **v2 — Livré** (`2042:505`) | Les écrans tels qu'ils sont réellement livrés après la passe UX, chacun avec une note « ce qui a changé ». Sept écrans : tableau de bord équipe / direction / mode Personnaliser, Accueil, Matériel, Emprunter, Scanner. |
+| **📘 Guide · Fondations** | Les 38 couleurs, les 13 styles de texte, les espacements, rayons, ombres et durées, chacun avec son nom Figma, son jeton CSS et son usage. |
+| **📘 Guide · Composants** | 20 fiches : variantes en vraies instances, quand l'utiliser, ce qu'il ne faut pas faire, le code React à copier. Plus l'index du reste du catalogue et les règles d'accessibilité. |
+| **📘 Guide · Ajouter un écran** | La recette en sept étapes, deux gabarits à dupliquer (390 × 844 et 1440 × 839), la check-list avant de livrer et les pièges connus. |
+| **Identifiant de connexion** (`2021:4063`) | Les deux liens et les comptes de démonstration. |
+
+Les trois pages 📘 sont écrites **pour un designer** qui arrive sur le projet sans contexte : elles n'exigent rien d'autre que Figma.
+
 ## Principes
 - Un seul bouton **Principal** (turquoise) par zone. Orange = **Alerte** (créer un incident). Rose = retard / casse / incident. Orange clair = attention / à valider.
 - **Le libellé des boutons reste en `texte/principal`** (sombre) sur les trois types, turquoise et orange compris : c'est ce que montre le composant `43:101`, pas du blanc.
@@ -24,7 +39,7 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 ## Inventaire des composants (id Figma → composant React)
 | Section | Composant (id) | Propriétés / variantes |
 |---|---|---|
-| Icônes | 63 icônes `Icône/…` + 4 ajoutées hors Figma | Nom (voir liste plus bas) |
+| Icônes | 67 icônes `Icône/…` | Nom (voir liste plus bas) |
 | Bouton | Bouton (`43:101`) | Libellé · Afficher l'icône · Icône · Type Principal/Secondaire/Alerte · Taille M(40)/L(52) · État Défaut/Survol/Pressé/Désactivé |
 | Bouton icône | Bouton icône (`44:89`) | Icône · Style Doux/Contour/Surface/Plein · État Défaut/Survol/Pressé · 36–56 px. **Relevé** : l'icône reste sombre dans les quatre styles, turquoise compris ; les styles qui gagnent un trait au survol en portent un transparent au repos pour que la boîte ne bouge pas. |
 | Badges | Badge de statut (`45:89`) | Afficher la pastille · Statut Disponible/En cours/À valider/En retard/Bloqué/Retiré/Payé/Incident (libellé libre). **Cinq familles de couleur** pour huit statuts : turquoise (Disponible, Payé) · bleu (En cours) · orange (À valider, Bloqué) · rose (En retard, Incident) · neutre (Retiré). La pastille prend la couleur forte de sa famille. |
@@ -47,14 +62,14 @@ Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte My
 | Tableaux | Ligne de tableau · Prêts (`62:317`) · Signalement (`62:366`) · Contrôle (`62:401`) · Paiement (`62:432`) · Emprunteur (`97:3242`, + Sélectionnée) · Salle (`97:3308`) | Défaut/Survol |
 | Tableaux | Ligne d'import (`97:3351`) | Contrôle Valide/Erreur |
 | Cartes BO | Indicateur (`63:276`) | Valeur · Libellé · Ton Neutre/Retard/Attention |
-| Cartes BO | Action à faire (`63:319`) | Titre · Détail · Action Principale/Secondaire/Réservée à Sandrine |
+| Cartes BO | Action à faire (`63:319`) | Titre · Détail · Action Principale/Secondaire/Réservée à Sandrine/**En premier** |
 | Cartes BO | Ligne de stock (`63:339`) · Carte de stock (`98:4006`) | Niveau Normal/Bas |
 | Cartes BO | Règle (`63:346`) · Prêt de classe (`63:358`) · Ligne de forfait (`63:367`) · Carte d'incident (`63:393`) · Ligne de réglage (`98:4013`) | textes |
 | Cartes BO | Carte photo de retour (`63:486`) | État Conforme/Problème |
 | Cartes BO | Carte de validation (`63:568`) | Type Remise/Retour |
 | Cartes mobile | Carte de prêt (`64:408`) | État En cours/Demande envoyée |
 | Cartes mobile | Raccourci (`64:438`) | Défaut/Pressé |
-| Cartes mobile | Ligne de catalogue (`64:487`) | Action Détail/Me prévenir · État Défaut/Pressé |
+| Cartes mobile | Ligne de catalogue (`64:487`) | Action Détail/Me prévenir/**Emprunter** · État Défaut/Pressé |
 | Cartes mobile | Ligne d'information (`64:494`) · Étape (`64:526`) · Matériel détecté (`98:4066`) | textes |
 | Cartes mobile | Ligne de montant (`64:506`) | Fond Clair/Sombre |
 | Cartes mobile | Case avec libellé (`64:520`) | Style Liste/Simple |
@@ -66,7 +81,7 @@ Construire d'abord ces composants dans `src/design-system/` avec une page `/desi
 
 ## Icônes (Figma → lucide-react)
 École `School` · Cadenas `Lock` · Cadenas ouvert `LockOpen` · Tableau de bord `LayoutDashboard` · Utilisateur validé `UserCheck` · Utilisateurs `Users` · Utilisateur `User` · Image `Image` · Colis `Package` · Échange `ArrowLeftRight` · Reçu `ReceiptText` · Stylo `Pencil` · Porte `DoorOpen` · Import `Upload` · Réglages `SlidersHorizontal` · Retour `Undo2` · Dossier `Folder` · Dossier ouvert `FolderOpen` · Loupe `Search` · Cloche `Bell` · Chevron bas/droit/gauche `ChevronDown/Right/Left` · Liste cochée `ListChecks` · Plus d'options `EllipsisVertical` · Coche `Check` · Croix `X` · Plus `Plus` · Moins `Minus` · Drapeau `Flag` · Horloge `Clock` · Ordinateur portable `Laptop` · Enveloppe `Mail` · Ventilateur `Fan` · Casque audio `Headphones` · Cartes de jeu `GalleryVerticalEnd` · Appareil photo `Camera` · Caméra `Video` · Enregistreur `Radio` · Micro `Mic` · Alerte `TriangleAlert` · Bouclier `Shield` · Pièce de puzzle `Puzzle` · Agrandir `Maximize2` · Historique `History` · Souris `Mouse` · Prise `Plug` · Repère `MapPin` · Imprimante `Printer` · Interdit `Ban` · Lune `Moon` · Portefeuille `Wallet` · Modifier `SquarePen` · Carte SD `HardDrive` · Batterie `Battery` · Étiquette `Tag` · Maison `House` · Grille `LayoutGrid` · Scanner `ScanLine` · Flèche `ArrowUpRight` · Rotation `RotateCcw` · Trépied `Tripod`* · Ampoule `Lightbulb`
-**Ajout hors Figma (4)** : la personnalisation du tableau de bord (B2-c) demande quatre icônes que la page Composants n'avait pas — **Chevron haut** `ChevronUp` · **Poignée** `GripVertical` · **Œil** `Eye` · **Œil barré** `EyeOff`. Mêmes règles que les autres (lucide, trait 1,5, couleur héritée) : la table en compte donc **67**.
+**Ajout (4)** : la personnalisation du tableau de bord (B2-c) demandait quatre icônes que la page Composants n'avait pas — **Chevron haut** `ChevronUp` (`2044:506`) · **Poignée** `GripVertical` (`2044:512`) · **Œil** `Eye` (`2044:523`) · **Œil barré** `EyeOff` (`2044:530`). Elles ont été **ajoutées à la grille du Figma** depuis les tracés lucide du projet, avec les mêmes conventions que les 63 autres (trait 1,5, grille 24, contour lié à `texte/principal`). La table en compte donc **67**.
 
 \* **Vérifié** : sur les 63 icônes du Figma, 62 existent dans `lucide-react` 1.47. Seule **« Trépied » n'existe pas** — son tracé est repris du Figma dans `src/design-system/TrepiedIcone.tsx`. La table nom Figma → composant lucide est **générée depuis ce document** (`src/design-system/icones.ts`) et un test Vitest vérifie que toutes les icônes citées par `data/seed.json` et émises par le moteur résolvent.
 
