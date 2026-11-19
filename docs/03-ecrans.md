@@ -1,7 +1,9 @@
 # 03 · Écrans, routes et interactions
 
-Lien d'un nœud : `https://www.figma.com/design/lN2EFZzYHfTuAW9agcHstV/Maquette-MDS?node-id=<ID avec tiret>` (ex. `8:950` → `node-id=8-950`).
-Les **textes, images et mises en page exacts** se lisent dans Figma (`get_design_context`) : le Figma a pu évoluer depuis ces fiches (ex. photo sur les écrans de connexion, QR code dans le scanner) et c'est lui qui fait foi. Ce document dit **quoi brancher** : données, actions, navigation, états non dessinés.
+Lien d'un nœud : `https://www.figma.com/design/lN2EFZzYHfTuAW9agcHstV/Maquette-MDS?node-id=<ID avec tiret>` (ex. `2043:3349` → `node-id=2043-3349`).
+Les **textes, images et mises en page exacts** se lisent dans Figma, qui fait foi quand il diffère de ces fiches. Ce document dit **quoi brancher** : données, actions, navigation, états non dessinés.
+
+> **Identifiants périmés.** Les pages de maquette d'origine ont été supprimées du fichier le 19 novembre 2026. Seuls sept écrans sont encore maquettés, avec de nouveaux identifiants : tableau de bord `2043:3349` (Lydia), `2053:1186` (Sandrine), `2054:1181` (mode Personnaliser) ; Accueil `2070:5135`, Matériel `2070:5171`, Emprunter `2070:5197`, Scanner `2070:5241`. Les identifiants cités plus bas pour les autres écrans ne résolvent plus. Pour ceux-là, le code et ces fiches sont la seule référence.
 
 Légende : ▶ action moteur (`docs/02-regles-metier.md`) · → navigation · ◐ état à dériver (non dessiné, construit avec les composants existants, sans nouveau style)
 
@@ -55,9 +57,9 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 - Type avec unité disponible → Fiche. Type indisponible → cloche ▶ PREVENEZ_MOI **sur le type** (◐ état « Tu seras prévenu(e) »).
 - Jamais le nom de l'emprunteur d'un matériel indisponible.
 
-**Arbitrage (A4)** : une ligne « **Chez toi** » ou « **Ta demande** » mène à la fiche de **l'exemplaire de la persona** (c'est de là qu'elle le rend) et n'affiche plus la cloche « Me prévenir » — on ne s'inscrit pas sur un type qu'on détient déjà. La cloche ne reste que sur « Indisponible ».
+**Arbitrage (A4)** : une ligne « **Chez toi** » ou « **Ta demande** » mène à la fiche de **l'exemplaire de la persona** (c'est de là qu'elle le rend) et n'affiche plus la cloche « Me prévenir » : on ne s'inscrit pas sur un type qu'on détient déjà. La cloche ne reste que sur « Indisponible ».
 
-**Arbitrage UX (A4-b) — emprunt direct.** Quand une unité du type est **libre et le bureau ouvert**, la ligne porte un bouton rond turquoise (44 px, icône Colis) qui ouvre **directement la feuille du forfait** (`/app/materiel/:id?emprunter`). Le texte de la ligne, lui, mène toujours à la fiche. La ligne cesse alors d'être un lien enveloppant — deux liens imbriqués n'existent pas — et devient un conteneur à deux destinations.
+**Arbitrage UX (A4-b) — emprunt direct.** Quand une unité du type est **libre et le bureau ouvert**, la ligne porte un bouton rond turquoise (44 px, icône Colis) qui ouvre **directement la feuille du forfait** (`/app/materiel/:id?emprunter`). Le texte de la ligne, lui, mène toujours à la fiche. La ligne cesse alors d'être un lien enveloppant (deux liens imbriqués n'existent pas) et devient un conteneur à deux destinations.
 
 ### A5 · Fiche + feuille Emprunter — `30:2` — `/app/materiel/:itemId`
 - Fiche : bouton retour, **fil d'Ariane** (en-tête mobile), visuel, nom, badges (dispo, « N1 · remise par l'équipe »), puis bloc Informations à **2 lignes seulement** : « Où le trouver » et « Retour ». Le forfait n'apparaît **que dans la feuille Emprunter** (Figma `30:2`).
@@ -80,7 +82,7 @@ Les en-têtes de A1, A4, A8 et A9 ont un **titre + un sous-titre** (le sous-titr
 - Ligne « Chez toi » → Rendre ; ligne « **Disponible** » → Fiche **avec `?emprunter`** (la feuille du forfait s'ouvre tout de suite : scanner, c'est déjà vouloir emprunter) ; les autres → Fiche. Fermer → retour arrière.
 
 ### A8 · Signaler — `92:874` — `/app/signaler`
-- « Sur quoi ? » (liste : mes prêts, salles, autres matériels), « Quel problème ? » (Panne, Casse, Manquant, Déplacé, Autre — une puce active), détails facultatifs, photo facultative.
+- « Sur quoi ? » (liste : mes prêts, salles, autres matériels), « Quel problème ? » (Panne, Casse, Manquant, Déplacé, Autre, une seule puce active), détails facultatifs, photo facultative.
 - « Envoyer le signalement » désactivé sans type. ▶ SIGNALER → Accueil + toast.
 
 ### A9 · Alertes — `93:809` — `/app/alertes`
@@ -114,7 +116,7 @@ Chaque espace a **sa propre session** : on peut être connecté comme élève su
 - **Récap de 8h** : sous-titre « Envoyé ce matin à l'équipe », bloc mono au **format Figma** (voir « Récap de 8h » dans `docs/02`), puis la ligne des destinataires (avatars + « Cyrianne, Lydia, Sandrine »). C'est un **instantané stocké**, pas un calcul en direct : il ne bouge qu'à ▶ LENDEMAIN.
 - **Signalements ouverts** : sous-titre « Envoyés depuis l'app », colonnes **Signalement / Par / Quand / Photo** (la colonne Photo affiche une icône image quand `photo: true`, rien sinon), filtre Ouverts/Traités, ▶ TRAITER_SIGNALEMENT (bouton ✓). Lignes de salle → Salles.
 
-**Arbitrage UX (B2-a) — urgence calculée.** Le Figma fige l'ordre des lignes de « À faire maintenant ». Il est désormais **calculé** (`selecteurs.lignesAFaire`), parce qu'un PC à 450 € qui bascule en perte ne peut pas s'afficher sous trois remises de routine. Chaque ligne vaut ce qu'on perd à ne pas la traiter tout de suite, en points — un euro en jeu vaut un point, le reste se compare à de l'argent :
+**Arbitrage UX (B2-a) — urgence calculée.** Le Figma fige l'ordre des lignes de « À faire maintenant ». Il est désormais **calculé** (`selecteurs.lignesAFaire`), parce qu'un PC à 450 € qui bascule en perte ne peut pas s'afficher sous trois remises de routine. Chaque ligne vaut ce qu'on perd à ne pas la traiter tout de suite, en points : un euro en jeu vaut un point, le reste se compare à de l'argent :
 
 | Ligne | Urgence |
 | --- | --- |
@@ -128,14 +130,14 @@ Chaque espace a **sa propre session** : on peut être connecté comme élève su
 - La ligne de tête est **appuyée** (fond `surface/champ`, titre en Titre de carte, pictogramme 44) et porte son motif : « **À traiter en premier · {raison}** », une phrase déduite du calcul (« 1 personne bloquée et 152 € qui basculent en perte », « 4 personnes au bureau, la plus ancienne depuis 1 h 20 »).
 - **Ce qu'on ne peut pas faire passe après** : une ligne verrouillée par R12 (les paiements, côté équipe) descend en fin de liste chez Cyrianne et Lydia, et reprend sa place au classement chez Sandrine. Même urgence, place différente : l'ordre dépend de qui regarde.
 
-**Arbitrage UX (B2-b) — indicateurs à zéro.** Les six tuiles de « En ce moment » gardent **l'ordre du Figma** — on vient y lire l'état du campus toujours à la même place —, mais une tuile à **0** passe en `texte/tertiaire` : rien à zéro ne demande l'attention.
+**Arbitrage UX (B2-b) — indicateurs à zéro.** Les six tuiles de « En ce moment » gardent **l'ordre du Figma** (on vient y lire l'état du campus toujours à la même place), mais une tuile à **0** passe en `texte/tertiaire` : rien à zéro ne demande l'attention.
 
 **Arbitrage UX (B2-c) — disposition personnalisable.** Le tableau de bord se range par compte, en deux temps :
 
 1. **Un défaut par rôle.** L'équipe pédagogique vient chercher ce qu'il y a à faire : colonne principale « À faire maintenant · En ce moment · Prêts en retard · Signalements », colonne latérale « Consommables · Récap de 8h » (l'ordre du Figma). La direction vient prendre la température avant d'agir : « **En ce moment** » passe en tête et le **Récap de 8h** remonte en haut de la colonne latérale.
-2. **Puis ajustable.** Le bouton « **Personnaliser** » ouvre le mode rangement : chaque carte prend une poignée (glisser-déposer) **et** quatre boutons — monter, descendre, changer de colonne, masquer. Le clavier suffit : les boutons portent leur intitulé complet (« Descendre À faire maintenant »). Les cartes masquées reviennent d'un clic depuis la barre « Cartes masquées », et « **Rétablir le défaut** » n'apparaît qu'une fois quelque chose déplacé. « Terminer » referme le mode et l'écran redevient exactement celui du Figma.
+2. **Puis ajustable.** Le bouton « **Personnaliser** » ouvre le mode rangement : chaque carte prend une poignée (glisser-déposer) **et** quatre boutons : monter, descendre, changer de colonne, masquer. Le clavier suffit : les boutons portent leur intitulé complet (« Descendre À faire maintenant »). Les cartes masquées reviennent d'un clic depuis la barre « Cartes masquées », et « **Rétablir le défaut** » n'apparaît qu'une fois quelque chose déplacé. « Terminer » referme le mode et l'écran redevient exactement celui du Figma.
 
-La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, et survit au rechargement : ce n'est pas de l'état métier, aucune règle n'en dépend. Une disposition stockée est normalisée à la lecture comme à l'écriture — une carte ajoutée depuis la dernière visite reprend la place que son rôle lui donne, une clé inconnue disparaît, rien n'est jamais perdu ni dupliqué.
+La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, et survit au rechargement : ce n'est pas de l'état métier, aucune règle n'en dépend. Une disposition stockée est normalisée à la lecture comme à l'écriture. Une carte ajoutée depuis la dernière visite reprend la place que son rôle lui donne, une clé inconnue disparaît, rien n'est jamais perdu ni dupliqué.
 
 **Arbitrage (B2-d) — le tableau des signalements** passe en bas de la **colonne principale** (largeur `1fr` au lieu de la pleine largeur du Figma) : c'est la condition pour que toutes les cartes soient déplaçables dans le même jeu de deux colonnes.
 
@@ -162,7 +164,7 @@ La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, e
 ### B5 · Matériel — `24:3` — `/admin/materiel?id=`
 - Recherche (nom ou QR), filtres (Tout, Niveau 1, Niveau 2, Disponibles, Sortis, Retirés), catégorie, « Ajouter un matériel » (◐ panneau/formulaire : nom, catégorie, niveau, lieu, forfait ▶ AJOUTER_MATERIEL).
 - Colonnes du tableau : **Matériel** (nom + code QR en mono dessous) · Catégorie · Niveau · Statut · Forfait (aligné à droite). Sous-titre de la carte : « {n} matériels · {n} sortis · {n} retirés du prêt ».
-- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (**dérivé du code** par `MotifQR` : hachage FNV-1a et les trois repères d'angle — étiquette imprimable, pas un code réellement lisible ; à remplacer par l'image Figma quand le MCP revient), statut actuel + la même note + encart d'action contextuelle (titre « À valider sur place », sous-ligne « {Nom} attend au bureau depuis {HH:MM} », bouton « Valider la remise »), puis **« Forfait par composant »** : une ligne par composant, éditable par Sandrine ▶ MODIFIER_FORFAIT{composant} appliqué à **tout le type** ; Lydia voit les mêmes lignes en lecture avec cadenas. Le **total est intitulé « Kit complet »** et reste **calculé** : jamais saisi. Puis « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER (◐ désactivé quand le matériel n'est pas en stock) / ◐ « Remettre en service » ▶ REMETTRE.
+- **Ligne de tableau · Inventaire** (survol, sélection) : sous le badge de statut s'affiche une **ligne de contexte dérivée du statut** — le responsable (« Inès Martin »), le responsable + sa classe (« M. Diallo · B3 »), l'étape en cours (« Tom Leroy · retour », « Tom Leroy · photo à contrôler »), la restriction (« Intervenants uniquement ») ou `materiels[].note` (« Molette cassée »). → **Fiche matériel** : QR (**dérivé du code** par `MotifQR` : hachage FNV-1a et les trois repères d'angle, étiquette imprimable qu'aucun lecteur ne décodera), statut actuel + la même note + encart d'action contextuelle (titre « À valider sur place », sous-ligne « {Nom} attend au bureau depuis {HH:MM} », bouton « Valider la remise »), puis **« Forfait par composant »** : une ligne par composant, éditable par Sandrine ▶ MODIFIER_FORFAIT{composant} appliqué à **tout le type** ; Lydia voit les mêmes lignes en lecture avec cadenas. Le **total est intitulé « Kit complet »** et reste **calculé** : jamais saisi. Puis « Imprimer l'étiquette » (impression navigateur d'une étiquette QR), « Retirer du prêt » ▶ RETIRER (◐ désactivé quand le matériel n'est pas en stock) / ◐ « Remettre en service » ▶ REMETTRE.
 - ◐ **Arrivée depuis B8** : `?id=<première unité du type>&ancre=forfait` ouvre la fiche défilée sur « Forfait par composant ». C'est le seul chemin pour changer le forfait d'un kit.
 
 ### B6 · Prêts — `26:2` — `/admin/prets`
@@ -173,12 +175,12 @@ La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, e
 
 ### B7 · Emprunteurs — `83:2266` — `/admin/emprunteurs?id=`
 - Recherche (« Nom ou classe »), filtres Tous / Bloqués / À rembourser / Intervenants. Sous-titre de la carte : « {n} comptes · {n} bloqué · {n} forfaits à rembourser ».
-- Colonnes : **Nom** · **Profil** (« Élève · B3 », « Intervenant · B3, M1 » — le rôle concaténé aux classes rattachées) · **Prêts en cours** · **À rembourser** (montant en rose, ou « – ») · **Statut**. **Ligne de tableau · Emprunteur** (survol, sélection).
+- Colonnes : **Nom** · **Profil** (« Élève · B3 », « Intervenant · B3, M1 », le rôle concaténé aux classes rattachées) · **Prêts en cours** · **À rembourser** (montant en rose, ou « – ») · **Statut**. **Ligne de tableau · Emprunteur** (survol, sélection).
 - **Fiche emprunteur** : identité, statut (bloqué → raison, échéance perte, ▶ DEBLOQUER ; ◐ actif ; ◐ débloqué aujourd'hui), prêts en cours, historique, badge ◐ « Charte non acceptée ».
 
 ### B8 · Incidents & paiements — `27:2` — `/admin/incidents?onglet=`
 - Onglets À rembourser / ◐ Payés / ◐ Signalements (réutilise la table du tableau de bord).
-- **Carte d'incident** : « Ajuster » ouvre la saisie en ligne (baisse seulement), confirmée par « **Enregistrer l'ajustement** » — libellé distinct de « Enregistrer le paiement » pour lever l'ambiguïté du Figma ▶ AJUSTER_MONTANT ; « Enregistrer le paiement » ▶ REMBOURSEMENT. Lydia : boutons verrouillés « Réservé à Sandrine » → refus R12.
+- **Carte d'incident** : « Ajuster » ouvre la saisie en ligne (baisse seulement), confirmée par « **Enregistrer l'ajustement** », libellé distinct de « Enregistrer le paiement » pour lever l'ambiguïté du Figma ▶ AJUSTER_MONTANT ; « Enregistrer le paiement » ▶ REMBOURSEMENT. Lydia : boutons verrouillés « Réservé à Sandrine » → refus R12.
 - Payés récemment (Ligne de tableau · Paiement), sous-titre « Ce mois-ci ».
 - **Forfaits par type** (Ligne de forfait) : une ligne par `type`, avec son montant et un crayon. Deux comportements selon le type :
   - **Type à composants** (Kit Canon R10, PC de prêt, Ronin, Micro HF, Boîte intervenant) : le montant affiché est le **total calculé**, somme des composants. Le crayon **ne modifie rien sur place** : il ouvre **B5 Matériel** sur la fiche de la première unité du type, défilée sur « Forfait par composant ». Pour Lydia, la même fiche s'ouvre en lecture seule avec cadenas.
@@ -186,7 +188,7 @@ La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, e
 
 ### B9 · Consommables — `84:2451` — `/admin/consommables`
 - Bandeau de règle sous le fil d'Ariane : « Comptage rapide chaque lundi · pas de suivi par personne · alerte dans le récap de 8h sous le seuil ».
-- **Carte de stock** par consommable, badge « **Sous le seuil** » (orange) ou « **OK** » (vert) — et non « Normal/Bas » — avec « Seuil d'alerte », une jauge, l'unité du produit (« stylos en stock ») et « Dernier comptage : {date} ».
+- **Carte de stock** par consommable, badge « **Sous le seuil** » (orange) ou « **OK** » (vert) et non « Normal/Bas », avec « Seuil d'alerte », une jauge, l'unité du produit (« stylos en stock ») et « Dernier comptage : {date} ».
 - **Un seul bouton global** « Enregistrer le comptage », en haut à droite au-dessus des cartes, et non un bouton par carte ▶ COMPTAGE.
 - **Historique des comptages** : sous-titre « 3 dernières semaines », colonnes Semaine / Stylos / Feutres / Couverts, avec l'auteur en gris (« par Lydia »).
 
@@ -194,17 +196,17 @@ La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, e
 - Filtres Toutes / À régler. **Ligne de tableau · Salle** : compteur − / + (local), « Valider » ▶ VERIFIER_SALLE ; statut Complet / n manquant(s) / n en trop.
 - Colonnes : **Salle** · **Ventilateurs présents** (compteur − n + suivi de « / {n} attendus ») · **Vérifiée le** (date relative) · **Statut**. Sous le nom de la salle, une ligne secondaire à trois variantes : « Aucun signalement » · « Signalé par {nom} · {date} » · « Un ventilateur en trop ».
 - Note de pied : « Ajustez le nombre de ventilateurs trouvés, puis validez la salle. Un écart reste visible jusqu'à la prochaine vérification. »
-- Panneau « Vérification de {mois} » : sous-titre « Prochaine : {date} », jauge « Avancement » avec pourcentage, liste « À régler » à **trois** types de cartes — écart manquant, écart en trop, et une **carte de rapprochement** qui apparie les deux (« Salle 104 → salle 201 · Le ventilateur en trop vient sans doute de la 201 »).
+- Panneau « Vérification de {mois} » : sous-titre « Prochaine : {date} », jauge « Avancement » avec pourcentage, liste « À régler » à **trois** types de cartes : écart manquant, écart en trop, et une **carte de rapprochement** qui apparie les deux (« Salle 104 → salle 201 · Le ventilateur en trop vient sans doute de la 201 »).
 
 ### B11 · Imports Calc — `88:2861` — `/admin/imports`
 - Bandeau d'introduction : « Pas d'API : l'inventaire et les classes arrivent par fichiers Calc (.ods ou .csv). Chaque import est vérifié avant d'être appliqué. »
-- Inventaire : ◐ zone de dépôt (fichier .ods/.csv — on peut parser un CSV réel, sinon « fichier exemple »), état déposé « {fichier} · {n} lignes lues · déposé à {HH:MM} par {nom} » avec croix de retrait.
+- Inventaire : ◐ zone de dépôt (fichier .ods/.csv ; on peut parser un CSV réel, sinon « fichier exemple »), état déposé « {fichier} · {n} lignes lues · déposé à {HH:MM} par {nom} » avec croix de retrait.
 - Aperçu **Ligne d'import** : colonnes Nom / Catégorie / Niveau / Forfait / **Contrôle**, où Contrôle porte « Valide » ou le **motif nommant la colonne fautive** (« Niveau manquant (colonne C) », valeur déjà présente dans `importExemple`), ligne surlignée en rose.
 - Pastilles de récap « {n} lignes valides » / « {n} erreur », puis « Importer les n lignes valides » ▶ IMPORT_INVENTAIRE / Annuler, et la règle « La ligne en erreur est ignorée : corrigez-la dans Calc puis réimportez. » ◐ Succès : « Import terminé » + lien Matériel.
 - Liste des classes : pastilles actuelles, zone de dépôt → ◐ aperçu → ▶ IMPORT_CLASSES.
 
 ### B12 · Réglages — `89:3051` — `/admin/reglages`
-- Charte : **un seul bloc**, comme dans le Figma — la ligne de titre « Charte d'utilisation du matériel MyDigitalSchool », puis les **7 articles numérotés en paragraphes**. Chaque paragraphe est éditable **sur place** ; l'ensemble garde l'apparence d'un bloc unique, **sans champ de titre visible**.
+- Charte : **un seul bloc**, comme dans le Figma : la ligne de titre « Charte d'utilisation du matériel MyDigitalSchool », puis les **7 articles numérotés en paragraphes**. Chaque paragraphe est éditable **sur place** ; l'ensemble garde l'apparence d'un bloc unique, **sans champ de titre visible**.
   - Ni ajout ni suppression d'article : les 7 `id` et leurs `titre` courts sont fixes dans le seed et ne servent qu'à l'écran mobile A2.
   - Un **seul bouton « Enregistrer la charte »** ▶ MODIFIER_CHARTE, qui reçoit les 7 textes. Il est **désactivé tant que rien n'a changé**.
   - Lydia : bloc en **lecture seule** avec cadenas → refus R12.
@@ -218,9 +220,9 @@ La disposition vit dans le store (`src/store/disposition.ts`), **par compte**, e
 L'application n'a pas de mode démo : on s'y connecte, et le temps est celui de la machine.
 
 - **Sessions** : une par surface (A1 et B1). Chaque rôle n'a accès qu'à la sienne (R13). Déconnexion depuis A10 Profil et depuis le bloc du compte du back-office.
-- **Horloge réelle** : `horloge.maintenant` suit l'heure du navigateur, remise à l'heure toutes les 30 secondes et au retour sur l'onglet. Le domaine reste pur — seul `src/store/horlogeReelle.ts` lit `Date`.
+- **Horloge réelle** : `horloge.maintenant` suit l'heure du navigateur, remise à l'heure toutes les 30 secondes et au retour sur l'onglet. Le domaine reste pur. Seul `src/store/horlogeReelle.ts` lit `Date`.
 - **Échéances automatiques** : au passage de 16h30, de 18h et de 8h le lendemain, l'application applique seule le rappel (R15), la clôture de journée (R10, R11) et le récap du matin (R15), y compris en rattrapant plusieurs jours d'absence d'un coup. Ce sont des événements de fond : ils n'affichent pas de bandeau.
-- **Jeu de données recalé** : au premier chargement, la situation du seed (ancrée au 17 septembre 2026) est décalée en bloc sur la date du jour, écarts conservés — un prêt « sorti ce matin à 9:20 » le reste, le retard de la veille reste de la veille. Voir `src/domain/ancrage.ts`.
+- **Jeu de données recalé** : au premier chargement, la situation du seed (ancrée au 17 septembre 2026) est décalée en bloc sur la date du jour, écarts conservés : un prêt « sorti ce matin à 9:20 » le reste, le retard de la veille reste de la veille. Voir `src/domain/ancrage.ts`.
 - **Bandeau de résultat** : après chaque action, le message du moteur. Un refus affiche « Action impossible » et le message ; le code de règle (R01…) vit en attribut `data-regle`, pour les tests et la relecture, pas à l'écran.
-- **Poignée de service** : `window.__mds` donne accès au store depuis la console du navigateur — `__mds.getState().executer({ type: 'FIN_DE_JOURNEE' })` pour rejouer une échéance en démonstration, `__mds.getState().reinitialiser()` pour repartir du jeu de données initial. C'est aussi ce qu'utilisent les tests de bout en bout, l'interface ne permettant plus d'avancer le temps.
+- **Poignée de service** : `window.__mds` donne accès au store depuis la console du navigateur. `__mds.getState().executer({ type: 'FIN_DE_JOURNEE' })` pour rejouer une échéance en démonstration, `__mds.getState().reinitialiser()` pour repartir du jeu de données initial. C'est aussi ce qu'utilisent les tests de bout en bout, l'interface ne permettant plus d'avancer le temps.
 - Page `/` : redirige vers `/app`. Le mode **côte à côte** reste accessible à `/cote-a-cote` (les deux surfaces, même état) et la galerie du design system à `/design-system`.

@@ -16,19 +16,18 @@ Au campus MyDigitalSchool, le matériel (studio photo-vidéo, PC, casques, souri
 | Cyrianne, Lydia | Équipe pédagogique | Back-office | Valider remises et retours, contrôler les photos, gérer matériel, salles, consommables, imports, débloquer |
 | Sandrine | Direction | Back-office | Tout, plus forfaits, ajustements, paiements et charte |
 
-## Objectifs du prototype
-1. Pouvoir **tester de bout en bout** chaque règle (R01–R16) en jouant les deux côtés.
-2. Rendu **fidèle au Figma validé** (niveau présentation direction / soutenance).
-3. Tester sur **téléphone réel** (app) et sur **ordinateur** (back-office), y compris en même temps dans deux onglets.
-4. Pouvoir **rejouer** : annuler une action, avancer l'horloge, réinitialiser la démo.
+## Ce que l'application doit permettre
+1. Jouer **chaque règle R01 à R16 de bout en bout**, des deux côtés, sans truquage.
+2. Un rendu fidèle au Figma validé, présentable en soutenance.
+3. L'usage réel : l'app sur un téléphone, le back-office sur un ordinateur, les deux en même temps dans deux onglets synchronisés.
+4. Les échéances qui tombent toutes seules. L'horloge est celle de la machine : 16h30, 18h et 8h le lendemain se déclenchent sans que personne appuie sur un bouton.
 
 ## Périmètre
 - App mobile : 10 écrans (Connexion, Charte, Accueil, Matériel, Fiche + Emprunter, Rendre, Scanner, Signaler, Alertes, Profil).
 - Back-office : 12 écrans (Se connecter, Tableau de bord, Validations sur place, Contrôle photo, Matériel, Prêts, Emprunteurs, Incidents & paiements, Consommables, Salles, Imports Calc, Réglages).
-- Panneau de démo (hors produit) : persona, horloge, annuler, réinitialiser, résultat de la dernière action.
 
 ## Hors périmètre (ne pas construire)
-- Authentification réelle (SSO simulé : un clic connecte la persona choisie).
+- Mot de passe et SSO. On se connecte avec son identifiant MDS, chaque espace a sa session, et les rôles se refusent entre eux (R13). Un vrai contrôle d'identité demanderait un serveur.
 - Paiement en ligne (le paiement se fait au bureau ; l'app enregistre « payé »).
 - Réservation à l'avance, emplois du temps / import PRONOTE (V1.1), exports, e-mails réels, push réels (simulés dans Alertes et dans le toast).
 - Caméra réelle : le scanner et la photo sont simulés (option : `<input type="file" capture>` pour la photo si simple, sans stockage serveur).

@@ -21,8 +21,8 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - **Vérifié** : Sortis 12 · En retard 1 · À valider 4 · Photos 3 · À rembourser 2 (94 €) · Stock bas 1 · Signalements ouverts 4 · Bloqués 1, et le récap de 8h reproduit les 7 lignes du Figma.
 
 ## Phase 2 · Design system — fait
-- [x] **Icônes** : table nom Figma → `lucide-react` générée depuis `docs/04` (63 icônes). « Trépied » repris du Figma en SVG. Test Vitest : toutes les icônes du seed et du moteur résolvent.
-- [x] **Bouton** (`43:101`) : 24 variantes (Type × Taille × État), géométrie vérifiée au pixel contre le Figma — M 102,5 × 40 (Figma 103 × 40), L 117,1 × 52 (Figma 117 × 52), rayons 20/24, paddings 16/16 et 16/20, gap 8, libellé Inter 500 14/18 et 16/18, halos de survol turquoise et orange.
+- [x] **Icônes** : table nom Figma → `lucide-react` générée depuis `docs/04` (63 icônes à l'époque, 67 depuis la Phase 8). « Trépied » repris du Figma en SVG. Test Vitest : toutes les icônes du seed et du moteur résolvent.
+- [x] **Bouton** (`43:101`) : 24 variantes (Type × Taille × État), géométrie vérifiée au pixel contre le Figma : M 102,5 × 40 (Figma 103 × 40), L 117,1 × 52 (Figma 117 × 52), rayons 20/24, paddings 16/16 et 16/20, gap 8, libellé Inter 500 14/18 et 16/18, halos de survol turquoise et orange.
 - [x] **Bouton icône** (`44:89`) · **Badge de statut** (`45:89`) · **Pastille** (`45:96`) · **Avatar** (`45:110` + taille 84) · **Pictogramme** (`59:150`) · **Puce de catégorie** (`61:132`) · **Puce de composant** (`45:130`) — géométrie, paddings, rayons, typo et couleurs vérifiés valeur par valeur
 - [x] **Champ** (`46:128`) · **Case à cocher** (`46:144`) · **Interrupteur** (`89:425`) · **Onglet** (`46:76`, avec sa piste) · **Liste déroulante** (`46:100`, ouverture et choix réels)
 - [x] **Infobulle** (`49:81`) · **Lien de navigation** (`49:107`, infobulle au survol) · **Barre de navigation mobile** (`61:155`, avec ses onglets `49:124`) · **En-tête de carte** (`49:129`)
@@ -30,10 +30,10 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - [x] Tableaux : les 8 lignes de tableau + Ligne d'import
 - [x] Cartes back-office : Indicateur · Action à faire · Ligne de stock · Carte de stock · Règle · Prêt de classe · Ligne de forfait · Carte d'incident · Ligne de réglage · Carte photo de retour · Carte de validation
 - [x] Cartes mobile : Carte de prêt · Raccourci · Ligne de catalogue · Ligne d'information · Étape · Matériel détecté · Ligne de montant · Case avec libellé · Notification · Action du compte
-- **Écart de méthode assumé** : les 18 premiers composants ont été relevés un par un sur Figma (`get_design_context` + mesure chiffrée, figée dans `e2e/design-system.desktop.ts`). Les quatre derniers fichiers (`structure.tsx`, `tableau.tsx`, `cartes-bo.tsx`, `cartes-mobile.tsx`) ont été **construits sur les tokens et les motifs déjà mesurés**, sans nouvel aller-retour Figma : géométrie cohérente avec le design system, fidélité non mesurée au pixel. Le MCP Figma n'est plus autorisé dans la session ; ces quatre fichiers sont à repasser au relevé quand l'accès revient.
+- **Écart de méthode assumé** : les 18 premiers composants ont été relevés un par un sur Figma (`get_design_context` + mesure chiffrée, figée dans `e2e/design-system.desktop.ts`). Les quatre derniers fichiers (`structure.tsx`, `tableau.tsx`, `cartes-bo.tsx`, `cartes-mobile.tsx`) ont été **construits sur les tokens et les motifs déjà mesurés**, sans nouvel aller-retour Figma : géométrie cohérente avec le design system, fidélité non mesurée au pixel. Le relevé n'a jamais été repris, et les pages de maquette qui auraient servi de référence ont été supprimées depuis. Ces quatre fichiers restent donc non vérifiés au pixel.
 - [x] Page `/design-system` = galerie, chaque section portant le lien de son nœud Figma
 - **Fini quand** : chaque section a été comparée en capture avec Figma et les écarts corrigés.
-- **Méthode retenue** : pour chaque composant, `get_design_context` sur son nœud, puis **mesure chiffrée** du rendu (boîte, rayon, padding, gap, police, couleurs calculées) contre les valeurs du Figma — pas une comparaison à l'œil. Ces relevés sont figés dans `e2e/design-system.desktop.ts` : toute dérive casse `npm run e2e`.
+- **Méthode retenue** : pour chaque composant, `get_design_context` sur son nœud, puis **mesure chiffrée** du rendu (boîte, rayon, padding, gap, police, couleurs calculées) contre les valeurs du Figma, et non une comparaison à l'œil. Ces relevés sont figés dans `e2e/design-system.desktop.ts` : toute dérive casse `npm run e2e`.
 - Seule tolérance : la **largeur** d'un élément dimensionné par son texte (± 2 px), car elle dépend des métriques de la police. Hauteurs, rayons, paddings, gaps, graisses et couleurs sont exacts.
 
 ## Phase 3 · App mobile — fait
@@ -51,14 +51,13 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - [x] B9 Consommables · B10 Salles · B11 Imports Calc · B12 Réglages
 - **Fini quand** : P2, P3, P5, P7, P9 passent ; captures 1440 px conformes. ✅
 - **Vérifié** : P2, P3, P5, P7 et P9 verts ; les douze écrans rendent sans erreur console et sans défilement horizontal à 1440 px.
-- Le QR de l'étiquette est **dérivé du code** du matériel (`MotifQR`, hachage FNV-1a + les trois repères d'angle) : une étiquette imprimable, pas un code réellement lisible. À remplacer par l'image exportée du Figma quand le MCP est de nouveau accessible.
+- Le QR de l'étiquette est **dérivé du code** du matériel (`MotifQR`, hachage FNV-1a + les trois repères d'angle). C'est une étiquette imprimable, qu'aucun lecteur ne décodera. Il faudrait une vraie bibliothèque de génération de QR pour que l'étiquette serve à autre chose qu'à une démonstration.
 
 ## Phase 5 · Démo et finitions — fait
 - [x] Panneau démo (persona, horloge, annuler, réinitialiser, toast résultat avec code règle) + page `/` avec QR vers `/app`
 - [x] Mode côte à côte (`/cote-a-cote`, les deux surfaces dans deux cadres du même document) ; synchro deux onglets vérifiée par test
 - [x] Accessibilité (clavier, focus, ARIA, contrastes), `prefers-reduced-motion`, aucun défilement horizontal à 390 px
 - [x] Playwright : P1 → P9 verts + 4 tests transversaux ; build statique déployable (Vercel/Netlify)
-- [ ] PWA installable (option non retenue : hors Figma, hors règles)
 - **Fini quand** : tout le fichier `docs/06-parcours-de-test.md` passe à la main sur un vrai téléphone + ordinateur.
 - **Vérifié en automatique** : 42 tests Playwright et 135 tests Vitest verts. Le passage à la main sur un vrai téléphone reste à faire par l'équipe : ouvrir `/` sur l'ordinateur et scanner le QR.
 
@@ -74,12 +73,20 @@ Travailler phase par phase. À la fin de chaque phase : `npm run build`, `npm ru
 - **Reste hors périmètre** : comptes avec mot de passe, données partagées entre appareils. Les deux demandent un serveur, exclu par le cadre du projet.
 
 ## Phase 7 · Hiérarchie et personnalisation — fait
-- [x] **Urgence calculée** (B2-a) : l'ordre de « À faire maintenant » se déduit de l'état — argent en jeu, personnes empêchées, attente au bureau, contrôles différés, signalements. La ligne de tête est appuyée et porte son motif.
+- [x] **Urgence calculée** (B2-a) : l'ordre de « À faire maintenant » se déduit de l'état : argent en jeu, personnes empêchées, attente au bureau, contrôles différés, signalements. La ligne de tête est appuyée et porte son motif.
 - [x] **L'ordre dépend de qui regarde** : une ligne verrouillée par R12 descend en fin de liste côté équipe, reprend sa place côté direction.
 - [x] **Indicateurs à zéro atténués** (B2-b), ordre des six tuiles inchangé.
 - [x] **Tableau de bord personnalisable** (B2-c) : un défaut par rôle, puis glisser-déposer **et** boutons (monter, descendre, changer de colonne, masquer), clavier compris. Une disposition par compte, persistée, normalisée à chaque lecture.
-- [x] **Emprunt raccourci** (A4-b, A5-b, A7) : du scanner ou du catalogue, la feuille du forfait s'ouvre d'emblée — cinq gestes deviennent trois, sans sauter la case du forfait (R03).
+- [x] **Emprunt raccourci** (A4-b, A5-b, A7) : du scanner ou du catalogue, la feuille du forfait s'ouvre d'emblée. Cinq gestes deviennent trois, sans sauter la case du forfait (R03).
 - [x] **Accueil lisible** (A3-a/b/c) : « Mes prêts » groupé par ce que chaque prêt demande, raccourci contextuel au lieu d'un doublon de la navigation, compte à rebours jusqu'à la fermeture.
 - [x] **Confort mobile** : zone sûre du bas, bandeau posé au-dessus de la barre de navigation, défilement contenu.
 - **Fini quand** : les neuf parcours restent verts et les nouveaux comportements sont couverts par des tests. ✅
 - **Vérifié** : 171 tests Vitest et 62 tests Playwright verts, dont `e2e/personnalisation.desktop.ts` (7) et `e2e/ux.mobile.ts` (8).
+
+## Phase 8 · Le Figma rattrape le livré — fait
+- [x] **Deux pages de maquette** remplacent les anciennes : « Back Office for admin » (les trois états du tableau de bord) et « App mobile for student » (Accueil, Matériel, Emprunter, Scanner). Les pages d'origine `15:2` et `15:3` ont été supprimées du fichier.
+- [x] **Deux variantes ajoutées à la bibliothèque**, nées de la Phase 7 : « Action à faire / En premier » (`63:319`) porte la ligne de tête et son motif ; « Ligne de catalogue / Emprunter » (`64:487`) porte le bouton rond de 44 px.
+- [x] **Quatre icônes** importées depuis les tracés lucide du projet : Chevron haut, Poignée, Œil, Œil barré. La grille passe de 63 à 67.
+- [x] **Trois pages de guide** pour un designer sans contexte : Style (38 couleurs, 13 styles de texte, espacements, rayons, ombres, durées), Composants (20 fiches avec variantes, règles d'usage et code à copier), Ajouter un écran (recette en sept étapes, deux gabarits, check-list, pièges).
+- [x] **Relecture anti-slop** : le skill `no-ai-slop` (MIT, Peter Yang) est installé dans `.claude/skills/`, complété par `anti-ia-design` pour les tics visuels que le premier ne couvre pas. 34 textes du guide réécrits, tirets cadratins rhétoriques et oppositions « X, pas Y » supprimés.
+- **Reste à faire** : les identifiants de nœud de `docs/03-ecrans.md` ne résolvent plus pour les 18 écrans dont la maquette a été supprimée. Soit on les retire, soit on remaquette ces écrans.

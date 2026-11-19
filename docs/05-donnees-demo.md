@@ -1,10 +1,10 @@
 # 05 · Données de démo
 
-Fichier : `data/seed.json` (`meta.version` = 2). Chargé au premier lancement et par « Réinitialiser la démo ».
-La clé de persistance inclut `meta.version` : **modifier le seed et incrémenter la version réinitialise automatiquement la démo**.
-Situation : **jeudi 17 septembre 2026, 10:15**, une matinée normale au campus.
+Fichier : `data/seed.json` (`meta.version` = 2), chargé au premier lancement.
+La clé de persistance inclut `meta.version` : modifier le seed et incrémenter la version remet les données à neuf chez tout le monde.
+Situation écrite autour du **jeudi 17 septembre 2026, 10:15**, une matinée normale au campus. `src/domain/ancrage.ts` la recale sur la date du jour en gardant les écarts : « hier 18h » reste hier.
 
-## Ce que le jeu permet de tester tout de suite
+## Ce qu'on peut tester tout de suite
 | Situation | Données | Écrans |
 |---|---|---|
 | 3 remises N1 à valider | Kit Canon R10 #01 (Inès), Ronin (M. Diallo pour la B3), Zoom H5 (Léa) | BO Validations, App Accueil d'Inès |

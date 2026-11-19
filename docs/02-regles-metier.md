@@ -96,14 +96,15 @@ C'est un **instantané**, pas un calcul en direct : il est généré par ▶ LEN
 
 Côté Lydia, les actions de Sandrine restent **visibles** avec la mention « Réservé à Sandrine » (cadenas) : le clic affiche le refus R12.
 
-## Temps (horloge simulée)
-- Démo au départ : **jeudi 17 septembre 2026, 10:15**, bureau ouvert.
-- Contrôles du panneau démo : « Aller à 16h30 » (déclenche le rappel), « Fin de journée 18h », « Lendemain 8h ».
+## Temps
+- L'horloge est celle de la machine. `src/store/horlogeReelle.ts` est le seul fichier du projet qui lit `Date` ; le domaine reste pur et reçoit l'instant en paramètre.
+- Le jeu de démo a été écrit autour du jeudi 17 septembre 2026, 10:15. Au premier chargement, `src/domain/ancrage.ts` le recale sur la date du jour en gardant les écarts relatifs : un prêt sorti « avant-hier » reste avant-hier.
+- Les trois échéances se déclenchent seules quand l'heure arrive : rappel à 16h30, fin de journée à 18h, récap à 8h le lendemain. Elles se rattrapent après plusieurs jours sans ouvrir l'application.
 - Dates relatives affichées comme dans le Figma : « Aujourd'hui / Auj. 9:58 », « Hier 17:40 », « Lundi », « Ven. 18h », « lundi 14 sept. ».
 
 ## Écarts connus et arbitrés
 - Perte : le Figma affiche « Déclaré perdu vendredi à 18h » (J+2, fin de journée). **On suit le Figma** (le moteur de référence le faisait à 8h).
-- Le prototype compte J+2 en jours calendaires, sans gestion des week-ends ni jours fériés (hors périmètre).
+- J+2 se compte en jours calendaires. Ni week-ends ni jours fériés : un prêt sorti un vendredi est déclaré perdu le dimanche soir. C'est faux dans la vraie vie, et c'est hors périmètre.
 - Les chiffres du Figma sont illustratifs : l'app affiche ceux calculés depuis `data/seed.json` (quelques unités d'écart possibles, c'est normal).
 
 ### Arbitrages de la session « avant Phase 0 »
@@ -113,8 +114,8 @@ Côté Lydia, les actions de Sandrine restent **visibles** avec la mention « R�
 - **« Pour ma classe »** propose la liste globale `classes` (celle que remplace ▶ IMPORT_CLASSES). `personnes[].classes` ne sert qu'à l'affichage (« Intervenant · B3, M1 ») et à présélectionner la première classe.
 - **`prets` P110 rétabli** (bug de génération) : Léa / Pack LED Newer, sorti à 9:30, validé par Cyrianne. Sortis = 12, comme le Figma.
 - **`materiels[].note`** s'affiche **uniquement au back-office** : sous le badge de statut dans la table Matériel et dans « Statut actuel » de la fiche. Jamais dans l'app.
-- **Horloge injectable** : aucun `Date.now()` dans `src/domain/`. Fuseau `Europe/Paris`, départ `2026-09-17T10:15`.
-- **La perte (R11) se produit à ▶ FIN_DE_JOURNEE**, pas à ▶ LENDEMAIN : c'est la conséquence directe de l'arbitrage « J+2 à 18h » (le moteur de référence la faisait à 8h). Vérifié par `docs/06` P5.4 : « Lendemain 8h » puis « Fin de journée » (vendredi 18h) → le PC de Yanis passe `perdu`.
+- **Horloge injectable** : aucun `Date.now()` dans `src/domain/`. Fuseau `Europe/Paris`. Le seed part de `2026-09-17T10:15` puis se recale sur le jour courant.
+- **La perte (R11) se produit à ▶ FIN_DE_JOURNEE**, pas à ▶ LENDEMAIN : c'est la conséquence directe de l'arbitrage « J+2 à 18h » (le moteur de référence la faisait à 8h). Vérifié par `docs/06` P5.4 : au second 18h, le PC de prêt #02 de Yanis passe `perdu` avec son incident de 450 €.
 - **Éditeur de la charte (B12)** — on suit le Figma `89:3051` : **un seul bloc**, la ligne de titre puis les 7 articles numérotés en paragraphes. Chaque paragraphe est éditable sur place et l'ensemble garde l'apparence d'un bloc unique, sans champ de titre visible. Les titres courts de `reglages.charte.articles[].titre` restent **fixes dans le seed** et ne servent qu'à l'écran mobile A2.
 - **Forfait d'un kit (B8)** — le total d'un kit **n'est jamais fixé directement** : `▶ MODIFIER_FORFAIT` sans `composant` sur un matériel à composants est **refusé** (« … est un kit : modifie le forfait d'un composant, pas celui du kit. »). Sur « Forfaits par type », la ligne d'un kit affiche le total calculé et son crayon **ouvre la fiche B5** de la première unité du type, sur « Forfait par composant ». Une ligne sans composants s'édite sur place.
-- **Le rappel de 16h30 est sa propre action** (▶ ALLER_A_16H30) et non un effet de bord de la fin de journée : avec une horloge en heures réelles, 16h30 et 18h sont deux instants distincts que le panneau de démo atteint séparément.
+- **Le rappel de 16h30 est sa propre action** (▶ ALLER_A_16H30) et non un effet de bord de la fin de journée. Avec une horloge réelle, 16h30 et 18h sont deux instants distincts, séparés d'une heure et demie pendant laquelle un emprunteur peut encore rendre son matériel sans être bloqué.

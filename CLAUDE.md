@@ -2,12 +2,12 @@
 
 Application de prêt de matériel du campus MyDigitalSchool : une **app mobile** (élèves, intervenants) et un **back-office** (équipe pédagogique, direction).
 Ce dépôt construit une **application complète et testable** : toutes les fonctionnalités marchent, mais **sans serveur ni base de données**. Les données vivent dans le navigateur (état local persistant) et partent d'un jeu de démo **recalé sur la date du jour**.
-On s'y connecte pour de vrai, avec son identifiant MDS, et chaque espace a sa session : `/app` pour les élèves et les intervenants, `/admin` pour l'équipe et la direction. L'horloge est celle de la machine — les échéances de 16h30, 18h et 8h se déclenchent seules.
+On s'y connecte pour de vrai, avec son identifiant MDS, et chaque espace a sa session : `/app` pour les élèves et les intervenants, `/admin` pour l'équipe et la direction. L'horloge est celle de la machine, et les échéances de 16h30, 18h et 8h se déclenchent seules.
 
 ## Sources de vérité (dans cet ordre)
 1. **Figma** « Maquette-MDS » : https://www.figma.com/design/lN2EFZzYHfTuAW9agcHstV/Maquette-MDS (fichier `lN2EFZzYHfTuAW9agcHstV`) : écrans, composants, textes, couleurs, images.
-   Repères par identifiant de nœud (les noms de pages et de frames peuvent évoluer) : Design system `40:2` · Composants `40:3` · Back-office `15:2` · App mobile `15:3` · v2 — Livré `2042:505`. Chaque écran a son identifiant dans `docs/03-ecrans.md`.
-   **Back-office et App mobile sont la maquette d'origine et restent intactes.** Les écrans réellement livrés après la passe UX vivent sur **v2 — Livré**, annotés. Trois pages 📘 Guide (Fondations, Composants, Ajouter un écran) documentent le système pour un designer : voir `docs/04-design-system.md`.
+   Repères par identifiant de nœud : Design system `40:2` · Composants `40:3` · Back Office for admin `2042:505` · App mobile for student `2070:5134` · les trois pages 📘 Guide `2062:2`, `2066:2`, `2068:2`. La liste complète est dans `docs/04-design-system.md`.
+   **Les pages de maquette d'origine (`15:2`, `15:3`) ont été supprimées** : seuls les sept écrans des deux pages ci-dessus sont encore maquettés. Pour les autres, le code fait référence et les identifiants de `docs/03-ecrans.md` ne résolvent plus.
    **Le Figma est la version la plus récente** : s'il diffère d'une description des docs (image, texte, mise en page), suivre le Figma. Les images (photos, QR code…) s'exportent depuis Figma via le MCP et vont dans `src/assets/`.
 2. **Règles métier** : `docs/02-regles-metier.md` (R01–R16, statuts, droits, temps). En cas de doute, la règle gagne sur l'écran.
 3. **Écrans et interactions** : `docs/03-ecrans.md` (route, nœud Figma, contenu, actions, états à dériver).
@@ -34,7 +34,7 @@ src/
   back-office/   # écrans /admin/*
   ui/            # éléments hors écran : bandeau de résultat d'action
 ```
-- `domain/` n'importe **jamais** React, le DOM ou le store — ni `Date` : seul `store/horlogeReelle.ts` lit l'heure de la machine.
+- `domain/` n'importe **jamais** React, le DOM, le store, ni `Date` : seul `store/horlogeReelle.ts` lit l'heure de la machine.
 - Chaque action utilisateur passe par `dispatch`. Un refus renvoie un message + code de règle, affiché dans un toast.
 
 ## Conventions

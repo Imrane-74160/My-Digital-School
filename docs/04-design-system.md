@@ -4,19 +4,20 @@ Fichier Figma `lN2EFZzYHfTuAW9agcHstV` : page **Design system** (`40:2`, couleur
 Valeurs : `design/tokens.css` (même nommage que les variables Figma). Charte MyDigitalSchool : turquoise + anthracite, accents orange/rose/bleu, Bricolage Grotesque + Inter + JetBrains Mono.
 
 ## Les pages du fichier Figma
-Dans l'ordre où elles se lisent :
 
-| Page | À quoi elle sert |
+| Page | Contenu |
 |---|---|
-| **Design system** (`40:2`) · **Composants** (`40:3`) | La bibliothèque : variables, styles, composants. C'est là qu'on prend une instance. |
-| **Back-office** (`15:2`) · **App mobile** (`15:3`) | La maquette d'origine. **Intacte** : elle sert de point de comparaison, on n'y écrase rien. |
-| **v2 — Livré** (`2042:505`) | Les écrans tels qu'ils sont réellement livrés après la passe UX, chacun avec une note « ce qui a changé ». Sept écrans : tableau de bord équipe / direction / mode Personnaliser, Accueil, Matériel, Emprunter, Scanner. |
-| **📘 Guide · Fondations** | Les 38 couleurs, les 13 styles de texte, les espacements, rayons, ombres et durées, chacun avec son nom Figma, son jeton CSS et son usage. |
-| **📘 Guide · Composants** | 20 fiches : variantes en vraies instances, quand l'utiliser, ce qu'il ne faut pas faire, le code React à copier. Plus l'index du reste du catalogue et les règles d'accessibilité. |
-| **📘 Guide · Ajouter un écran** | La recette en sept étapes, deux gabarits à dupliquer (390 × 844 et 1440 × 839), la check-list avant de livrer et les pièges connus. |
+| **Design system** (`40:2`) · **Composants** (`40:3`) | La bibliothèque : variables, styles, les 38 jeux de variantes et les 67 icônes. C'est là qu'on prend une instance. |
+| **Back Office for admin** (`2042:505`) | Les trois états du tableau de bord livré : Lydia (`2043:3349`), Sandrine (`2053:1186`), mode Personnaliser (`2054:1181`). |
+| **App mobile for student** (`2070:5134`) | Accueil (`2070:5135`), Matériel (`2070:5171`), Emprunter (`2070:5197`), Scanner (`2070:5241`). |
+| **📘 Guide · Style** (`2062:2`) | Les 38 couleurs, les 13 styles de texte, les espacements, rayons, ombres et durées, chacun avec son nom Figma, son jeton CSS et son usage. |
+| **📘 Guide · Composants** (`2066:2`) | 20 fiches : variantes en vraies instances, quand l'utiliser, ce qu'il ne faut pas faire, le code React à copier. Puis l'index du reste du catalogue et les règles d'accessibilité. |
+| **📘 Guide · Ajouter un écran** (`2068:2`) | La recette en sept étapes, deux gabarits à dupliquer (390 × 844 et 1440 × 839), la check-list avant de livrer, les pièges connus. |
 | **Identifiant de connexion** (`2021:4063`) | Les deux liens et les comptes de démonstration. |
 
-Les trois pages 📘 sont écrites **pour un designer** qui arrive sur le projet sans contexte : elles n'exigent rien d'autre que Figma.
+Les trois pages 📘 s'adressent à un designer qui arrive sans contexte et n'ouvre que Figma.
+
+> **Les pages de maquette d'origine ont été supprimées du fichier le 19 novembre 2026.** Les écrans qui y vivaient (A1, A2, A6, A8, A9, A10 et B1 à B12) n'ont plus de nœud Figma. Les identifiants cités dans `docs/03-ecrans.md` pour ces écrans ne résolvent plus ; le code reste la référence pour eux. Les sept écrans ci-dessus sont les seuls encore maquettés.
 
 ## Principes
 - Un seul bouton **Principal** (turquoise) par zone. Orange = **Alerte** (créer un incident). Rose = retard / casse / incident. Orange clair = attention / à valider.
@@ -81,7 +82,7 @@ Construire d'abord ces composants dans `src/design-system/` avec une page `/desi
 
 ## Icônes (Figma → lucide-react)
 École `School` · Cadenas `Lock` · Cadenas ouvert `LockOpen` · Tableau de bord `LayoutDashboard` · Utilisateur validé `UserCheck` · Utilisateurs `Users` · Utilisateur `User` · Image `Image` · Colis `Package` · Échange `ArrowLeftRight` · Reçu `ReceiptText` · Stylo `Pencil` · Porte `DoorOpen` · Import `Upload` · Réglages `SlidersHorizontal` · Retour `Undo2` · Dossier `Folder` · Dossier ouvert `FolderOpen` · Loupe `Search` · Cloche `Bell` · Chevron bas/droit/gauche `ChevronDown/Right/Left` · Liste cochée `ListChecks` · Plus d'options `EllipsisVertical` · Coche `Check` · Croix `X` · Plus `Plus` · Moins `Minus` · Drapeau `Flag` · Horloge `Clock` · Ordinateur portable `Laptop` · Enveloppe `Mail` · Ventilateur `Fan` · Casque audio `Headphones` · Cartes de jeu `GalleryVerticalEnd` · Appareil photo `Camera` · Caméra `Video` · Enregistreur `Radio` · Micro `Mic` · Alerte `TriangleAlert` · Bouclier `Shield` · Pièce de puzzle `Puzzle` · Agrandir `Maximize2` · Historique `History` · Souris `Mouse` · Prise `Plug` · Repère `MapPin` · Imprimante `Printer` · Interdit `Ban` · Lune `Moon` · Portefeuille `Wallet` · Modifier `SquarePen` · Carte SD `HardDrive` · Batterie `Battery` · Étiquette `Tag` · Maison `House` · Grille `LayoutGrid` · Scanner `ScanLine` · Flèche `ArrowUpRight` · Rotation `RotateCcw` · Trépied `Tripod`* · Ampoule `Lightbulb`
-**Ajout (4)** : la personnalisation du tableau de bord (B2-c) demandait quatre icônes que la page Composants n'avait pas — **Chevron haut** `ChevronUp` (`2044:506`) · **Poignée** `GripVertical` (`2044:512`) · **Œil** `Eye` (`2044:523`) · **Œil barré** `EyeOff` (`2044:530`). Elles ont été **ajoutées à la grille du Figma** depuis les tracés lucide du projet, avec les mêmes conventions que les 63 autres (trait 1,5, grille 24, contour lié à `texte/principal`). La table en compte donc **67**.
+**Ajout (4)** : la personnalisation du tableau de bord (B2-c) demandait quatre icônes que la page Composants n'avait pas : **Chevron haut** `ChevronUp` (`2044:506`) · **Poignée** `GripVertical` (`2044:512`) · **Œil** `Eye` (`2044:523`) · **Œil barré** `EyeOff` (`2044:530`). Elles ont été **ajoutées à la grille du Figma** depuis les tracés lucide du projet, avec les mêmes conventions que les 63 autres (trait 1,5, grille 24, contour lié à `texte/principal`). La table en compte donc **67**.
 
 \* **Vérifié** : sur les 63 icônes du Figma, 62 existent dans `lucide-react` 1.47. Seule **« Trépied » n'existe pas** — son tracé est repris du Figma dans `src/design-system/TrepiedIcone.tsx`. La table nom Figma → composant lucide est **générée depuis ce document** (`src/design-system/icones.ts`) et un test Vitest vérifie que toutes les icônes citées par `data/seed.json` et émises par le moteur résolvent.
 

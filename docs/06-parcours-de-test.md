@@ -1,6 +1,8 @@
 # 06 · Parcours de test (critères d'acceptation)
 
-Chaque parcours part de la démo réinitialisée. À automatiser avec Playwright (`e2e/parcours-XX.spec.ts`) et à jouer à la main sur téléphone.
+Les onze parcours sont automatisés dans `e2e/` et tournent avec `npm run e2e`. L'horloge y est figée à 10:15 par la fixture de `e2e/aides.ts`, sinon un test lancé après 18h échouerait pour une raison qui n'a rien à voir avec le code.
+
+Pour les rejouer à la main : repartir d'un navigateur sans données du site (`localStorage` vide), puis se connecter avec les comptes de `docs/05-donnees-demo.md`.
 
 ## P1 · Emprunt et retour en libre-service (R02 R03 R05)
 1. App, Inès → Matériel → Cours → Souris Apple (N2, disponible) → feuille : « Emprunter » désactivé tant que la case forfait n'est pas cochée.
@@ -23,10 +25,12 @@ Chaque parcours part de la démo réinitialisée. À automatiser avec Playwright
 3. Tenter de rendre le prêt de M. Diallo depuis une autre persona → refus R08.
 
 ## P5 · Oubli, blocage, perte (R10 R11 R15 R16)
-1. Panneau démo → « 16h30 » : Inès reçoit « Pense à rendre … ».
-2. « Fin de journée » : Inès (casque #03 non rendu) est bloquée → carte Accueil rose, tentative d'emprunt refusée (R10). Les remises non validées sont annulées.
+1. À 16h30 : Inès reçoit « Pense à rendre … ».
+2. À 18h : Inès (casque #03 non rendu) est bloquée → carte Accueil rose, tentative d'emprunt refusée (R10). Les remises non validées sont annulées.
 3. BO → Emprunteurs → Inès → « Débloquer pour aujourd'hui » → elle peut emprunter aujourd'hui seulement (R16).
-4. « Lendemain 8h » (vendredi : récap 8h mis à jour) → « Fin de journée » (vendredi 18h) : le PC de prêt #02 de Yanis, sorti mercredi, passe `perdu` avec un incident de 450 € (R11) ; Yanis reste bloqué tant que la perte n'est pas payée.
+4. Le lendemain à 8h le récap part, puis à 18h le PC de prêt #02 de Yanis, sorti l'avant-veille, passe `perdu` avec un incident de 450 € (R11). Yanis reste bloqué tant que la perte n'est pas payée.
+
+En test, ces échéances s'atteignent en déplaçant l'horloge de la fixture ; dans l'application, elles tombent quand l'heure arrive.
 
 ## P6 · Me prévenir (R14)
 1. App Léa → Matériel → Casque d'anglais (indisponible) → cloche « Me prévenir ». Idem avec Sarah.
@@ -35,7 +39,7 @@ Chaque parcours part de la démo réinitialisée. À automatiser avec Playwright
 
 ## P7 · Argent réservé à Sandrine (R12 R13)
 1. BO Lydia → Incidents → « Enregistrer le paiement » (cadenas) → toast refus R12.
-2. Panneau → Sandrine → « Ajuster » Sarah 79 € → 90 € refusé (hausse), 60 € accepté (« 79 € ajusté par Sandrine ») → « Enregistrer le paiement » → Payés.
+2. Se reconnecter en Sandrine → « Ajuster » Sarah 79 € → 90 € refusé (hausse), 60 € accepté (« 79 € ajusté par Sandrine ») → « Enregistrer le paiement » → Payés.
 3. Sandrine → Forfaits par type → PC de prêt 500 € → tous les PC affichent le nouveau forfait. Réglages → charte modifiée → visible dans l'app (Charte).
 4. App : aucune action d'équipe accessible.
 
